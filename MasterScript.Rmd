@@ -353,7 +353,7 @@ plot(Mod_FP_2_DO_Det$Times, Mod_FP_2_DO_Det$P, type = "l", ylim = c(0, max(Mod_F
 lines(Mod_FP_2_DO_Det$Times, Mod_FP_2_DO_Det$I, col = "cornflowerblue", lwd = 2)
 ```
 
-### \*\*\* Hollings Type III Functional Response
+### Hollings Type III Functional Response
 
 ```{r}
 Mod_FP_T3 <- function(t, y, p){
@@ -363,11 +363,11 @@ Mod_FP_T3 <- function(t, y, p){
   dI = b + e*(B*P^2/(1 + h*B*P^2))*I-delta*I
   list(c(dP, dI))
 }
-r <- 4.0; B <- 0.012; h <- 0.075; e <- 0.3; delta <- 0.8; b <- 35
+r <- 3.0; B <- 0.0015; h <- 0.2; e <- 0.2; delta <- 0.5; b <- 35
 parms <- c(r, B, h, e, delta)
-P0 <- 80; I0 <- 200
+P0 <- 1; I0 <- 1
 N0 <- c(P0, I0)
-TT <- seq(0, 200, 0.1)
+TT <- seq(0, 25, 0.1)
 results <- lsoda(N0, TT, Mod_FP_T3, parms)
 Mod_FP_3_DO_Det <- data.frame(results); colnames(Mod_FP_3_DO_Det) <- c("Times", "P", "I")
 write.csv(Mod_FP_3_DO_Det, "0_Data/0_Deterministic/Mod_FP_3_DO_Det.csv")
@@ -455,45 +455,45 @@ tf = 100
 method <- "OTL"
 simName <- "ModFentonPerkins"
 
-Seeds <- c(1, 2, 3, 4, 5); ModFentonPerkins_SLC_Stoch_List <- list()
+Seeds <- c(1, 2, 3, 4, 5); ModFentonPerkins_2_SLC_Stoch_List <- list()
 for (i in Seeds){
   set.seed(i)
-  ModFentonPerkins_SLC_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+  ModFentonPerkins_2_SLC_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
                                     verbose = FALSE, 
                                     consoleInterval = 1, 
                                     censusInterval = 1, 
                                     maxWallTime = 30, 
                                     ignoreNegativeState = TRUE)) 
-  ModFentonPerkins_SLC_Stoch <- ModFentonPerkins_SLC_Stoch$data; ModFentonPerkins_SLC_Stoch <- as.data.frame(ModFentonPerkins_SLC_Stoch)
-  colnames(ModFentonPerkins_SLC_Stoch) <- c("Time", "P", "I")
-  FirstZero <- which(ModFentonPerkins_SLC_Stoch$P == 0)[1]
+  ModFentonPerkins_2_SLC_Stoch <- ModFentonPerkins_2_SLC_Stoch$data; ModFentonPerkins_2_SLC_Stoch <- as.data.frame(ModFentonPerkins_2_SLC_Stoch)
+  colnames(ModFentonPerkins_2_SLC_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_2_SLC_Stoch$P == 0)[1]
   if (is.na(FirstZero)){
-    ModFentonPerkins_SLC_Stoch_List[[i]] <- ModFentonPerkins_SLC_Stoch
+    ModFentonPerkins_2_SLC_Stoch_List[[i]] <- ModFentonPerkins_2_SLC_Stoch
   } else {
-    ModFentonPerkins_SLC_Stoch <- ModFentonPerkins_SLC_Stoch[1:FirstZero - 1, ]
-    ModFentonPerkins_SLC_Stoch_List[[i]] <- ModFentonPerkins_SLC_Stoch
+    ModFentonPerkins_2_SLC_Stoch <- ModFentonPerkins_2_SLC_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_2_SLC_Stoch_List[[i]] <- ModFentonPerkins_2_SLC_Stoch
   }
 }
-write.csv(ModFentonPerkins_SLC_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_1.csv")
-write.csv(ModFentonPerkins_SLC_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_2.csv")
-write.csv(ModFentonPerkins_SLC_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_3.csv")
-write.csv(ModFentonPerkins_SLC_Stoch_List[[4]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_4.csv")
-write.csv(ModFentonPerkins_SLC_Stoch_List[[5]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_5.csv")
+write.csv(ModFentonPerkins_2_SLC_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_1.csv")
+write.csv(ModFentonPerkins_2_SLC_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_2.csv")
+write.csv(ModFentonPerkins_2_SLC_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_3.csv")
+write.csv(ModFentonPerkins_2_SLC_Stoch_List[[4]], "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_4.csv")
+write.csv(ModFentonPerkins_2_SLC_Stoch_List[[5]], "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_5.csv")
 
-plot(ModFentonPerkins_SLC_Stoch_List[[1]]$Time, ModFentonPerkins_SLC_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (1)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[1]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_SLC_Stoch_List[[1]]$Time, ModFentonPerkins_SLC_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_SLC_Stoch_List[[1]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (1)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_List[[1]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_SLC_Stoch_List[[1]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_SLC_Stoch_List[[2]]$Time, ModFentonPerkins_SLC_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (2)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[2]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_SLC_Stoch_List[[2]]$Time, ModFentonPerkins_SLC_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_SLC_Stoch_List[[2]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (2)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_List[[2]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_SLC_Stoch_List[[2]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_SLC_Stoch_List[[3]]$Time, ModFentonPerkins_SLC_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_SLC_Stoch_List[[3]]$Time, ModFentonPerkins_SLC_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_SLC_Stoch_List[[3]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_SLC_Stoch_List[[3]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_SLC_Stoch_List[[4]]$Time, ModFentonPerkins_SLC_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_SLC_Stoch_List[[4]]$Time, ModFentonPerkins_SLC_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_SLC_Stoch_List[[4]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_SLC_Stoch_List[[4]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_SLC_Stoch_List[[5]]$Time, ModFentonPerkins_SLC_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_SLC_Stoch_List[[5]]$Time, ModFentonPerkins_SLC_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_SLC_Stoch_List[[5]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_SLC_Stoch_List[[5]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
 ```
 
 #### Damping Oscillations
@@ -512,45 +512,102 @@ tf = 100
 method <- "OTL"
 simName <- "ModFentonPerkins"
 
-Seeds <- c(1, 2, 3, 4, 5); ModFentonPerkins_DO_Stoch_List <- list()
+Seeds <- c(1, 2, 3, 4, 5); ModFentonPerkins_2_DO_Stoch_List <- list()
 for (i in Seeds){
   set.seed(i)
-  ModFentonPerkins_DO_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+  ModFentonPerkins_2_DO_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
                                     verbose = FALSE, 
                                     consoleInterval = 1, 
                                     censusInterval = 1, 
                                     maxWallTime = 30, 
                                     ignoreNegativeState = TRUE)) 
-  ModFentonPerkins_DO_Stoch <- ModFentonPerkins_DO_Stoch$data; ModFentonPerkins_DO_Stoch <- as.data.frame(ModFentonPerkins_DO_Stoch)
-  colnames(ModFentonPerkins_DO_Stoch) <- c("Time", "P", "I")
-  FirstZero <- which(ModFentonPerkins_DO_Stoch$P == 0)[1]
+  ModFentonPerkins_2_DO_Stoch <- ModFentonPerkins_2_DO_Stoch$data; ModFentonPerkins_2_DO_Stoch <- as.data.frame(ModFentonPerkins_2_DO_Stoch)
+  colnames(ModFentonPerkins_2_DO_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_2_DO_Stoch$P == 0)[1]
   if (is.na(FirstZero)){
-    ModFentonPerkins_DO_Stoch_List[[i]] <- ModFentonPerkins_DO_Stoch
+    ModFentonPerkins_2_DO_Stoch_List[[i]] <- ModFentonPerkins_2_DO_Stoch
   } else {
-    ModFentonPerkins_DO_Stoch <- ModFentonPerkins_DO_Stoch[1:FirstZero - 1, ]
-    ModFentonPerkins_DO_Stoch_List[[i]] <- ModFentonPerkins_DO_Stoch
+    ModFentonPerkins_2_DO_Stoch <- ModFentonPerkins_2_DO_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_2_DO_Stoch_List[[i]] <- ModFentonPerkins_2_DO_Stoch
   }
 }
-write.csv(ModFentonPerkins_DO_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_1.csv")
-write.csv(ModFentonPerkins_DO_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_2.csv")
-write.csv(ModFentonPerkins_DO_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_3.csv")
-write.csv(ModFentonPerkins_DO_Stoch_List[[4]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_4.csv")
-write.csv(ModFentonPerkins_DO_Stoch_List[[5]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_5.csv")
+write.csv(ModFentonPerkins_2_DO_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_1.csv")
+write.csv(ModFentonPerkins_2_DO_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_2.csv")
+write.csv(ModFentonPerkins_2_DO_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_3.csv")
+write.csv(ModFentonPerkins_2_DO_Stoch_List[[4]], "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_4.csv")
+write.csv(ModFentonPerkins_2_DO_Stoch_List[[5]], "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_5.csv")
 
-plot(ModFentonPerkins_DO_Stoch_List[[1]]$Time, ModFentonPerkins_DO_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (1)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[1]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_DO_Stoch_List[[1]]$Time, ModFentonPerkins_DO_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_DO_Stoch_List[[1]]$Time, ModFentonPerkins_2_DO_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (1)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_List[[1]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DO_Stoch_List[[1]]$Time, ModFentonPerkins_2_DO_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_DO_Stoch_List[[2]]$Time, ModFentonPerkins_DO_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (2)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[2]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_DO_Stoch_List[[2]]$Time, ModFentonPerkins_DO_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_DO_Stoch_List[[2]]$Time, ModFentonPerkins_2_DO_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (2)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_List[[2]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DO_Stoch_List[[2]]$Time, ModFentonPerkins_2_DO_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_DO_Stoch_List[[3]]$Time, ModFentonPerkins_DO_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_DO_Stoch_List[[3]]$Time, ModFentonPerkins_DO_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_DO_Stoch_List[[3]]$Time, ModFentonPerkins_2_DO_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DO_Stoch_List[[3]]$Time, ModFentonPerkins_2_DO_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_DO_Stoch_List[[4]]$Time, ModFentonPerkins_DO_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_DO_Stoch_List[[4]]$Time, ModFentonPerkins_DO_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_DO_Stoch_List[[4]]$Time, ModFentonPerkins_2_DO_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DO_Stoch_List[[4]]$Time, ModFentonPerkins_2_DO_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_DO_Stoch_List[[5]]$Time, ModFentonPerkins_DO_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
-lines(ModFentonPerkins_DO_Stoch_List[[5]]$Time, ModFentonPerkins_DO_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
+plot(ModFentonPerkins_2_DO_Stoch_List[[5]]$Time, ModFentonPerkins_2_DO_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DO_Stoch_List[[5]]$Time, ModFentonPerkins_2_DO_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
+```
+
+### Hollings Type III Functional Response
+
+```{r}
+x0 <- c(P = 1, I = 1) 
+a <- c("P*r",
+       "I*(B*P^2/1 + B*P^2*h)", 
+       "b + I*e*(B*P^2/1 + B*P^2*h)",
+       "I*delta")
+nu <- matrix(c(+1,-1,0,0,
+               0,0,+1,-1), nrow = 2, byrow = TRUE)
+r = 3.0; B = 0.0015; h = 0.2; b = 35; e = 0.2; delta = 0.5
+parms1 <- c(r = r, B = B, h = h, b = b, e = e, delta = delta)
+tf = 50
+method <- "OTL"
+simName <- "ModFentonPerkins"
+
+Seeds <- c(1, 2, 3, 4, 5); ModFentonPerkins_3_Stoch_List <- list()
+for (i in Seeds){
+  set.seed(i)
+  ModFentonPerkins_3_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                    verbose = FALSE, 
+                                    consoleInterval = 1, 
+                                    censusInterval = 1, 
+                                    maxWallTime = 30, 
+                                    ignoreNegativeState = TRUE)) 
+  ModFentonPerkins_3_Stoch <- ModFentonPerkins_3_Stoch$data; ModFentonPerkins_3_Stoch <- as.data.frame(ModFentonPerkins_3_Stoch)
+  colnames(ModFentonPerkins_3_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_3_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    ModFentonPerkins_3_Stoch_List[[i]] <- ModFentonPerkins_3_Stoch
+  } else {
+    ModFentonPerkins_3_Stoch <- ModFentonPerkins_3_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_3_Stoch_List[[i]] <- ModFentonPerkins_3_Stoch
+  }
+}
+write.csv(ModFentonPerkins_3_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_1.csv")
+write.csv(ModFentonPerkins_3_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_2.csv")
+write.csv(ModFentonPerkins_3_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_3.csv")
+write.csv(ModFentonPerkins_3_Stoch_List[[4]], "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_4.csv")
+write.csv(ModFentonPerkins_3_Stoch_List[[5]], "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_5.csv")
+
+plot(ModFentonPerkins_3_Stoch_List[[1]]$Time, ModFentonPerkins_3_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (1)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_3_Stoch_List[[1]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_3_Stoch_List[[1]]$Time, ModFentonPerkins_3_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_3_Stoch_List[[2]]$Time, ModFentonPerkins_3_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (2)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_3_Stoch_List[[2]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_3_Stoch_List[[2]]$Time, ModFentonPerkins_3_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_3_Stoch_List[[3]]$Time, ModFentonPerkins_3_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_3_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_3_Stoch_List[[3]]$Time, ModFentonPerkins_3_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_3_Stoch_List[[4]]$Time, ModFentonPerkins_3_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_3_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_3_Stoch_List[[4]]$Time, ModFentonPerkins_3_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_3_Stoch_List[[5]]$Time, ModFentonPerkins_3_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_3_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_3_Stoch_List[[5]]$Time, ModFentonPerkins_3_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
 ```
 
 # Model-Fitting
@@ -738,18 +795,18 @@ generated quantities {
 Let's arrange our data to feed into the model:
 
 ```{r}
-ModFentonPerkins_SLC_StanData_List <- list()
+ModFentonPerkins_2_SLC_StanData_List <- list()
 for (i in Seeds){
-  ModFentonPerkins_SLC_Stoch <- ModFentonPerkins_SLC_Stoch_List[[i]]
-  N <- length(ModFentonPerkins_SLC_Stoch$Time) - 1
+  ModFentonPerkins_2_SLC_Stoch <- ModFentonPerkins_2_SLC_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_2_SLC_Stoch$Time) - 1
   ts <- 1:N
-  y_init <- c(ModFentonPerkins_SLC_Stoch$P[1], ModFentonPerkins_SLC_Stoch$I[1])
-  y <- as.matrix(ModFentonPerkins_SLC_Stoch[2:(N + 1), 2:3])
+  y_init <- c(ModFentonPerkins_2_SLC_Stoch$P[1], ModFentonPerkins_2_SLC_Stoch$I[1])
+  y <- as.matrix(ModFentonPerkins_2_SLC_Stoch[2:(N + 1), 2:3])
   y <- cbind(y[ , 1], y[ , 2]); 
-  ModFentonPerkins_SLC_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
-  ModFentonPerkins_SLC_StanData_List[[i]] <- ModFentonPerkins_SLC_StanData
+  ModFentonPerkins_2_SLC_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  ModFentonPerkins_2_SLC_StanData_List[[i]] <- ModFentonPerkins_2_SLC_StanData
 }
-saveRDS(ModFentonPerkins_SLC_StanData_List, "0_Data/2_Stan/ModFentonPerkins_SLC_StanData_List.rds")
+saveRDS(ModFentonPerkins_2_SLC_StanData_List, "0_Data/2_Stan/ModFentonPerkins_2_SLC_StanData_List.rds")
 ```
 
 Next, we'll compile the .stan file:
@@ -759,20 +816,20 @@ model <- stan_model("1_Models/FP_2_AllParms.stan")
 ```
 
 ```{r}
-fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_1.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_1.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_2.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_2.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_3.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_3.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_4.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_4.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_5.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_5.rds")
 ```
 
 #### Damping Oscillations
@@ -780,18 +837,18 @@ saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_5.rds")
 Let's arrange our data to feed into the model:
 
 ```{r}
-ModFentonPerkins_DO_StanData_List <- list()
+ModFentonPerkins_2_DO_StanData_List <- list()
 for (i in Seeds){
-  ModFentonPerkins_DO_Stoch <- ModFentonPerkins_DO_Stoch_List[[i]]
-  N <- length(ModFentonPerkins_DO_Stoch$Time) - 1
+  ModFentonPerkins_2_DO_Stoch <- ModFentonPerkins_2_DO_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_2_DO_Stoch$Time) - 1
   ts <- 1:N
-  y_init <- c(ModFentonPerkins_DO_Stoch$P[1], ModFentonPerkins_DO_Stoch$I[1])
-  y <- as.matrix(ModFentonPerkins_DO_Stoch[2:(N + 1), 2:3])
+  y_init <- c(ModFentonPerkins_2_DO_Stoch$P[1], ModFentonPerkins_2_DO_Stoch$I[1])
+  y <- as.matrix(ModFentonPerkins_2_DO_Stoch[2:(N + 1), 2:3])
   y <- cbind(y[ , 1], y[ , 2]); 
-  ModFentonPerkins_DO_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
-  ModFentonPerkins_DO_StanData_List[[i]] <- ModFentonPerkins_DO_StanData
+  ModFentonPerkins_2_DO_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  ModFentonPerkins_2_DO_StanData_List[[i]] <- ModFentonPerkins_2_DO_StanData
 }
-saveRDS(ModFentonPerkins_DO_StanData_List, "0_Data/2_Stan/ModFentonPerkins_DO_StanData_List.rds")
+saveRDS(ModFentonPerkins_2_DO_StanData_List, "0_Data/2_Stan/ModFentonPerkins_2_DO_StanData_List.rds")
 ```
 
 Next, we'll compile the .stan file:
@@ -801,20 +858,20 @@ model <- stan_model("1_Models/FP_2_AllParms.stan")
 ```
 
 ```{r}
-fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_1.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_1.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_2.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_2.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_3.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_3.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_4.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_4.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
-saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_5.rds")
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_5.rds")
 ```
 
 # Visualization
