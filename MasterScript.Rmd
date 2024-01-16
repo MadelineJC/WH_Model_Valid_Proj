@@ -1,0 +1,830 @@
+---
+title: "Tracking Document"
+author: "M. Jarvis-Cross"
+output: html_document
+---
+
+# Required Packages:
+
+```{r, include = FALSE}
+library(readr)
+library(tidyverse)
+library(deSolve)
+library(GillespieSSA)
+library(rstan)
+library(bayesplot)
+library(brms)
+library(reshape2)
+library(MCMCvis)
+```
+
+# Models, Forms, and Associated Dynamics:
+
++--------------+---------------------+----------------------------+--------------------------+
+|              | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
++==============+=====================+============================+==========================+
+| Type I       | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type II      | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
+|              |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type III     | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
+|              |                     | 2.  Damping oscillations   |                          |
++--------------+---------------------+----------------------------+--------------------------+
+
+## Antia et al. (1994)
+
+The proposed model (taken from [this paper](https://www.journals.uchicago.edu/doi/pdf/10.1086/285686?casa_token=KoTwpSI4VIgAAAAA:1UwxU-BP01lj_yWWFDzuI3Qq82ltSGIERhcHyMAs0VpHaLtw05LP2W2pEBBv-hMdqcgl5u-fpxWHoQ)):
+
+$\frac{dP}{dt} = rP - kPI$, if $P < D$, where $D = 10^9$. If $P < D$, $P \rightarrow 0$.
+
+$\frac{dI}{dt} = \rho I(\frac{P}{P + \phi})$
+
++----------+----------------------------------------------------------------------------------------+--------------+
+| Symbol   | Parameter                                                                              | Value        |
++==========+========================================================================================+==============+
+| $P$      | Parasite abundance                                                                     | $1**$        |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $I$      | Host immune cell abundance                                                             | $1**$        |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $r$      | Replication rate of parasite                                                           | $0.1 - 10.0$ |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $k$      | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $\rho$   | Maximum replication rate of host's immune system                                       | $1$          |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $\phi$   | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $D$      | Lethal within-host parasite abundance                                                  | $10^9$       |
++----------+----------------------------------------------------------------------------------------+--------------+
+
+## Fenton and Perkins (2010)
+
+The proposed model (taken from [this paper](https://www.cambridge.org/core/journals/parasitology/article/abs/applying-predatorprey-theory-to-modelling-immunemediated-withinhost-interspecific-parasite-interactions/7CDBE1EBC4768B76D32B6DC3757DC96F)):
+
+$\frac{dP}{dt}=rP-If(P)$
+
+$\frac{dI}{dt}=ef(P)I - \delta I$
+
+With TI functional response, $f(P)=\beta P$
+
+With a TII functional response, $f(P)=\frac{\beta P}{1+h \beta P}$
+
+With a TIII functional response, $f(P)=\frac{\beta P^2}{1+h \beta P^2}$
+
++-----------+------------------------------------------------------------------------+--------------+
+| Symbol    | Parameter                                                              | Value        |
++===========+========================================================================+==============+
+| $P$       | Parasite abundance                                                     | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $I$       | Host immune cell abundance                                             | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++-----------+------------------------------------------------------------------------+--------------+
+| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++-----------+------------------------------------------------------------------------+--------------+
+| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
++-----------+------------------------------------------------------------------------+--------------+
+| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
+
+## Modified Fenton and Perkins (2010)
+
+$\frac{dP}{dt}=rP-If(P)$
+
+$\frac{dI}{dt}=b + ef(P)I - \delta I$
+
++-----------+------------------------------------------------------------------------+--------------+
+| Symbol    | Parameter                                                              | Value        |
++===========+========================================================================+==============+
+| $P$       | Parasite abundance                                                     | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $I$       | Host immune cell abundance                                             | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++-----------+------------------------------------------------------------------------+--------------+
+| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++-----------+------------------------------------------------------------------------+--------------+
+| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
++-----------+------------------------------------------------------------------------+--------------+
+| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $b$       | Immigration of immune cells in absence of infection                    | $35$         |
++-----------+------------------------------------------------------------------------+--------------+
+
+# Deterministic Simulations:
+
+## Antia et al. (1994)
+
+This system is stable, and moves towards extirpation of the parasite.
+
+```{r}
+Antia_Model <- function(t, y, p1){
+  r <- p1[1]; k <- p1[2]; p <- p1[3]; o <- p1[4] 
+  P <- y[1]; I <- y[2]
+  dP = r*P - k*P*I
+  dI = p*I*(P/(P + o))
+  list(c(dP, dI))
+}
+r <- 0.2; k <- 0.01; p <- 1; o <- 1000 
+parms <- c(r, k, p, o)
+P0 <- 1; I0 <- 1
+N0 <- c(P0, I0)
+TT <- seq(0, 50, 0.1)
+results <- lsoda(N0, TT, Antia_Model, parms, verbose = FALSE)
+Antia_Det <- data.frame(results); colnames(Antia_Det) <- c("Time", "P", "I")
+write.csv(Antia_Det, "0_Data/0_Deterministic/Antia_Det.csv")
+
+plot(Antia_Det$Time, Antia_Det$P, type = "l", main = "Deterministic Simulation of Antia et al. (1994) Model", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Antia_Det$Time, Antia_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+## Fenton and Perkins (2010)
+
+### Hollings Type I Functional Response
+
+This system is neutrally stable, and exhibits stable oscillations.
+
+```{r}
+FP_T1 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; e <- p[3]; delta <- p[4]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*B*P
+  dI = e*B*P*I-delta*I
+  list(c(dP, dI))
+}
+r <- 0.1; B <- 0.05; e <- 0.1; delta <- 0.01
+parms <- c(r, B, e, delta)
+P0 <- 1; I0 <- 1
+N0 <- c(P0, I0)
+TT <- seq(0, 500, 1)
+results <- lsoda(N0, TT, FP_T1, parms)
+FP_1_Det <- data.frame(results); colnames(FP_1_Det) <- c("Times", "P", "I")
+write.csv(FP_1_Det, "0_Data/0_Deterministic/FP_1_Det.csv")
+
+plot(FP_1_Det$Times, FP_1_Det$P, type = "l", ylim = c(0, max(FP_1_Det$P)), main = "Deterministic Simulation of Fenton and Perkins (2010) Model", sub = "Hollings Type I Functional Response", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(FP_1_Det$Times, FP_1_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+### Hollings Type II Functional Response
+
+This system is unstable, and can exhibit:
+
+-   Stable oscillations
+
+-   Divergent oscillations
+
+#### Stable Limit Cycle
+
+```{r}
+FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+r <- 0.1; B <- 0.05; h <- 0; e <- 0.1; delta <- 0.01
+parms <- c(r, B, h, e, delta)
+P0 <- 1; I0 <- 1
+N0 <- c(P0, I0)
+TT <- seq(0, 1000, 0.1)
+results <- lsoda(N0, TT, FP_T2, parms)
+FP_2_SLC_Det <- data.frame(results); colnames(FP_2_SLC_Det) <- c("Times", "P", "I")
+write.csv(FP_2_SLC_Det, "0_Data/0_Deterministic/FP_2_SLC_Det.csv")
+
+plot(FP_2_SLC_Det$Times, FP_2_SLC_Det$P, type = "l", ylim = c(0, max(FP_2_SLC_Det$P)), main = "Deterministic Simulation of Fenton and Perkins (2010) Model", sub = "Hollings Type II Functional Response, Stable Limit Cycle", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(FP_2_SLC_Det$Times, FP_2_SLC_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+#### Divergent Oscillations
+
+```{r}
+FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+r <- 0.05; B <- 0.05; h <- 0.1; e <- 0.1; delta <- 0.01
+parms <- c(r, B, h, e, delta)
+P0 <- 1; I0 <- 1
+N0 <- c(P0, I0)
+TT <- seq(0, 2000, 0.1)
+results <- lsoda(N0, TT, FP_T2, parms)
+FP_2_DO_Det <- data.frame(results); colnames(FP_2_DO_Det) <- c("Times", "P", "I")
+write.csv(FP_2_DO_Det, "0_Data/0_Deterministic/FP_2_DO_Det.csv")
+
+plot(FP_2_DO_Det$Times, FP_2_DO_Det$P, type = "l", ylim = c(0, max(FP_2_DO_Det$P)), main = "Deterministic Simulation of Fenton and Perkins (2010) Model", sub = "Hollings Type II Functional Response, Divergent Oscillations", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(FP_2_DO_Det$Times, FP_2_DO_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+### Hollings Type III Functional Response
+
+This system can exhibit:
+
+-   Stable oscillations
+
+-   Damping oscillations
+
+Conditions for stability are as follows: $e>2 \delta h$
+
+#### Stable Limit Cycle
+
+```{r}
+FP_T3 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P^2/(1 + h*B*P^2))
+  dI = e*(B*P^2/(1 + h*B*P^2))*I-delta*I
+  list(c(dP, dI))
+}
+r <- 0.04; B <- 0.05; h <- 10; e <- 0.2; delta <- 0.01; print(e > 2*delta*h)
+parms <- c(r, B, h, e, delta)
+P0 <- 1; I0 <- 1
+N0 <- c(P0, I0)
+TT <- seq(0, 1000, 0.1)
+results <- lsoda(N0, TT, FP_T3, parms)
+FP_3_SLC_Det <- data.frame(results); colnames(FP_3_SLC_Det) <- c("Times", "P", "I")
+write.csv(FP_3_SLC_Det, "0_Data/0_Deterministic/FP_3_SLC_Det.csv")
+
+plot(FP_3_SLC_Det$Times, FP_3_SLC_Det$P, type = "l", ylim = c(0, max(FP_3_SLC_Det$P)), main = "Deterministic Simulation of Fenton and Perkins (2010) Model", sub = "Hollings Type III Functional Response, Stable Limit Cycle", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(FP_3_SLC_Det$Times, FP_3_SLC_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+#### Damping Oscillations
+
+```{r}
+FP_T3 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P^2/(1 + h*B*P^2))
+  dI = e*(B*P^2/(1 + h*B*P^2))*I-delta*I
+  list(c(dP, dI))
+}
+r <- 0.1; B <- 0.05; h <- 2.5; e <- 0.1; delta <- 0.008; print(e > 2*delta*h)
+parms <- c(r, B, h, e, delta)
+P0 <- 1; I0 <- 1
+N0 <- c(P0, I0)
+TT <- seq(0, 1000, 0.1)
+results <- lsoda(N0, TT, FP_T3, parms)
+FP_3_DO_Det <- data.frame(results); colnames(FP_3_DO_Det) <- c("Times", "P", "I")
+write.csv(FP_3_DO_Det, "0_Data/0_Deterministic/FP_3_DO_Det.csv")
+
+plot(FP_3_DO_Det$Times, FP_3_DO_Det$P, type = "l", ylim = c(0, max(FP_3_DO_Det$P)), main = "Deterministic Simulation of Fenton and Perkins (2010) Model", sub = "Hollings Type III Functional Response, Damping Oscillations", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(FP_3_DO_Det$Times, FP_3_DO_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+## Modified Fenton and Perkins (2010)
+
+### Hollings Type I Functional Response
+
+```{r}
+Mod_FP_T1 <- function(t,y,p){
+  r <- p[1]; B <- p[2]; e <- p[3]; delta <- p[4]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*B*P
+  dI = b + e*B*P*I-delta*I
+  list(c(dP, dI))
+}
+r <- 1.5; B <- 0.001; e <- 0.9; delta <- 0.2; b <- 200
+parms <- c(r, B, e, delta, b)
+P0 <- 1; I0 <- 1
+N0 <- c(P0, I0)
+TT <- seq(0, 100, 0.1) 
+results <- lsoda(N0, TT, Mod_FP_T1, parms)
+Mod_FP_1_Det <- data.frame(results); colnames(Mod_FP_1_Det) <- c("Time", "P", "I")
+write.csv(Mod_FP_1_Det, "0_Data/0_Deterministic/Mod_FP_1_Det.csv")
+
+plot(Mod_FP_1_Det$Time, Mod_FP_1_Det$P, type = "l", ylim = c(0, max(Mod_FP_1_Det$I)), main = "Deterministic Simulation of Modified Fenton and Perkins (2010) Model", sub = "Hollings Type I Functional Response", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Mod_FP_1_Det$Time, Mod_FP_1_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+### Hollings Type II Functional Response
+
+#### Stable Limit Cycle
+
+```{r}
+Mod_FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+r <- 2.5; B <- 0.012; h <- 0.075; e <- 0.3; delta <- 0.41; b <- 35
+parms <- c(r, B, h, e, delta)
+P0 <- 80; I0 <- 200
+N0 <- c(P0, I0)
+TT <- seq(0, 50, 0.1)
+results <- lsoda(N0, TT, Mod_FP_T2, parms)
+Mod_FP_2_SLC_Det <- data.frame(results); colnames(Mod_FP_2_SLC_Det) <- c("Times", "P", "I")
+write.csv(Mod_FP_2_SLC_Det, "0_Data/0_Deterministic/Mod_FP_2_SLC_Det.csv")
+
+plot(Mod_FP_2_SLC_Det$Times, Mod_FP_2_SLC_Det$P, type = "l", ylim = c(0, max(Mod_FP_2_SLC_Det$I)), main = "Deterministic Simulation of Modified Fenton and Perkins (2010) Model", sub = "Hollings Type II Functional Response, Stable Limit Cycle", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Mod_FP_2_SLC_Det$Times, Mod_FP_2_SLC_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+#### Damping Oscillations
+
+```{r}
+Mod_FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+r <- 2.5; B <- 0.008; h <- 0.06; e <- 0.2; delta <- 0.2; b <- 35
+parms <- c(r, B, h, e, delta)
+P0 <- 80; I0 <- 200
+N0 <- c(P0, I0)
+TT <- seq(0, 200, 0.1)
+results <- lsoda(N0, TT, Mod_FP_T2, parms)
+Mod_FP_2_DO_Det <- data.frame(results); colnames(Mod_FP_2_DO_Det) <- c("Times", "P", "I")
+write.csv(Mod_FP_2_DO_Det, "0_Data/0_Deterministic/Mod_FP_2_DO_Det.csv")
+
+plot(Mod_FP_2_DO_Det$Times, Mod_FP_2_DO_Det$P, type = "l", ylim = c(0, max(Mod_FP_2_DO_Det$I)), main = "Deterministic Simulation of Modified Fenton and Perkins (2010) Model", sub = "Hollings Type II Functional Response, Damping Oscillations", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Mod_FP_2_DO_Det$Times, Mod_FP_2_DO_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+### \*\*\* Hollings Type III Functional Response
+
+```{r}
+Mod_FP_T3 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P^2/(1 + h*B*P^2))
+  dI = b + e*(B*P^2/(1 + h*B*P^2))*I-delta*I
+  list(c(dP, dI))
+}
+r <- 4.0; B <- 0.012; h <- 0.075; e <- 0.3; delta <- 0.8; b <- 35
+parms <- c(r, B, h, e, delta)
+P0 <- 80; I0 <- 200
+N0 <- c(P0, I0)
+TT <- seq(0, 200, 0.1)
+results <- lsoda(N0, TT, Mod_FP_T3, parms)
+Mod_FP_3_DO_Det <- data.frame(results); colnames(Mod_FP_3_DO_Det) <- c("Times", "P", "I")
+write.csv(Mod_FP_3_DO_Det, "0_Data/0_Deterministic/Mod_FP_3_DO_Det.csv")
+
+plot(Mod_FP_3_DO_Det$Times, Mod_FP_3_DO_Det$P, type = "l", ylim = c(0, max(Mod_FP_3_DO_Det$I)), main = "Deterministic Simulation of Modified Fenton and Perkins (2010) Model", sub = "Hollings Type III Functional Response", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Mod_FP_3_DO_Det$Times, Mod_FP_3_DO_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
+# Stochastic Simulations:
+
+## Antia et al. (1994)
+
+```{r}
+x0 <- c(P = 1, I = 1) 
+a <- c("P*r",
+       "k*P*I", 
+       "p*I*(P/(P + o))")
+nu <- matrix(c(+1, -1, 0,
+               0, 0, +1), nrow = 2, byrow = TRUE)
+
+r <- 0.2; k <- 0.01; p <- 1; o <- 1000
+parms1 <- c(r = r, k = k, p = p, o = o)
+tf = 100
+method <- "OTL"
+simName <- "Antia"
+
+Seeds <- seq(1, 5, 1); Antia_Stoch_List <- list()
+for (i in Seeds){
+  set.seed(i)
+  Antia_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                    verbose = FALSE, 
+                                    consoleInterval = 1, 
+                                    censusInterval = 1, 
+                                    maxWallTime = 30, 
+                                    ignoreNegativeState = TRUE)) 
+  Antia_Stoch <- Antia_Stoch$data; Antia_Stoch <- as.data.frame(Antia_Stoch)
+  colnames(Antia_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(Antia_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    Antia_Stoch_List[[i]] <- Antia_Stoch
+  } else {
+    Antia_Stoch <- Antia_Stoch[1:FirstZero - 1, ]
+    Antia_Stoch_List[[i]] <- Antia_Stoch
+  }
+}
+write.csv(Antia_Stoch_List[[1]], "0_Data/1_Stochastic/Antia_Stoch_1.csv")
+write.csv(Antia_Stoch_List[[2]], "0_Data/1_Stochastic/Antia_Stoch_2.csv")
+write.csv(Antia_Stoch_List[[3]], "0_Data/1_Stochastic/Antia_Stoch_3.csv")
+write.csv(Antia_Stoch_List[[4]], "0_Data/1_Stochastic/Antia_Stoch_4.csv")
+write.csv(Antia_Stoch_List[[5]], "0_Data/1_Stochastic/Antia_Stoch_5.csv")
+
+plot(Antia_Stoch_List[[1]]$Time, Antia_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Antia et al. (1994) Model (1)", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Antia_Stoch_List[[1]]$Time, Antia_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(Antia_Stoch_List[[2]]$Time, Antia_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Antia et al. (1994) Model (2)", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Antia_Stoch_List[[2]]$Time, Antia_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(Antia_Stoch_List[[3]]$Time, Antia_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Antia et al. (1994) Model (3)", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Antia_Stoch_List[[3]]$Time, Antia_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(Antia_Stoch_List[[4]]$Time, Antia_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Antia et al. (1994) Model (5)", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Antia_Stoch_List[[4]]$Time, Antia_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(Antia_Stoch_List[[5]]$Time, Antia_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Antia et al. (1994) Model (5)", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Antia_Stoch_List[[5]]$Time, Antia_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
+```
+
+## Modified Fenton and Perkins (2010)
+
+### Hollings Type II Functional Response
+
+#### Stable Limit Cycle
+
+```{r}
+x0 <- c(P = 80, I = 200) 
+a <- c("P*r",
+       "I*(B*P/1 + B*P*h)", 
+       "b + I*e*(B*P/1 + B*P*h)",
+       "I*delta")
+nu <- matrix(c(+1,-1,0,0,
+               0,0,+1,-1), nrow = 2, byrow = TRUE)
+r = 2.5; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.41
+parms1 <- c(r = r, B = B, h = h, b = b, e = e, delta = delta)
+tf = 100
+method <- "OTL"
+simName <- "ModFentonPerkins"
+
+Seeds <- c(1, 2, 3, 4, 5); ModFentonPerkins_SLC_Stoch_List <- list()
+for (i in Seeds){
+  set.seed(i)
+  ModFentonPerkins_SLC_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                    verbose = FALSE, 
+                                    consoleInterval = 1, 
+                                    censusInterval = 1, 
+                                    maxWallTime = 30, 
+                                    ignoreNegativeState = TRUE)) 
+  ModFentonPerkins_SLC_Stoch <- ModFentonPerkins_SLC_Stoch$data; ModFentonPerkins_SLC_Stoch <- as.data.frame(ModFentonPerkins_SLC_Stoch)
+  colnames(ModFentonPerkins_SLC_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_SLC_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    ModFentonPerkins_SLC_Stoch_List[[i]] <- ModFentonPerkins_SLC_Stoch
+  } else {
+    ModFentonPerkins_SLC_Stoch <- ModFentonPerkins_SLC_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_SLC_Stoch_List[[i]] <- ModFentonPerkins_SLC_Stoch
+  }
+}
+write.csv(ModFentonPerkins_SLC_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_1.csv")
+write.csv(ModFentonPerkins_SLC_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_2.csv")
+write.csv(ModFentonPerkins_SLC_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_3.csv")
+write.csv(ModFentonPerkins_SLC_Stoch_List[[4]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_4.csv")
+write.csv(ModFentonPerkins_SLC_Stoch_List[[5]], "0_Data/1_Stochastic/ModFentonPerkins_SLC_Stoch_5.csv")
+
+plot(ModFentonPerkins_SLC_Stoch_List[[1]]$Time, ModFentonPerkins_SLC_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (1)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[1]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_SLC_Stoch_List[[1]]$Time, ModFentonPerkins_SLC_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_SLC_Stoch_List[[2]]$Time, ModFentonPerkins_SLC_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (2)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[2]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_SLC_Stoch_List[[2]]$Time, ModFentonPerkins_SLC_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_SLC_Stoch_List[[3]]$Time, ModFentonPerkins_SLC_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_SLC_Stoch_List[[3]]$Time, ModFentonPerkins_SLC_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_SLC_Stoch_List[[4]]$Time, ModFentonPerkins_SLC_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_SLC_Stoch_List[[4]]$Time, ModFentonPerkins_SLC_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_SLC_Stoch_List[[5]]$Time, ModFentonPerkins_SLC_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_SLC_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_SLC_Stoch_List[[5]]$Time, ModFentonPerkins_SLC_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
+```
+
+#### Damping Oscillations
+
+```{r}
+x0 <- c(P = 80, I = 200) 
+a <- c("P*r",
+       "I*(B*P/1 + B*P*h)", 
+       "b + I*e*(B*P/1 + B*P*h)",
+       "I*delta")
+nu <- matrix(c(+1,-1,0,0,
+               0,0,+1,-1), nrow = 2, byrow = TRUE)
+r = 2.5; B = 0.008; h = 0.06; b = 35; e = 0.2; delta = 0.2
+parms1 <- c(r = r, B = B, h = h, b = b, e = e, delta = delta)
+tf = 100
+method <- "OTL"
+simName <- "ModFentonPerkins"
+
+Seeds <- c(1, 2, 3, 4, 5); ModFentonPerkins_DO_Stoch_List <- list()
+for (i in Seeds){
+  set.seed(i)
+  ModFentonPerkins_DO_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                    verbose = FALSE, 
+                                    consoleInterval = 1, 
+                                    censusInterval = 1, 
+                                    maxWallTime = 30, 
+                                    ignoreNegativeState = TRUE)) 
+  ModFentonPerkins_DO_Stoch <- ModFentonPerkins_DO_Stoch$data; ModFentonPerkins_DO_Stoch <- as.data.frame(ModFentonPerkins_DO_Stoch)
+  colnames(ModFentonPerkins_DO_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_DO_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    ModFentonPerkins_DO_Stoch_List[[i]] <- ModFentonPerkins_DO_Stoch
+  } else {
+    ModFentonPerkins_DO_Stoch <- ModFentonPerkins_DO_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_DO_Stoch_List[[i]] <- ModFentonPerkins_DO_Stoch
+  }
+}
+write.csv(ModFentonPerkins_DO_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_1.csv")
+write.csv(ModFentonPerkins_DO_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_2.csv")
+write.csv(ModFentonPerkins_DO_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_3.csv")
+write.csv(ModFentonPerkins_DO_Stoch_List[[4]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_4.csv")
+write.csv(ModFentonPerkins_DO_Stoch_List[[5]], "0_Data/1_Stochastic/ModFentonPerkins_DO_Stoch_5.csv")
+
+plot(ModFentonPerkins_DO_Stoch_List[[1]]$Time, ModFentonPerkins_DO_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (1)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[1]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_DO_Stoch_List[[1]]$Time, ModFentonPerkins_DO_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_DO_Stoch_List[[2]]$Time, ModFentonPerkins_DO_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (2)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[2]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_DO_Stoch_List[[2]]$Time, ModFentonPerkins_DO_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_DO_Stoch_List[[3]]$Time, ModFentonPerkins_DO_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_DO_Stoch_List[[3]]$Time, ModFentonPerkins_DO_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_DO_Stoch_List[[4]]$Time, ModFentonPerkins_DO_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_DO_Stoch_List[[4]]$Time, ModFentonPerkins_DO_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_DO_Stoch_List[[5]]$Time, ModFentonPerkins_DO_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_DO_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_DO_Stoch_List[[5]]$Time, ModFentonPerkins_DO_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
+```
+
+# Model-Fitting
+
+## Antia et al. (1994)
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       
+               real[] z,     
+               real[] theta, 
+               real[] x_r,  
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real k = theta[2];
+    real p = theta[3];
+    real o = theta[4];
+
+    real dP_dt = r*P - k*P*I;
+    real dI_dt = p*I*(P/(P + o));
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;           
+  real ts[N];                 
+  real y_init[2];             
+  real<lower = 0> y[N, 2];    
+}
+parameters {
+  real<lower = 0> r; 
+  real<lower = 0> k;
+  real<lower = 0> p;
+  real<lower = 0> o;
+  real<lower = 0> z_init[2];  
+  real<lower = 0> sigma[2];   
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, {r, k, p, o},
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  r ~ normal(1, 3); // r = 0.2
+  k ~ lognormal(log(0.1), 1); // k = 0.01
+  p ~ normal(1, 1); // p = 1
+  o ~ normal(1000, 10); // o = 1000
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (m in 1:2) {
+    y_init[m] ~ lognormal(log(z_init[m]), sigma[m]);
+    y[ , m] ~ lognormal(log(z[, m]), sigma[m]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (m in 1:2) {
+    y_init_rep[m] = lognormal_rng(log(z_init[m]), sigma[m]);
+    for (n in 1:N)
+      y_rep[n, m] = lognormal_rng(log(z[n, m]), sigma[m]);
+  }
+}
+", file = "1_Models/Antia.stan")
+```
+
+Let's arrange our data to feed into the model:
+
+```{r}
+Antia_StanData_List <- list()
+for (i in Seeds){
+  Antia_Stoch <- Antia_Stoch_List[[i]]
+  N <- length(Antia_Stoch$Time) - 1
+  ts <- 1:N
+  y_init <- c(Antia_Stoch$P[1], Antia_Stoch$I[1])
+  y <- as.matrix(Antia_Stoch[2:(N + 1), 2:3])
+  y <- cbind(y[ , 1], y[ , 2]); 
+  Antia_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  Antia_StanData_List[[i]] <- Antia_StanData
+}
+saveRDS(Antia_StanData_List, "0_Data/2_Stan/Antia_StanData_List.rds")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/Antia.stan")
+```
+
+```{r}
+fit <- sampling(model, data = Antia_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/Antia_FitObj_1.rds")
+
+fit <- sampling(model, data = Antia_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/Antia_FitObj_2.rds")
+
+fit <- sampling(model, data = Antia_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/Antia_FitObj_3.rds")
+
+fit <- sampling(model, data = Antia_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/Antia_FitObj_4.rds")
+
+fit <- sampling(model, data = Antia_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/Antia_FitObj_5.rds")
+```
+
+## Modified Fenton and Perkins (2010)
+
+### Hollings Type II Functional Response
+
+#### Stable Limit Cycle
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real B = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real e1 = theta[5];
+    real delta = theta[6];
+
+    real dP_dt = P*r - I*(B*P/(1 + B*h*P));
+    real dI_dt = b + I*(e1*(B*P/(1 + B*h*P)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[6];   // {r, B, h, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2, 3}] ~ uniform(0, 1); // B, h
+  theta[{4}] ~ uniform(0, 1000); // b
+  theta[{5, 6}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_2_AllParms.stan")
+```
+
+Let's arrange our data to feed into the model:
+
+```{r}
+ModFentonPerkins_SLC_StanData_List <- list()
+for (i in Seeds){
+  ModFentonPerkins_SLC_Stoch <- ModFentonPerkins_SLC_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_SLC_Stoch$Time) - 1
+  ts <- 1:N
+  y_init <- c(ModFentonPerkins_SLC_Stoch$P[1], ModFentonPerkins_SLC_Stoch$I[1])
+  y <- as.matrix(ModFentonPerkins_SLC_Stoch[2:(N + 1), 2:3])
+  y <- cbind(y[ , 1], y[ , 2]); 
+  ModFentonPerkins_SLC_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  ModFentonPerkins_SLC_StanData_List[[i]] <- ModFentonPerkins_SLC_StanData
+}
+saveRDS(ModFentonPerkins_SLC_StanData_List, "0_Data/2_Stan/ModFentonPerkins_SLC_StanData_List.rds")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_AllParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_SLC_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_SLC_FitObj_5.rds")
+```
+
+#### Damping Oscillations
+
+Let's arrange our data to feed into the model:
+
+```{r}
+ModFentonPerkins_DO_StanData_List <- list()
+for (i in Seeds){
+  ModFentonPerkins_DO_Stoch <- ModFentonPerkins_DO_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_DO_Stoch$Time) - 1
+  ts <- 1:N
+  y_init <- c(ModFentonPerkins_DO_Stoch$P[1], ModFentonPerkins_DO_Stoch$I[1])
+  y <- as.matrix(ModFentonPerkins_DO_Stoch[2:(N + 1), 2:3])
+  y <- cbind(y[ , 1], y[ , 2]); 
+  ModFentonPerkins_DO_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  ModFentonPerkins_DO_StanData_List[[i]] <- ModFentonPerkins_DO_StanData
+}
+saveRDS(ModFentonPerkins_DO_StanData_List, "0_Data/2_Stan/ModFentonPerkins_DO_StanData_List.rds")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_AllParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_DO_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_DO_FitObj_5.rds")
+```
+
+# Visualization
+
+## Antia et al. (1994)
+
+## Modified Fenton and Perkins (2010)
+
+### Hollings Type II Functional Response
+
+#### Stable Limit Cycle
+
+#### Damping Oscillations
