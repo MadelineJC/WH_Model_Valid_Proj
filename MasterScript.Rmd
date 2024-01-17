@@ -782,7 +782,106 @@ saveRDS(fit, file = "2_FitObjects/Antia_FitObj_5.rds")
 ### Hollings Type I Functional Response
 
 ``` {r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
 
+    real r = theta[1];  
+    real B = theta[2];
+    real b = theta[3];
+    real e1 = theta[4];
+    real delta = theta[5];
+
+    real dP_dt = P*r - I*B*P;
+    real dI_dt = b + e1*B*P*I - I*delta;
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, B, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1); // B
+  theta[{3}] ~ uniform(0, 1000); // b
+  theta[{4, 5}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_1_AllParms.stan")
+```
+
+Let's arrange our data to feed into the model:
+
+```{r}
+ModFentonPerkins_1_StanData_List <- list()
+for (i in Seeds){
+  ModFentonPerkins_1_Stoch <- ModFentonPerkins_1_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_1_Stoch$Time) - 1
+  ts <- 1:N
+  y_init <- c(ModFentonPerkins_1_Stoch$P[1], ModFentonPerkins_1_Stoch$I[1])
+  y <- as.matrix(ModFentonPerkins_1_Stoch[2:(N + 1), 2:3])
+  y <- cbind(y[ , 1], y[ , 2]); 
+  ModFentonPerkins_1_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  ModFentonPerkins_1_StanData_List[[i]] <- ModFentonPerkins_1_StanData
+}
+saveRDS(ModFentonPerkins_1_StanData_List, "0_Data/2_Stan/ModFentonPerkins_1_StanData_List.rds")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_AllParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_1_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_1_FitObj_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_1_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_1_FitObj_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_1_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_1_FitObj_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_1_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_1_FitObj_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_1_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_1_FitObj_5.rds")
 ```
 
 ### Hollings Type II Functional Response
