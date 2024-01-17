@@ -18,7 +18,7 @@ library(reshape2)
 library(MCMCvis)
 ```
 
-# Models, Forms, and Associated Dynamics:
+# Models, Forms, and Associated Dynamics
 
 +--------------+---------------------+----------------------------+--------------------------+
 |              | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
@@ -116,7 +116,7 @@ $\frac{dI}{dt}=b + ef(P)I - \delta I$
 | $b$       | Immigration of immune cells in absence of infection                    | $35$         |
 +-----------+------------------------------------------------------------------------+--------------+
 
-# Deterministic Simulations:
+# Deterministic Simulations
 
 ## Antia et al. (1994)
 
@@ -294,7 +294,7 @@ Mod_FP_T1 <- function(t,y,p){
 }
 r <- 1.5; B <- 0.001; e <- 0.9; delta <- 0.2; b <- 200
 parms <- c(r, B, e, delta, b)
-P0 <- 1; I0 <- 1
+P0 <- 10; I0 <- 10
 N0 <- c(P0, I0)
 TT <- seq(0, 100, 0.1) 
 results <- lsoda(N0, TT, Mod_FP_T1, parms)
@@ -376,7 +376,7 @@ plot(Mod_FP_3_DO_Det$Times, Mod_FP_3_DO_Det$P, type = "l", ylim = c(0, max(Mod_F
 lines(Mod_FP_3_DO_Det$Times, Mod_FP_3_DO_Det$I, col = "cornflowerblue", lwd = 2)
 ```
 
-# Stochastic Simulations:
+# Stochastic Simulations
 
 ## Antia et al. (1994)
 
@@ -437,6 +437,63 @@ lines(Antia_Stoch_List[[5]]$Time, Antia_Stoch_List[[5]]$I, col = "cornflowerblue
 
 ## Modified Fenton and Perkins (2010)
 
+### Hollings Type I Functional Response
+
+```{r}
+x0 <- c(P = 10, I = 10) 
+a <- c("P*r",
+       "I*B*P", 
+       "b + e*B*P*I",
+       "I*delta")
+nu <- matrix(c(+1,-1,0,0,
+               0,0,+1,-1), nrow = 2, byrow = TRUE)
+r = 1.5; B = 0.001; b = 200; e = 0.9; delta = 0.2
+parms1 <- c(r = r, B = B, b = b, e = e, delta = delta)
+tf = 25
+method <- "OTL"
+simName <- "ModFentonPerkins"
+
+Seeds <- c(1, 2, 3, 4, 5); ModFentonPerkins_1_Stoch_List <- list()
+for (i in Seeds){
+  set.seed(i)
+  ModFentonPerkins_1_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                    verbose = FALSE, 
+                                    consoleInterval = 1, 
+                                    censusInterval = 1, 
+                                    maxWallTime = 30, 
+                                    ignoreNegativeState = TRUE)) 
+  ModFentonPerkins_1_Stoch <- ModFentonPerkins_1_Stoch$data; ModFentonPerkins_1_Stoch <- as.data.frame(ModFentonPerkins_1_Stoch)
+  colnames(ModFentonPerkins_1_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_1_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    ModFentonPerkins_1_Stoch_List[[i]] <- ModFentonPerkins_1_Stoch
+  } else {
+    ModFentonPerkins_1_Stoch <- ModFentonPerkins_1_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_1_Stoch_List[[i]] <- ModFentonPerkins_1_Stoch
+  }
+}
+write.csv(ModFentonPerkins_1_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_1.csv")
+write.csv(ModFentonPerkins_1_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_2.csv")
+write.csv(ModFentonPerkins_1_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_3.csv")
+write.csv(ModFentonPerkins_1_Stoch_List[[4]], "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_4.csv")
+write.csv(ModFentonPerkins_1_Stoch_List[[5]], "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_5.csv")
+
+plot(ModFentonPerkins_1_Stoch_List[[1]]$Time, ModFentonPerkins_1_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (1)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_1_Stoch_List[[1]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_1_Stoch_List[[1]]$Time, ModFentonPerkins_1_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_1_Stoch_List[[2]]$Time, ModFentonPerkins_1_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (2)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_1_Stoch_List[[2]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_1_Stoch_List[[2]]$Time, ModFentonPerkins_1_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_1_Stoch_List[[3]]$Time, ModFentonPerkins_1_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_1_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_1_Stoch_List[[3]]$Time, ModFentonPerkins_1_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_1_Stoch_List[[4]]$Time, ModFentonPerkins_1_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_1_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_1_Stoch_List[[4]]$Time, ModFentonPerkins_1_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_1_Stoch_List[[5]]$Time, ModFentonPerkins_1_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_1_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_1_Stoch_List[[5]]$Time, ModFentonPerkins_1_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
+```
+
 ### Hollings Type II Functional Response
 
 #### Stable Limit Cycle
@@ -451,7 +508,7 @@ nu <- matrix(c(+1,-1,0,0,
                0,0,+1,-1), nrow = 2, byrow = TRUE)
 r = 2.5; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.41
 parms1 <- c(r = r, B = B, h = h, b = b, e = e, delta = delta)
-tf = 100
+tf = 25
 method <- "OTL"
 simName <- "ModFentonPerkins"
 
@@ -565,7 +622,7 @@ nu <- matrix(c(+1,-1,0,0,
                0,0,+1,-1), nrow = 2, byrow = TRUE)
 r = 3.0; B = 0.0015; h = 0.2; b = 35; e = 0.2; delta = 0.5
 parms1 <- c(r = r, B = B, h = h, b = b, e = e, delta = delta)
-tf = 50
+tf = 25
 method <- "OTL"
 simName <- "ModFentonPerkins"
 
@@ -722,9 +779,17 @@ saveRDS(fit, file = "2_FitObjects/Antia_FitObj_5.rds")
 
 ## Modified Fenton and Perkins (2010)
 
+### Hollings Type I Functional Response
+
+``` {r}
+
+```
+
 ### Hollings Type II Functional Response
 
 #### Stable Limit Cycle
+
+##### Estimating All Parameters
 
 Writing the model as a .stan file.
 
@@ -832,7 +897,187 @@ fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[5]], chains 
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_5.rds")
 ```
 
+##### Estimating Five Parameters
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real h = theta[2];
+    real b = theta[3];
+    real e1 = theta[4];
+    real delta = theta[5];
+
+    real dP_dt = P*r - I*(0.012*P/(1 + 0.012*h*P));
+    real dI_dt = b + I*(e1*(0.012*P/(1 + 0.012*h*P)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, h, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1); // h
+  theta[{3}] ~ uniform(0, 1000); // b
+  theta[{4, 5}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_2_SLC_FiveParms.stan")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_SLC_FiveParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FiveParms_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FiveParms_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FiveParms_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FiveParms_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FiveParms_5.rds")
+```
+
+##### Estimating Four Parameters
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real b = theta[2];
+    real e1 = theta[3];
+    real delta = theta[4];
+
+    real dP_dt = P*r - I*(0.012*P/(1 + 0.012*0.075*P));
+    real dI_dt = b + I*(e1*(0.012*P/(1 + 0.012*0.075*P)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[4];   // {r, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1000); // b
+  theta[{3, 4}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_2_SLC_FourParms.stan")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_SLC_FourParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FourParms_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FourParms_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FourParms_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FourParms_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_SLC_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_SLC_FitObj_FourParms_5.rds")
+```
+
 #### Damping Oscillations
+
+##### Estimating All Parameters
 
 Let's arrange our data to feed into the model:
 
@@ -874,7 +1119,473 @@ fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[5]], chains =
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_5.rds")
 ```
 
-# Visualization
+##### Estimating Five Parameters
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real h = theta[2];
+    real b = theta[3];
+    real e1 = theta[4];
+    real delta = theta[5];
+
+    real dP_dt = P*r - I*(0.008*P/(1 + 0.008*h*P));
+    real dI_dt = b + I*(e1*(0.008*P/(1 + 0.008*h*P)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, h, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1); // h
+  theta[{3}] ~ uniform(0, 1000); // b
+  theta[{4, 5}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_2_DO_FiveParms.stan")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_DO_FiveParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FiveParms_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FiveParms_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FiveParms_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FiveParms_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FiveParms_5.rds")
+```
+
+##### Estimating Four Parameters
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real b = theta[2];
+    real e1 = theta[3];
+    real delta = theta[4];
+
+    real dP_dt = P*r - I*(0.008*P/(1 + 0.008*0.06*P));
+    real dI_dt = b + I*(e1*(0.008*P/(1 + 0.008*0.06*P)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[4];   // {r, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1000); // b
+  theta[{3, 4}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_2_DO_FourParms.stan")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_DO_FourParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FourParms_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FourParms_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FourParms_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FourParms_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FourParms_5.rds")
+```
+
+### Hollings Type III Functional Response 
+
+##### Estimating All Parms
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real B = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real e1 = theta[5];
+    real delta = theta[6];
+
+    real dP_dt = P*r - I*(B*P^2/(1 + B*h*P^2));
+    real dI_dt = b + I*(e1*(B*P^2/(1 + B*h*P^2)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[6];   // {r, B, h, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2, 3}] ~ uniform(0, 1); // B, h
+  theta[{4}] ~ uniform(0, 1000); // b
+  theta[{5, 6}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_3_AllParms.stan")
+```
+
+Let's arrange our data to feed into the model:
+
+```{r}
+ModFentonPerkins_3_StanData_List <- list()
+for (i in Seeds){
+  ModFentonPerkins_3_Stoch <- ModFentonPerkins_3_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_3_Stoch$Time) - 1
+  ts <- 1:N
+  y_init <- c(ModFentonPerkins_3_Stoch$P[1], ModFentonPerkins_3_Stoch$I[1])
+  y <- as.matrix(ModFentonPerkins_3_Stoch[2:(N + 1), 2:3])
+  y <- cbind(y[ , 1], y[ , 2]); 
+  ModFentonPerkins_3_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  ModFentonPerkins_3_StanData_List[[i]] <- ModFentonPerkins_3_StanData
+}
+saveRDS(ModFentonPerkins_3_StanData_List, "0_Data/2_Stan/ModFentonPerkins_3_StanData_List.rds")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_3_AllParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_5.rds")
+```
+
+##### Estimating Five Parameters
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real h = theta[2];
+    real b = theta[3];
+    real e1 = theta[4];
+    real delta = theta[5];
+
+    real dP_dt = P*r - I*(0.0015*P^2/(1 + 0.0015*h*P^2));
+    real dI_dt = b + I*(e1*(0.0015*P^2/(1 + 0.0015*h*P^2)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, h, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1); // h
+  theta[{3}] ~ uniform(0, 1000); // b
+  theta[{4, 5}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_3_FiveParms.stan")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_3_FiveParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms_5.rds")
+```
+
+##### Estimating Four Parameters
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real b = theta[2];
+    real e1 = theta[3];
+    real delta = theta[4];
+
+    real dP_dt = P*r - I*(0.0015*P^2/(1 + 0.0015*0.2*P^2));
+    real dI_dt = b + I*(e1*(0.0015*P^2/(1 + 0.0015*0.2*P^2)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[4];   // {r, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1000); // b
+  theta[{3, 4}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_3_FourParms.stan")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_3_FourParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FourParms_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FourParms_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FourParms_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FourParms_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FourParms_5.rds")
+```
+
+# Summarizing and Visualizing
 
 ## Antia et al. (1994)
 
