@@ -864,7 +864,7 @@ saveRDS(ModFentonPerkins_1_StanData_List, "0_Data/2_Stan/ModFentonPerkins_1_Stan
 Next, we'll compile the .stan file:
 
 ```{r}
-model <- stan_model("1_Models/FP_2_AllParms.stan")
+model <- stan_model("1_Models/FP_1_AllParms.stan")
 ```
 
 ```{r}
@@ -1688,10 +1688,706 @@ saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FourParms_5.rds")
 
 ## Antia et al. (1994)
 
+```{r}
+Antia_FitObj1 <- readRDS("2_FitObjects/Antia_FitObj_1.rds")
+Antia_FitObj2 <- readRDS("2_FitObjects/Antia_FitObj_2.rds")
+Antia_FitObj3 <- readRDS("2_FitObjects/Antia_FitObj_3.rds")
+Antia_FitObj4 <- readRDS("2_FitObjects/Antia_FitObj_4.rds")
+Antia_FitObj5 <- readRDS("2_FitObjects/Antia_FitObj_5.rds")
+
+print(Antia_FitObj1, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("r", "k", "p", "o")
+stan_trace(Antia_FitObj1, pars)
+mcmc_pairs(Antia_FitObj1, pars)
+mcmc_dens(Antia_FitObj1, pars) 
+
+print(Antia_FitObj2, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("r", "k", "p", "o")
+stan_trace(Antia_FitObj2, pars)
+mcmc_pairs(Antia_FitObj2, pars)
+mcmc_dens(Antia_FitObj2, pars) 
+
+print(Antia_FitObj3, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("r", "k", "p", "o")
+stan_trace(Antia_FitObj3, pars)
+mcmc_pairs(Antia_FitObj3, pars)
+mcmc_dens(Antia_FitObj3, pars) 
+
+print(Antia_FitObj4, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("r", "k", "p", "o")
+stan_trace(Antia_FitObj4, pars)
+mcmc_pairs(Antia_FitObj4, pars)
+mcmc_dens(Antia_FitObj4, pars) 
+
+print(Antia_FitObj5, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("r", "k", "p", "o")
+stan_trace(Antia_FitObj5, pars)
+mcmc_pairs(Antia_FitObj5, pars)
+mcmc_dens(Antia_FitObj5, pars) 
+```
+
 ## Modified Fenton and Perkins (2010)
+
+### Hollings Type I Functional Response
+
+```{r}
+ModFentonPerkins_1_FitObj1 <- readRDS("2_FitObjects/ModFentonPerkins_1_FitObj_1.rds")
+ModFentonPerkins_1_FitObj2 <- readRDS("2_FitObjects/ModFentonPerkins_1_FitObj_2.rds")
+ModFentonPerkins_1_FitObj3 <- readRDS("2_FitObjects/ModFentonPerkins_1_FitObj_3.rds")
+ModFentonPerkins_1_FitObj4 <- readRDS("2_FitObjects/ModFentonPerkins_1_FitObj_4.rds")
+ModFentonPerkins_1_FitObj5 <- readRDS("2_FitObjects/ModFentonPerkins_1_FitObj_5.rds")
+
+print(ModFentonPerkins_1_FitObj1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_1_FitObj1, pars)
+mcmc_pairs(ModFentonPerkins_1_FitObj1, pars)
+mcmc_dens(ModFentonPerkins_1_FitObj1, pars)
+
+print(ModFentonPerkins_1_FitObj2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_1_FitObj2, pars)
+mcmc_pairs(ModFentonPerkins_1_FitObj2, pars)
+mcmc_dens(ModFentonPerkins_1_FitObj2, pars)
+
+print(ModFentonPerkins_1_FitObj3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_1_FitObj3, pars)
+mcmc_pairs(ModFentonPerkins_1_FitObj3, pars)
+mcmc_dens(ModFentonPerkins_1_FitObj3, pars)
+
+print(ModFentonPerkins_1_FitObj4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_1_FitObj4, pars)
+mcmc_pairs(ModFentonPerkins_1_FitObj4, pars)
+mcmc_dens(ModFentonPerkins_1_FitObj4, pars)
+
+print(ModFentonPerkins_1_FitObj5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_1_FitObj5, pars)
+mcmc_pairs(ModFentonPerkins_1_FitObj5, pars)
+mcmc_dens(ModFentonPerkins_1_FitObj5, pars)
+```
 
 ### Hollings Type II Functional Response
 
 #### Stable Limit Cycle
 
+```{r}
+#### All Parms ####
+ModFentonPerkins_2_SLC_FitObj1 <- readRDS("2_FitObjects/ModFentonPerkins_2_SLC_FitObj_1.rds")
+ModFentonPerkins_2_SLC_FitObj2 <- readRDS("2_FitObjects/ModFentonPerkins_2_SLC_FitObj_2.rds")
+ModFentonPerkins_2_SLC_FitObj3 <- readRDS("2_FitObjects/ModFentonPerkins_2_SLC_FitObj_3.rds")
+ModFentonPerkins_2_SLC_FitObj4 <- readRDS("2_FitObjects/ModFentonPerkins_2_SLC_FitObj_4.rds")
+ModFentonPerkins_2_SLC_FitObj5 <- readRDS("2_FitObjects/ModFentonPerkins_2_SLC_FitObj_5.rds")
+
+print(ModFentonPerkins_2_SLC_FitObj1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj1, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj1, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj1, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj2, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj2, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj2, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj3, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj3, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj3, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj4, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj4, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj4, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj5, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj5, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj5, pars)
+
+#### Five Parms ####
+ModFentonPerkins_2_SLC_FitObj_FiveParms_1 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_SLC_FitObj_FiveParms_1.rds")
+ModFentonPerkins_2_SLC_FitObj_FiveParms_2 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_SLC_FitObj_FiveParms_2.rds")
+ModFentonPerkins_2_SLC_FitObj_FiveParms_3 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_SLC_FitObj_FiveParms_3.rds")
+ModFentonPerkins_2_SLC_FitObj_FiveParms_4 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_SLC_FitObj_FiveParms_4.rds")
+ModFentonPerkins_2_SLC_FitObj_FiveParms_5 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_SLC_FitObj_FiveParms_5.rds")
+
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FiveParms_3, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FiveParms_3, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FiveParms_3, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FiveParms_4, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FiveParms_4, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FiveParms_4, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars)
+
+#### Four Parms ####
+ModFentonPerkins_2_SLC_FitObj_FourParms_1 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_SLC_FitObj_FourParms_1.rds")
+ModFentonPerkins_2_SLC_FitObj_FourParms_2 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_SLC_FitObj_FourParms_2.rds")
+ModFentonPerkins_2_SLC_FitObj_FourParms_3 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_SLC_FitObj_FourParms_3.rds")
+ModFentonPerkins_2_SLC_FitObj_FourParms_4 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_SLC_FitObj_FourParms_4.rds")
+ModFentonPerkins_2_SLC_FitObj_FourParms_5 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_SLC_FitObj_FourParms_5.rds")
+
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FourParms_1, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FourParms_1, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FourParms_1, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FourParms_2, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FourParms_2, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FourParms_2, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FourParms_3, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FourParms_3, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FourParms_3, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FourParms_4, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FourParms_4, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FourParms_4, pars)
+
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_SLC_FitObj_FourParms_5, pars)
+mcmc_pairs(ModFentonPerkins_2_SLC_FitObj_FourParms_5, pars)
+mcmc_dens(ModFentonPerkins_2_SLC_FitObj_FourParms_5, pars)
+```
+
 #### Damping Oscillations
+
+```{r}
+#### All Parms ####
+ModFentonPerkins_2_DO_FitObj1 <- readRDS("2_FitObjects/ModFentonPerkins_2_DO_FitObj_1.rds")
+ModFentonPerkins_2_DO_FitObj2 <- readRDS("2_FitObjects/ModFentonPerkins_2_DO_FitObj_2.rds")
+ModFentonPerkins_2_DO_FitObj3 <- readRDS("2_FitObjects/ModFentonPerkins_2_DO_FitObj_3.rds")
+ModFentonPerkins_2_DO_FitObj4 <- readRDS("2_FitObjects/ModFentonPerkins_2_DO_FitObj_4.rds")
+ModFentonPerkins_2_DO_FitObj5 <- readRDS("2_FitObjects/ModFentonPerkins_2_DO_FitObj_5.rds")
+
+print(ModFentonPerkins_2_DO_FitObj1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_DO_FitObj1, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj1, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj1, pars)
+
+print(ModFentonPerkins_2_DO_FitObj2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_DO_FitObj2, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj2, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj2, pars)
+
+print(ModFentonPerkins_2_DO_FitObj3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_DO_FitObj3, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj3, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj3, pars)
+
+print(ModFentonPerkins_2_DO_FitObj4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_DO_FitObj4, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj4, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj4, pars)
+
+print(ModFentonPerkins_2_DO_FitObj5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_2_DO_FitObj5, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj5, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj5, pars)
+
+#### Five Parms ####
+ModFentonPerkins_2_DO_FitObj_FiveParms_1 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_DO_FitObj_FiveParms_1.rds")
+ModFentonPerkins_2_DO_FitObj_FiveParms_2 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_DO_FitObj_FiveParms_2.rds")
+ModFentonPerkins_2_DO_FitObj_FiveParms_3 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_DO_FitObj_FiveParms_3.rds")
+ModFentonPerkins_2_DO_FitObj_FiveParms_4 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_DO_FitObj_FiveParms_4.rds")
+ModFentonPerkins_2_DO_FitObj_FiveParms_5 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_2_DO_FitObj_FiveParms_5.rds")
+
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FiveParms_1, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FiveParms_1, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FiveParms_1, pars)
+
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FiveParms_2, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FiveParms_2, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FiveParms_2, pars)
+
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FiveParms_3, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FiveParms_3, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FiveParms_3, pars)
+
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FiveParms_4, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FiveParms_4, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FiveParms_4, pars)
+
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FiveParms_5, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FiveParms_5, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FiveParms_5, pars)
+
+#### Four Parms ####
+ModFentonPerkins_2_DO_FitObj_FourParms_1 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_DO_FitObj_FourParms_1.rds")
+ModFentonPerkins_2_DO_FitObj_FourParms_2 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_DO_FitObj_FourParms_2.rds")
+ModFentonPerkins_2_DO_FitObj_FourParms_3 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_DO_FitObj_FourParms_3.rds")
+ModFentonPerkins_2_DO_FitObj_FourParms_4 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_DO_FitObj_FourParms_4.rds")
+ModFentonPerkins_2_DO_FitObj_FourParms_5 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_2_DO_FitObj_FourParms_5.rds")
+
+print(ModFentonPerkins_2_DO_FitObj_FourParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FourParms_1, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FourParms_1, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FourParms_1, pars)
+
+print(ModFentonPerkins_2_DO_FitObj_FourParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FourParms_2, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FourParms_2, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FourParms_2, pars)
+
+print(ModFentonPerkins_2_DO_FitObj_FourParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FourParms_3, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FourParms_3, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FourParms_3, pars)
+
+print(ModFentonPerkins_2_DO_FitObj_FourParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FourParms_4, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FourParms_4, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FourParms_4, pars)
+
+print(ModFentonPerkins_2_DO_FitObj_FourParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DO_FitObj_FourParms_5, pars)
+mcmc_pairs(ModFentonPerkins_2_DO_FitObj_FourParms_5, pars)
+mcmc_dens(ModFentonPerkins_2_DO_FitObj_FourParms_5, pars)
+```
+
+### Hollings Type III Functional Response
+
+```{r}
+#### All Parms ####
+ModFentonPerkins_3_FitObj1 <- readRDS("2_FitObjects/ModFentonPerkins_3_FitObj_1.rds")
+ModFentonPerkins_3_FitObj2 <- readRDS("2_FitObjects/ModFentonPerkins_3_FitObj_2.rds")
+ModFentonPerkins_3_FitObj3 <- readRDS("2_FitObjects/ModFentonPerkins_3_FitObj_3.rds")
+ModFentonPerkins_3_FitObj4 <- readRDS("2_FitObjects/ModFentonPerkins_3_FitObj_4.rds")
+ModFentonPerkins_3_FitObj5 <- readRDS("2_FitObjects/ModFentonPerkins_3_FitObj_5.rds")
+
+print(ModFentonPerkins_3_FitObj1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_3_FitObj1, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj1, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj1, pars)
+
+print(ModFentonPerkins_3_FitObj2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_3_FitObj2, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj2, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj2, pars)
+
+print(ModFentonPerkins_3_FitObj3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_3_FitObj3, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj3, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj3, pars)
+
+print(ModFentonPerkins_3_FitObj4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_3_FitObj4, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj4, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj4, pars)
+
+print(ModFentonPerkins_3_FitObj5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5], theta[6]")
+stan_trace(ModFentonPerkins_3_FitObj5, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj5, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj5, pars)
+
+#### Five Parms ####
+ModFentonPerkins_3_FitObj_FiveParms_1 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_3_FitObj_FiveParms_1.rds")
+ModFentonPerkins_3_FitObj_FiveParms_2 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_3_FitObj_FiveParms_2.rds")
+ModFentonPerkins_3_FitObj_FiveParms_3 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_3_FitObj_FiveParms_3.rds")
+ModFentonPerkins_3_FitObj_FiveParms_4 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_3_FitObj_FiveParms_4.rds")
+ModFentonPerkins_3_FitObj_FiveParms_5 <- readRDS("2_FitObj_FiveParms_ects/ModFentonPerkins_3_FitObj_FiveParms_5.rds")
+
+print(ModFentonPerkins_3_FitObj_FiveParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_3_FitObj_FiveParms_1, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FiveParms_1, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FiveParms_1, pars)
+
+print(ModFentonPerkins_3_FitObj_FiveParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_3_FitObj_FiveParms_2, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FiveParms_2, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FiveParms_2, pars)
+
+print(ModFentonPerkins_3_FitObj_FiveParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_3_FitObj_FiveParms_3, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FiveParms_3, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FiveParms_3, pars)
+
+print(ModFentonPerkins_3_FitObj_FiveParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_3_FitObj_FiveParms_4, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FiveParms_4, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FiveParms_4, pars)
+
+print(ModFentonPerkins_3_FitObj_FiveParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_3_FitObj_FiveParms_5, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FiveParms_5, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FiveParms_5, pars)
+
+#### Four Parms ####
+ModFentonPerkins_3_FitObj_FourParms_1 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_3_FitObj_FourParms_1.rds")
+ModFentonPerkins_3_FitObj_FourParms_2 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_3_FitObj_FourParms_2.rds")
+ModFentonPerkins_3_FitObj_FourParms_3 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_3_FitObj_FourParms_3.rds")
+ModFentonPerkins_3_FitObj_FourParms_4 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_3_FitObj_FourParms_4.rds")
+ModFentonPerkins_3_FitObj_FourParms_5 <- readRDS("2_FitObj_FourParms_ects/ModFentonPerkins_3_FitObj_FourParms_5.rds")
+
+print(ModFentonPerkins_3_FitObj_FourParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_3_FitObj_FourParms_1, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FourParms_1, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FourParms_1, pars)
+
+print(ModFentonPerkins_3_FitObj_FourParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_3_FitObj_FourParms_2, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FourParms_2, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FourParms_2, pars)
+
+print(ModFentonPerkins_3_FitObj_FourParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_3_FitObj_FourParms_3, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FourParms_3, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FourParms_3, pars)
+
+print(ModFentonPerkins_3_FitObj_FourParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_3_FitObj_FourParms_4, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FourParms_4, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FourParms_4, pars)
+
+print(ModFentonPerkins_3_FitObj_FourParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_3_FitObj_FourParms_5, pars)
+mcmc_pairs(ModFentonPerkins_3_FitObj_FourParms_5, pars)
+mcmc_dens(ModFentonPerkins_3_FitObj_FourParms_5, pars)
+```
+
+# Compare Data to Time Series Estimates
+
+## Antia et al. (1994)
+
+``` {r}
+#### Time Series 1 ####
+output <- rstan::extract(Antia_FitObj1, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+Antia_Stoch <- Antia_Stoch_List[[1]]
+N <- length(Antia_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(Antia_Stoch$P[1], Antia_Stoch$I[1])
+y <- as.matrix(Antia_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 2 ####
+output <- rstan::extract(Antia_FitObj2, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+Antia_Stoch <- Antia_Stoch_List[[2]]
+N <- length(Antia_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(Antia_Stoch$P[1], Antia_Stoch$I[1])
+y <- as.matrix(Antia_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 3 ####
+output <- rstan::extract(Antia_FitObj3, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+Antia_Stoch <- Antia_Stoch_List[[3]]
+N <- length(Antia_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(Antia_Stoch$P[1], Antia_Stoch$I[1])
+y <- as.matrix(Antia_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 4 ####
+output <- rstan::extract(Antia_FitObj4, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+Antia_Stoch <- Antia_Stoch_List[[4]]
+N <- length(Antia_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(Antia_Stoch$P[1], Antia_Stoch$I[1])
+y <- as.matrix(Antia_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 5 ####
+output <- rstan::extract(Antia_FitObj5, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+Antia_Stoch <- Antia_Stoch_List[[5]]
+N <- length(Antia_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(Antia_Stoch$P[1], Antia_Stoch$I[1])
+y <- as.matrix(Antia_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+```
+
