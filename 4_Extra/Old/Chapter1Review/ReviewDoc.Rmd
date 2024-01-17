@@ -1,0 +1,2762 @@
+---
+title: "Chapter 1 Review"
+author: "M. Jarvis-Cross"
+output: html_document
+---
+
+# Overview
+
+Here, I'm going over what I tried in order to fit the Nowak and May model to simulated data.
+
+1.  Going through Bob Carpenter's working example
+
+2.  Using Bob Carpenter's working example to fit the Antia model
+
+3.  Using Bob Carpenter's working example to fit the Nowak and May model
+
+    -   Parameterization: Damping oscillations
+
+        -   Use exact same structure as Carpenter
+
+        -   Change length of time series
+
+        -   Change the ODE solver from a non-stiff solver to a stiff solver
+
+        -   Increase ODE solver tolerances
+
+        -   Use more descriptive priors
+
+        -   [***Log priors for select parameters***]{.underline}
+
+        -   Give model initial values for select parameters
+
+        -   Give the model the true replication rate ($r$)
+
+        -   Give the model the true recognition rate ($\theta$)
+
+        -   Give the model the true handling time ($h$)
+
+        -   Give the model the true proliferation rate ($c$)
+
+        -   Give the model the true recognition rate ($\theta$), and true handling time ($h$)
+
+        -   Changing the distribution of the likelihood function
+
+        -   Moving to an autoregressive framework
+
+        -   Moving to an autoregressive framework in JAGS
+
+    -   Parameterization: Stable limit cycle
+
+        -   I didn't include the trouble-shooting process for fitting the model to these data because it was pretty identical to what I show above, given that the data I use to fit the model are dynamically very, very similar.
+
+        -   I do, however, show the best working versions of the model, to compare fits between parameterizations.
+
+            -   Using the `bdf` solver, and (1) giving the model the true recognition rate ($\theta$), or (2) giving the model the true recognition rate ($\theta$), and true handling time ($h$)
+
+Required packages and setting working directory:
+
+```{r RequiredPackages_WD, eval = TRUE, echo = FALSE}
+# install.packages("rstan")
+# install.packages("bayesplot")
+# install.packages("brms")
+# install.packages("tidyverse")
+# install.packages("reshape2")
+# install.packages("deSolve")
+# install.packages("GillespieSSA")
+# install.packages("rjags")
+# install.packages("runjags")
+# install.packages("modeest")
+# install.packages("mc2d")
+# install.packages("MCMCvis")
+library(rstan)
+library(bayesplot)
+library(brms)
+library(tidyverse)
+library(reshape2)
+library(deSolve)
+library(GillespieSSA)
+library(rjags)
+library(runjags)
+library(modeest) 
+library(mc2d)
+library(MCMCvis)
+
+# If you're not me, change this!
+setwd("/Users/mjarviscross/Desktop/Github/FcnalRespProj/Chapter1Review")
+```
+
+## 1. Going through Bob Carpenter's working example
+
+Taken from [here](https://mc-stan.org/users/documentation/case-studies/lotka-volterra-predator-prey.html). Materials found in this repo, or [here](https://github.com/stan-dev/example-models/tree/master/knitr/lotka-volterra).
+
+```{r LynxHare_Data, eval = FALSE}
+# Read in data
+lynx_hare_df <- read_csv("Bob-Carpenter_Example/hudson-bay-lynx-hare.csv")
+
+# Plotting
+plot(lynx_hare_df$Year, lynx_hare_df$Lynx, type = "l", col = "firebrick2", ylim = c(0, max(lynx_hare_df$Hare)), xlab = "Year", ylab = "Population Abundance")
+lines(lynx_hare_df$Year, lynx_hare_df$Hare, col = "cornflowerblue")
+```
+
+Carpenter aims to fit the following model to these data:
+
+$\frac{du}{dt} = (\alpha - \beta v)u$
+
+$\frac{dv}{dt} = (-\gamma + \delta u)v$
+
+To do so, Carpenter writes the following Bayesian model in Stan:
+
+```{r LynxHare_StanModel, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real u = z[1];
+    real v = z[2];
+
+    real alpha = theta[1];
+    real beta = theta[2];
+    real gamma = theta[3];
+    real delta = theta[4];
+
+    real du_dt = (alpha - beta * v) * u;
+    real dv_dt = (-gamma + delta * u) * v;
+
+    return { du_dt, dv_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[4];   // { alpha, beta, gamma, delta }
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_rk45(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-5, 1e-3, 5e2);
+}
+model {
+  theta[{1, 3}] ~ normal(1, 0.5);
+  theta[{2, 4}] ~ normal(0.05, 0.05);
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Bob-Carpenter_Example/lotka-volterra.stan")
+```
+
+To use these data, we need to clean them up a bit:
+
+```{r LynxHare_DataCleaning, eval = FALSE}
+N <- length(lynx_hare_df$Year) - 1
+ts <- 1:N
+y_init <- c(lynx_hare_df$Hare[1], lynx_hare_df$Lynx[1])
+y <- as.matrix(lynx_hare_df[2:(N + 1), 2:3])
+y <- cbind(y[ , 2], y[ , 1]); # hare, lynx order
+lynx_hare_data <- list(N = N, ts = ts, y_init = y_init, y = y)
+```
+
+Next, we'll compile the .stan file:
+
+```{r LynxHare_CompileModel, eval = FALSE}
+model <- stan_model("Bob-Carpenter_Example/lotka-volterra.stan")
+```
+
+Now, fitting, summarizing, and visualizing:
+
+```{r LynxHare_Fit, eval = FALSE}
+## Fitting
+fit <- sampling(model, data = lynx_hare_data, seed = 123)
+saveRDS(fit, file = "Bob-Carpenter_Example/LynxHare_FitObj.rds")
+```
+
+```{r LynxHare_SummViz, eval = TRUE}
+fit <- readRDS("Bob-Carpenter_Example/LynxHare_FitObj.rds")
+
+## Summarise the fit
+print(fit, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+#             mean se_mean    sd    10%    50%    90% n_eff  Rhat
+# theta[1]   0.545   0.002 0.064  0.466  0.542  0.626  1056 1.001
+# theta[2]   0.028   0.000 0.004  0.023  0.027  0.033  1171 1.001
+# theta[3]   0.803   0.003 0.092  0.693  0.796  0.923   982 1.001
+# theta[4]   0.024   0.000 0.004  0.020  0.024  0.029  1008 1.001
+# sigma[1]   0.250   0.001 0.045  0.199  0.243  0.309  2256 1.001
+# sigma[2]   0.252   0.001 0.044  0.200  0.246  0.310  2581 1.000
+# z_init[1] 34.061   0.054 2.892 30.470 33.967 37.816  2859 1.001
+# z_init[2]  5.934   0.011 0.514  5.299  5.921  6.598  2136 1.001
+
+## Viz
+pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+fitTrace <- stan_trace(fit, pars = pars); fitTrace
+fitPairs <- mcmc_pairs(fit, pars = pars); fitPairs
+fitDens <- mcmc_dens(fit, pars = pars); fitDens 
+```
+
+Comparing observed population abundance to estimated population abundance:
+
+```{r LynxHare_ObsEstComp, eval = FALSE, echo = FALSE}
+z_init_draws <- rstan::extract(fit)$z_init
+z_draws <- rstan::extract(fit)$z
+y_init_rep_draws <- rstan::extract(fit)$y_init_rep
+y_rep_draws <- rstan::extract(fit)$y_rep
+predicted_pelts <- matrix(NA, 21, 2)
+min_pelts <- matrix(NA, 21, 2)
+max_pelts <- matrix(NA, 21, 2)
+for (k in 1:2) {
+  predicted_pelts[1, k] <- mean(y_init_rep_draws[ , k])
+  min_pelts[1, k] <- quantile(y_init_rep_draws[ , k], 0.25)
+  max_pelts[1, k] <- quantile(y_init_rep_draws[ , k], 0.75)
+  for (n in 2:21) {
+    predicted_pelts[n, k] <- mean(y_rep_draws[ , n - 1, k])
+    min_pelts[n, k] <- quantile(y_rep_draws[ , n - 1, k], 0.25)
+    max_pelts[n, k] <- quantile(y_rep_draws[ , n - 1, k], 0.75)
+  }
+}
+
+lynx_hare_melted_df <- melt(as.matrix(lynx_hare_df[, 2:3]))
+colnames(lynx_hare_melted_df) <- c("year", "species", "pelts")
+lynx_hare_melted_df$year <-
+  lynx_hare_melted_df$year +
+  rep(1899, length(lynx_hare_melted_df$year))
+
+Nmelt <- dim(lynx_hare_melted_df)[1]
+lynx_hare_observe_df <- lynx_hare_melted_df
+lynx_hare_observe_df$source <- rep("Measurement", Nmelt)
+
+lynx_hare_predict_df <-
+  data.frame(year = rep(1900:1920, 2),
+             species = c(rep("Lynx", 21), rep("Hare", 21)),
+             pelts = c(predicted_pelts[, 2],
+                       predicted_pelts[, 1]),
+             min_pelts = c(min_pelts[, 2], min_pelts[, 1]),
+             max_pelts = c(max_pelts[, 2], max_pelts[, 1]),
+             source = rep("Prediction", 42))
+
+lynx_hare_observe_df$min_pelts = lynx_hare_predict_df$min_pelts
+lynx_hare_observe_df$max_pelts = lynx_hare_predict_df$max_pelts
+
+lynx_hare_observe_predict_df <- rbind(lynx_hare_observe_df, lynx_hare_predict_df)
+
+ggplot(data = lynx_hare_observe_predict_df,
+       aes(x = year, y = pelts, color = source)) +
+  geom_vline(xintercept = 1900, color = "grey") +
+  geom_hline(yintercept = 0, color = "grey") +
+  facet_wrap( ~ species, ncol = 1) +
+  geom_ribbon(aes(ymin = min_pelts, ymax = max_pelts),
+              colour = NA, fill = "black", alpha = 0.1) +
+  geom_line() +
+  geom_point() +
+  ylab("pelts (thousands)") +
+  theme_minimal() +
+  theme(legend.position="bottom")
+```
+
+## 2. Using Bob Carpenter's working example to fit the Antia model
+
+The model (taken from [this paper](https://www.journals.uchicago.edu/doi/pdf/10.1086/285686?casa_token=KoTwpSI4VIgAAAAA:1UwxU-BP01lj_yWWFDzuI3Qq82ltSGIERhcHyMAs0VpHaLtw05LP2W2pEBBv-hMdqcgl5u-fpxWHoQ)):
+
+$\frac{dP}{dt} = rP - kPI$, if $P < D$, where $D = 10^9$. If $P < D$, $P \rightarrow 0$.
+
+$\frac{dI}{dt} = \rho I(\frac{P}{P + \phi})$
+
+| Symbol | Parameter                                                                              | Value        |
+|--------|----------------------------------------------------------------------------------------|--------------|
+| $P$    | Parasite abundance                                                                     | $1**$        |
+| $I$    | Host immune cell abundance                                                             | $1**$        |
+| $r$    | Replication rate of parasite                                                           | $0.1 - 10.0$ |
+| $k$    | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
+| $\rho$ | Maximum replication rate of host's immune system                                       | $1$          |
+| $\phi$ | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
+| $D$    | Lethal within-host parasite abundance                                                  | $10^9$       |
+
+```{r Antia_DetSim, eval = FALSE}
+Antia_Model <- function(t, y, p1){
+  r <- p1[1]; k <- p1[2]; p <- p1[3]; o <- p1[4] 
+  P <- y[1]; I <- y[2]
+  dP = r*P - k*P*I
+  dI = p*I*(P/(P + o))
+  list(c(dP, dI))
+}
+r <- 0.2; k <- 0.01; p <- 1; o <- 1000 
+parms <- c(r, k, p, o)
+P0 <- 1; I0 <- 1
+N0 <- c(P0, I0)
+TT <- seq(0, 50, 0.1)
+results <- lsoda(N0, TT, Antia_Model, parms, verbose = FALSE)
+Antia_DetSim <- data.frame(results); colnames(Antia_DetSim) <- c("Time", "Parasites", "ImmuneCells")
+
+plot(Antia_DetSim$Time, Antia_DetSim$Parasites, type = "l", col = "cornflowerblue", xlab = "Time", ylab = "Population Abundance")
+lines(Antia_DetSim$Time, Antia_DetSim$ImmuneCells, col = "firebrick2")
+```
+
+Let's simulate some demographically stochastic data:
+
+```{r Antia_StochSim, eval = FALSE}
+x0 <- c(P = 1, I = 1) 
+a <- c("P*r",
+       "k*P*I", 
+       "p*I*(P/(P + o))")
+nu <- matrix(c(+1, -1, 0,
+               0, 0, +1), nrow = 2, byrow = TRUE)
+
+r <- 0.2; k <- 0.01; p <- 1; o <- 1000
+parms1 <- c(r = r, k = k, p = p, o = o)
+tf = 50
+method <- "OTL"
+simName <- "Antia"
+set.seed(5)
+Antia_SLC <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                  verbose = FALSE, 
+                                  consoleInterval = 1, 
+                                  censusInterval = 1, 
+                                  maxWallTime = 30, 
+                                  ignoreNegativeState = TRUE)) 
+Antia_StochSim <- Antia_SLC$data; Antia_StochSim <- as.data.frame(Antia_StochSim)
+colnames(Antia_StochSim) <- c("Time", "Parasites", "ImmuneCells")
+
+FirstZero <- which(Antia_StochSim$Parasites == 0)[1]
+Antia_StochSim <- Antia_StochSim[1:FirstZero - 1, ]
+
+write_csv(Antia_StochSim, file = "Data/Antia_StochSim.csv")
+
+plot(Antia_StochSim$Time, Antia_StochSim$Parasites, type = "l", col = "cornflowerblue", xlab = "Time", ylab = "Population Abundance")
+lines(Antia_StochSim$Time, Antia_StochSim$ImmuneCells, col = "firebrick2")
+```
+
+The data arising from the deterministic and stochastic implementations of the model are very similar, but differ in peak parasite abundance.
+
+Now, let's write the Stan model:
+
+```{r Antia_StanModel, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       
+               real[] z,     
+               real[] theta, 
+               real[] x_r,  
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real k = theta[2];
+    real p = theta[3];
+    real o = theta[4];
+
+    real dP_dt = r*P - k*P*I;
+    real dI_dt = p*I*(P/(P + o));
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;           
+  real ts[N];                 
+  real y_init[2];             
+  real<lower = 0> y[N, 2];    
+}
+parameters {
+  real<lower = 0> r; 
+  real<lower = 0> k;
+  real<lower = 0> p;
+  real<lower = 0> o;
+  real<lower = 0> z_init[2];  
+  real<lower = 0> sigma[2];   
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, {r, k, p, o},
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  r ~ normal(1, 3); // r = 0.2
+  k ~ lognormal(log(0.1), 1); // k = 0.01
+  p ~ normal(1, 1); // p = 1
+  o ~ normal(1000, 10); // o = 1000
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (m in 1:2) {
+    y_init[m] ~ lognormal(log(z_init[m]), sigma[m]);
+    y[ , m] ~ lognormal(log(z[, m]), sigma[m]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (m in 1:2) {
+    y_init_rep[m] = lognormal_rng(log(z_init[m]), sigma[m]);
+    for (n in 1:N)
+      y_rep[n, m] = lognormal_rng(log(z[n, m]), sigma[m]);
+  }
+}
+", file = "Stan_Models/Antia.stan")
+```
+
+Let's arrange our data to feed into the model:
+
+```{r Antia_DataCleaning, eval = FALSE}
+N <- length(Antia_StochSim$Time) - 1
+ts <- 1:N
+y_init <- c(Antia_StochSim$Parasites[1], Antia_StochSim$ImmuneCells[1])
+y <- as.matrix(Antia_StochSim[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2]); 
+Antia_StochSim <- list(N = N, ts = ts, y_init = y_init, y = y)
+```
+
+Next, we'll compile the .stan file:
+
+```{r Antia_Compile, eval = FALSE}
+model <- stan_model("Stan_Models/Antia.stan")
+```
+
+Now, fitting, summarizing, and visualizing:
+
+```{r Antia_Fit, eval = FALSE}
+## Fitting
+fit <- sampling(model, data = Antia_StochSim, chains = 4, iter = 1000, cores = 4, seed = 123)
+saveRDS(fit, file = "FitObjs/Antia_FitObj.rds")
+```
+
+```{r Antia_SummViz, eval = TRUE}
+fit <- readRDS("FitObjs/Antia_FitObj.rds")
+
+## Summarise the fit
+print(fit, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#               mean se_mean     sd     10%      50%      90% n_eff  Rhat
+# r            0.239   0.000  0.005   0.232    0.239    0.246   602 1.000
+# k            0.013   0.000  0.002   0.011    0.013    0.015   841 1.001
+# p            0.921   0.001  0.042   0.867    0.921    0.975   801 0.999
+# o         1000.713   0.197 10.106 987.613 1000.742 1013.725  2624 1.000
+# sigma[1]     0.211   0.001  0.025   0.181    0.208    0.245  1722 1.001
+# sigma[2]     0.421   0.001  0.049   0.364    0.416    0.488  1632 1.000
+# z_init[1]    2.119   0.005  0.155   1.918    2.117    2.321   837 1.001
+# z_init[2]    0.727   0.002  0.060   0.651    0.725    0.803  1177 1.001
+
+## Viz
+pars <- c("r", "k", "p", "o")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+Comparing observed population abundance to estimated population abundance:
+
+```{r Antia_ObsEstComp, eval = TRUE, echo = FALSE}
+output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+Antia_StochSim <- read_csv("Data/Antia_StochSim.csv")
+N <- length(Antia_StochSim$Time) - 1
+ts <- 1:N
+y_init <- c(Antia_StochSim$Parasites[1], Antia_StochSim$ImmuneCells[1])
+y <- as.matrix(Antia_StochSim[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", col = "cornflowerblue", ylim = c(0, max(df$post_means_P)), xlab = "Time", ylab = "Population Abundance")
+lines(df$ts, df$I, col = "firebrick2")
+lines(df$ts, df$post_means_P, col = "cornflowerblue", lty = 2)
+lines(df$ts, df$post_means_I, col = "firebrick2", lty = 2)
+legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("cornflowerblue", "firebrick2", "cornflowerblue", "firebrick2"), lty = c(1, 1, 2, 2))
+```
+
+## 3. Using Bob Carpenter's working example to fit the Nowak and May model
+
+The model (originally posited by Nowak and May, but taken from [this paper](https://pubmed.ncbi.nlm.nih.gov/20152061/)):
+
+$\frac{dP}{dt} = rP - (\frac{\theta P}{1+h \theta P})H$
+
+$\frac{dH}{dt} = b + (c(\frac{\theta P}{1+h \theta P}) - \mu)H$
+
+Different parameterizations of this model can produce: (1) damping oscillations, (2) a stable limit cycle, or (3) divergent oscillations.
+
+We can also move from a Type II functional response, to a Type III functional response (which we'll take a closer look at later).
+
+$\frac{dP}{dt} = rP - (\frac{\theta P^2}{1+h \theta P^2})H$
+
+$\frac{dH}{dt} = b + (c(\frac{\theta P^2}{1+h \theta P^2}) - \mu)H$
+
+We added an additional parameter, $b$, to the model.
+
+| Symbol   | Parameter                                                | Value           |
+|----------|----------------------------------------------------------|-----------------|
+| $P$      | Parasite abundance                                       | $80**$          |
+| $H$      | Host immune cell abundance                               | $200**$         |
+| $r$      | Replication rate of parasite                             | $2.5$           |
+| $\theta$ | Recognition rate of parasite by host immune system       | $0.008 - 0.012$ |
+| $h$      | Handling time of parasite by host immune system          | $0.06 - 0.075$  |
+| $b$      | Immigration rate of immune cells in absence of infection | $35$            |
+| $c$      | Activation/proliferation rate of host immune system      | $0.2 - 0.3$     |
+| $\mu$    | Natural mortality rate                                   | $0.2 - 0.41$    |
+
+Parameterization: Damping oscillations
+
+```{r NM_DamOsc_DetSim, eval = FALSE}
+## Short
+NowakMay_T2_Dam <- function(t,y,p){
+  r <- p[1]; O <- p[2]; h <- p[3]
+  b <- p[4]; c <- p[5]; u <- p[6]
+  P <- y[1]; H <- y[2]
+  dP = P*r - H*(O*P/(1 + O*P*h))
+  dH = b + H*(c*(O*P/(1 + O*P*h)) - u)
+  list(c(dP,dH))
+}
+r <- 2.5; O <- 0.008; h <- 0.06
+b <- 35; c <- 0.2; u <- 0.2
+parms <- c(r, O, h, b, c, u)
+P0 <- 80; H0 <- 200 
+N0 <- c(P0, H0)
+TT <- seq(0, 100, 0.1) 
+results <- lsoda(N0, TT, NowakMay_T2_Dam, parms)
+NM_DetSim <- data.frame(results); colnames(NM_DetSim) <- c("Time", "Parasites", "ImmuneCells")
+
+plot(NM_DetSim$Time, NM_DetSim$Parasites, type = "l", col = "cornflowerblue", ylim = c(0, max(NM_DetSim$ImmuneCells)), xlab = "Time", ylab = "Population Abundance", main = "Parameterization: Damping Oscillations")
+lines(NM_DetSim$Time, NM_DetSim$ImmuneCells, col = "firebrick2")
+
+## To equilibrium
+NowakMay_T2_Dam <- function(t,y,p){
+  r <- p[1]; O <- p[2]; h <- p[3]
+  b <- p[4]; c <- p[5]; u <- p[6]
+  P <- y[1]; H <- y[2]
+  dP = P*r - H*(O*P/(1 + O*P*h))
+  dH = b + H*(c*(O*P/(1 + O*P*h)) - u)
+  list(c(dP,dH))
+}
+r <- 2.5; O <- 0.008; h <- 0.06
+b <- 35; c <- 0.2; u <- 0.2
+parms <- c(r, O, h, b, c, u)
+P0 <- 80; H0 <- 200 
+N0 <- c(P0, H0)
+TT <- seq(0, 400, 0.1) 
+results <- lsoda(N0, TT, NowakMay_T2_Dam, parms)
+NM_DetSim <- data.frame(results); colnames(NM_DetSim) <- c("Time", "Parasites", "ImmuneCells")
+
+plot(NM_DetSim$Time, NM_DetSim$Parasites, type = "l", col = "cornflowerblue", ylim = c(0, max(NM_DetSim$ImmuneCells)), xlab = "Time", ylab = "Population Abundance", main = "Parameterization: Damping Oscillations")
+lines(NM_DetSim$Time, NM_DetSim$ImmuneCells, col = "firebrick2")
+```
+
+Parameterization: Stable limit cycle
+
+```{r NM_SLC_DetSim, eval = FALSE}
+NowakMay_T2_Osc <- function(t,y,p){
+  r <- p[1]; O <- p[2]; h <- p[3]
+  b <- p[4]; c <- p[5]; u <- p[6]
+  P <- y[1]; H <- y[2]
+  dP = P*r - H*(O*P/(1 + O*P*h))
+  dH = b + H*(c*(O*P/(1 + O*P*h)) - u)
+  list(c(dP,dH))
+}
+r <- 2.5; O <- 0.012; h <- 0.075
+b <- 35; c <- 0.3; u <- 0.41
+parms <- c(r, O, h, b, c, u)
+P0 <- 80; H0 <- 200 
+N0 <- c(P0, H0)
+TT <- seq(0, 100, 0.1) 
+results <- lsoda(N0, TT, NowakMay_T2_Osc, parms)
+NM_DetSim <- data.frame(results); colnames(NM_DetSim) <- c("Time", "Parasites", "ImmuneCells")
+
+plot(NM_DetSim$Time, NM_DetSim$Parasites, type = "l", col = "cornflowerblue", ylim = c(0, max(NM_DetSim$ImmuneCells)), xlab = "Time", ylab = "Population Abundance", main = "Parameterization: Stable Limit Cycle")
+lines(NM_DetSim$Time, NM_DetSim$ImmuneCells, col = "firebrick2")
+```
+
+Let's simulate some demographically stochastic data:
+
+```{r NM_DamOsc-SLC_StochSim, eval = FALSE}
+## Damping oscillations parameterization
+## Short
+x0 <- c(P = 80, H = 200) 
+a <- c("P*r",
+       "H*(O*P/1 + O*P*h)", 
+       "b + H*c*(O*P/1 + O*P*h)",
+       "H*u")
+nu <- matrix(c(+1,-1,0,0,
+               0,0,+1,-1), nrow = 2, byrow = TRUE)
+r = 2.5; O = 0.008; h = 0.06; b = 35; c = 0.2; u = 0.2
+parms1 <- c(r = r, O = O, h = h, b = b, c = c, u = u)
+tf = 100
+method <- "OTL"
+simName <- "NowakMay_T2_Dam"
+set.seed(5)
+NowakMay_T2_Dam_SLC <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                            verbose = FALSE, 
+                                            consoleInterval = 1, 
+                                            censusInterval = 1, 
+                                            maxWallTime = 30, 
+                                            ignoreNegativeState = TRUE)) 
+NM_StochSim_DamOsc <- NowakMay_T2_Dam_SLC$data 
+NM_StochSim_DamOsc <- as.data.frame(NM_StochSim_DamOsc)
+colnames(NM_StochSim_DamOsc) <- c("Time", "Parasites", "ImmuneCells")
+write_csv(NM_StochSim_DamOsc, file = "Data/NM_StochSim_DamOsc.csv")
+
+plot(NM_StochSim_DamOsc$Time, NM_StochSim_DamOsc$Parasites, type = "l", col = "cornflowerblue", ylim = c(0, max(NM_StochSim_DamOsc$ImmuneCells)), xlab = "Time", ylab = "Population Abundance", main = "Parameterization: Damping Oscillations")
+lines(NM_StochSim_DamOsc$Time, NM_StochSim_DamOsc$ImmuneCells, col = "firebrick2")
+
+## To equilibrium
+x0 <- c(P = 80, H = 200) 
+a <- c("P*r",
+       "H*(O*P/1 + O*P*h)", 
+       "b + H*c*(O*P/1 + O*P*h)",
+       "H*u")
+nu <- matrix(c(+1,-1,0,0,
+               0,0,+1,-1), nrow = 2, byrow = TRUE)
+r = 2.5; O = 0.008; h = 0.06; b = 35; c = 0.2; u = 0.2
+parms1 <- c(r = r, O = O, h = h, b = b, c = c, u = u)
+tf = 400
+method <- "OTL"
+simName <- "NowakMay_T2_Dam"
+set.seed(5)
+NowakMay_T2_Dam_SLC <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                            verbose = FALSE, 
+                                            consoleInterval = 1, 
+                                            censusInterval = 1, 
+                                            maxWallTime = 30, 
+                                            ignoreNegativeState = TRUE)) 
+NM_StochSim_DamOsc_LONG <- NowakMay_T2_Dam_SLC$data 
+NM_StochSim_DamOsc_LONG <- as.data.frame(NM_StochSim_DamOsc_LONG)
+First0 <- which(NM_StochSim_DamOsc_LONG$Parasites == 0)[1]
+NM_StochSim_DamOsc_LONG <- NM_StochSim_DamOsc_LONG[1:First0, ]
+colnames(NM_StochSim_DamOsc_LONG) <- c("Time", "Parasites", "ImmuneCells")
+write_csv(NM_StochSim_DamOsc_LONG, file = "Data/NM_StochSim_DamOsc_LONG.csv")
+
+plot(NM_StochSim_DamOsc_LONG$Time, NM_StochSim_DamOsc_LONG$Parasites, type = "l", col = "cornflowerblue", ylim = c(0, max(NM_StochSim_DamOsc_LONG$ImmuneCells)), xlab = "Time", ylab = "Population Abundance", main = "Parameterization: Damping Oscillations (LONG)")
+lines(NM_StochSim_DamOsc_LONG$Time, NM_StochSim_DamOsc_LONG$ImmuneCells, col = "firebrick2")
+
+## Stable limit cycle parameterization
+x0 <- c(P = 80, H = 200) 
+a <- c("P*r",
+       "H*(O*P/1 + O*P*h)", 
+       "b + H*c*(O*P/1 + O*P*h)",
+       "H*u")
+nu <- matrix(c(+1,-1,0,0,
+               0,0,+1,-1), nrow = 2, byrow = TRUE)
+r = 2.5; O = 0.012; h = 0.075; b = 35; c = 0.3; u = 0.41
+parms1 <- c(r = r, O = O, h = h, b = b, c = c, u = u)
+tf = 100
+method <- "OTL"
+simName <- "NowakMay_T2_Osc"
+set.seed(3)
+NowakMay_T2_Osc_SLC <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                  verbose = FALSE, 
+                                  consoleInterval = 1, 
+                                  censusInterval = 1, 
+                                  maxWallTime = 30, 
+                                  ignoreNegativeState = TRUE)) 
+NM_StochSim_SLC <- NowakMay_T2_Osc_SLC$data 
+NM_StochSim_SLC <- as.data.frame(NM_StochSim_SLC)
+colnames(NM_StochSim_SLC) <- c("Time", "Parasites", "ImmuneCells")
+write_csv(NM_StochSim_SLC, file = "Data/NM_StochSim_SLC.csv")
+
+plot(NM_StochSim_SLC$Time, NM_StochSim_SLC$Parasites, type = "l", col = "cornflowerblue", ylim = c(0, max(NM_StochSim_SLC$ImmuneCells)), xlab = "Time", ylab = "Population Abundance", main = "Parameterization: Stable Limit Cycle")
+lines(NM_StochSim_SLC$Time, NM_StochSim_SLC$ImmuneCells, col = "firebrick2")
+```
+
+### Damping oscillations
+
+#### Attempt 1: Exact same structure as Carpenter example with flat, truncated priors
+
+Originally, we tried to fit the entire time series (include the portion in which, deterministically, both populations are at stable equilibria.
+
+```{r DamOsc_Attempt2, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real c = theta[5];
+    real u = theta[6];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[6];   // {r, O, h, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_rk45(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-6, 1e-6, 1e6);
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  theta[{2, 3}] ~ uniform(0, 1); // O = 0.008, h = 0.06
+  theta[{4}] ~ uniform(0, 1000); // b = 35
+  theta[{5, 6}] ~ uniform(0, 1); // c = 0.2, u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_1.stan")
+
+## Data
+N <- length(NM_StochSim_DamOsc_LONG$Time) - 1
+ts <- 1:N
+y_init <- c(NM_StochSim_DamOsc_LONG$Parasites[1], NM_StochSim_DamOsc_LONG$ImmuneCells[1])
+y <- as.matrix(NM_StochSim_DamOsc_LONG[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2]); 
+NM_StochSim_DamOsc_LONG <- list(N = N, ts = ts, y_init = y_init, y = y)
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_1.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc_LONG, chains = 2, iter = 1000, cores = 2, seed = 123)
+
+## The model fails to intialise, so nothing more to show here.
+```
+
+When we use the full time series, the model fails to intialise.
+
+#### Attempt 2: Change length of time series to exclude equilibrium
+
+Next, we shortened the time series to exclude the region wherein deterministic populations reached a stable equilibrium.
+
+```{r DamOsc_Attempt2_DatCompFit, eval = FALSE}
+## Data
+N <- length(NM_StochSim_DamOsc$Time) - 1
+ts <- 1:N
+y_init <- c(NM_StochSim_DamOsc$Parasites[1], NM_StochSim_DamOsc$ImmuneCells[1])
+y <- as.matrix(NM_StochSim_DamOsc[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2]); 
+NM_StochSim_DamOsc <- list(N = N, ts = ts, y_init = y_init, y = y)
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_1.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 123)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_2_FitObj.rds")
+```
+
+```{r DamOsc_Attempt2_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_2_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#            mean se_mean sd   10%   50%   90% n_eff  Rhat
+# theta[1]  4.536       0  0 4.536 4.536 4.536     4 1.549
+# theta[2]  0.175       0  0 0.175 0.175 0.175     3 2.954
+# theta[3]  0.229       0  0 0.229 0.229 0.229     3 2.565
+# theta[4]  1.846       0  0 1.846 1.846 1.846     3 2.173
+# theta[5]  0.372       0  0 0.372 0.372 0.372     8 1.073
+# theta[6]  0.972       0  0 0.972 0.972 0.972     6 1.108
+# sigma[1]  0.734       0  0 0.734 0.734 0.734     5 1.394
+# sigma[2]  0.364       0  0 0.364 0.364 0.364     5 1.342
+# z_init[1] 0.539       0  0 0.539 0.539 0.539     3 2.579
+# z_init[2] 1.839       0  0 1.839 1.839 1.839     4 1.174
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars)
+```
+
+While shortening the time series to disinclude the (deterministically) equilibrial region allowed the model to intialize, we still have a long way to go. As you can see, one chain failed to sample. Overall, the low `n_eff` values and high `Rhat` values, accompanied with poor estimates and telling visualizations show that the model fits very poorly.
+
+#### Attempt 3: Changing the ODE solver
+
+Stan offers two ODE solvers.
+
+-   `rk45`: a fourth and fifth order Runge-Kutta method for non-stiff systems.
+
+-   `bdf`: a variable-step, variable-order, backward-differentiation formula implementation for stiff systems.
+
+Non-stiff methods can be applied to stiff systems, but will be less efficient. Let's try switching to the `bdf` solver.
+
+Further, the `rk45` solver has lower tolerances than the `bdf` solver.
+
+-   `rk45`: The default relative and absolute tolerances are both $10^{-6}$, and the maximum number of steps between outputs is $10^6$.
+
+-   `bdf`: The default relative and absolute tolerances are both $10^{-10}$, and the maximum number of steps between outputs is $10^8$.
+
+In **Attempt 3**, we'll switch to using the `bdf` solver. In **Attempt 4**, we'll increase `relative_tolerance`, `absolute_tolerance`, and `max_num_steps`.
+
+```{r DamOsc_Attempt3_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real c = theta[5];
+    real u = theta[6];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[6];   // {r, O, h, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  theta[{2, 3}] ~ uniform(0, 1); // O = 0.008, h = 0.06
+  theta[{4}] ~ uniform(0, 1000); // b = 35
+  theta[{5, 6}] ~ uniform(0, 1); // c = 0.2, u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_3.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_3.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 123)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_3_FitObj.rds")
+```
+
+```{r DamOsc_Attempt3_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_3_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean    sd     10%     50%     90% n_eff  Rhat
+# theta[1]    2.917   0.019 0.408   2.442   2.884   3.444   448 1.009
+# theta[2]    0.010   0.000 0.001   0.008   0.010   0.012   466 1.009
+# theta[3]    0.028   0.001 0.026   0.003   0.021   0.063   481 1.002
+# theta[4]   25.357   0.404 8.647  16.058  23.771  37.188   459 1.004
+# theta[5]    0.248   0.004 0.079   0.161   0.238   0.343   461 1.008
+# theta[6]    0.186   0.002 0.036   0.146   0.180   0.234   405 1.006
+# sigma[1]    0.573   0.001 0.044   0.518   0.569   0.629  1243 1.005
+# sigma[2]    0.083   0.000 0.006   0.076   0.083   0.091  1437 1.001
+# z_init[1]  52.458   0.204 7.485  43.473  51.791  62.297  1347 0.999
+# z_init[2] 223.265   0.339 9.213 211.701 223.451 234.972   737 1.007
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) +
+  ggthemes::theme_base()
+```
+
+Comparing observed population abundance to estimated population abundance:
+
+```{r DamOsc_Attempt3_ObsEstComp, eval = TRUE, echo = FALSE}
+fit <- readRDS("FitObjs/NM_DamOsc_3_FitObj.rds")
+output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_H <- z_means[-c(1:x)]  
+ncol(z_means_H)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_H <- t(z_means_H)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_H) <- c("post_means_H")
+
+## "Real data" ##
+NM_StochSim_DamOsc <- read_csv("Data/NM_StochSim_DamOsc.csv")
+N <- length(NM_StochSim_DamOsc$Time) - 1
+ts <- 1:N
+y_init <- c(NM_StochSim_DamOsc$Parasites[1], NM_StochSim_DamOsc$ImmuneCells[1])
+y <- as.matrix(NM_StochSim_DamOsc[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","H")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_H,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", col = "seagreen", ylim = c(0, max(df$post_means_H)), xlab = "Time", ylab = "Population Abundance")
+lines(df$ts, df$H, col = "cornflowerblue")
+lines(df$ts, df$post_means_P, col = "seagreen", lty = 2)
+lines(df$ts, df$post_means_H, col = "cornflowerblue", lty = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("cornflowerblue", "firebrick2", "cornflowerblue", "firebrick2"), lty = c(1, 1, 2, 2))
+```
+
+So, we can see that changing the ODE solver from a Runge-Kutta (rk45) solver to a Backwards Differentiation Formula (bdf) solver increased the quality of the fit pretty substantially. However, the trace plot shows boundary effects when estimating the handling time ($h$), and the pairs plot shows that estimates for reproductive rate ($r$) and recognition rate ($\theta$), and reproductive rate ($r$) and proliferation rate ($c$) are dependent on one another. While on the topic of boundary effects, I should mention that we also tried to fit the model using JAGS, and saw much more significant boundary effects on when estimating any parameter.
+
+Next, I tried to increase the solver tolerances to get more precise solutions. I didn't think increasing solver tolerances would help decrease boundary effects or help with independent estimates, so we'll come back to that.
+
+#### Attempt 4: Changing tolerances
+
+```{r DamOsc_Attempt4_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real c = theta[5];
+    real u = theta[6];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[6];   // {r, O, h, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-11, 1e-11, 1e9); // Increased tolerances by one order of magnitude each
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  theta[{2, 3}] ~ uniform(0, 1); // O = 0.008, h = 0.06
+  theta[{4}] ~ uniform(0, 1000); // b = 35
+  theta[{5, 6}] ~ uniform(0, 1); // c = 0.2, u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_4.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_4.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 123)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_4_FitObj.rds")
+```
+
+```{r DamOsc_Attempt4_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_4_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean    sd     10%     50%     90% n_eff  Rhat
+# theta[1]    2.930   0.028 0.416   2.455   2.892   3.438   225 1.008
+# theta[2]    0.010   0.000 0.001   0.008   0.010   0.012   226 1.008
+# theta[3]    0.028   0.002 0.026   0.003   0.021   0.060   265 1.008
+# theta[4]   25.547   0.480 8.529  16.156  23.839  36.402   316 1.009
+# theta[5]    0.245   0.005 0.073   0.162   0.237   0.339   224 1.006
+# theta[6]    0.186   0.002 0.035   0.146   0.182   0.229   272 1.006
+# sigma[1]    0.572   0.002 0.043   0.515   0.571   0.629   597 0.998
+# sigma[2]    0.083   0.000 0.006   0.076   0.083   0.092   727 1.001
+# z_init[1]  52.410   0.338 7.454  42.934  51.777  61.856   486 1.001
+# z_init[2] 224.027   0.519 9.211 212.053 223.978 236.134   315 1.008
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+Further increasing the solver tolerances doesn't do much for the quality of the fit, and makes the solver *extremely* inefficient, resulting in ludicrously long run-times.
+
+Next, I tried implementing more descriptive priors. More specifically, I constrained the values of
+
+#### Attempt 5: Using more descriptive priors
+
+```{r DamOsc_Attempt5_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real c = theta[5];
+    real u = theta[6];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> r;
+  real<lower = 0, upper = 1> O;
+  real<lower = 0> h;
+  real<lower = 0> b;
+  real<lower = 0> c;
+  real<lower = 0, upper = 1> u;  
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, {r, O, h, b, c, u},
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  r ~ normal(2.5, 1); // r = 2.5
+  O ~ beta(1, 2); // O = 0.008
+  h ~ normal(0, 1); // h = 0.06
+  b ~ normal(35, 1); // b = 35
+  c ~ normal(0, 1); // c = 0.2
+  u ~ beta(1, 2); // u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(100), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}
+", file = "Stan_Models/NM_DamOsc_5.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_5.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 132)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_5_FitObj.rds")
+```
+
+```{r DamOsc_Attempt5_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_5_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("r", "O", "h", "b", "c", "u", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#            mean se_mean    sd   10%   50%   90% n_eff      Rhat
+# r         0.498   0.291 0.291 0.207 0.498 0.789     1  2027.188
+# O         0.630   0.109 0.109 0.521 0.630 0.739     1  1784.392
+# h         2.234   1.698 1.699 0.536 2.234 3.932     1 16803.930
+# b         3.219   3.061 3.063 0.157 3.219 6.280     1 71378.766
+# c         0.336   0.132 0.132 0.203 0.336 0.468     1  1509.048
+# u         0.826   0.016 0.016 0.810 0.826 0.843     1   341.218
+# sigma[1]  1.474   0.701 0.701 0.773 1.473 2.176     1   930.762
+# sigma[2]  0.853   0.681 0.681 0.172 0.852 1.535     1   910.464
+# z_init[1] 1.530   0.410 0.410 1.120 1.529 1.941     1  1221.759
+# z_init[2] 0.648   0.456 0.456 0.193 0.648 1.104     1  4877.942
+
+## Viz
+pars <- c("r", "O", "h", "b", "c", "u")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+While we were working on this model, we spent a lot of time messing with the priors, so this is only one example of something we tried. We tried a range of distributions, highly informative priors, weakly informative priors, centered on/near the true values, etc. Overall, we found that changing the priors either weakly improved the fit, or dramatically decreased the quality of the fit.
+
+#### Attempt 6: Log priors for select parameters
+
+Here, we logged the priors for recognition rate ($\theta$) and handling time ($h$) to give the sampler more space to search.
+
+```{r DamOsc_Attempt6_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real c = theta[5];
+    real u = theta[6];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> r; 
+  real<lower = 0> O;
+  real<lower = 0> h;
+  real<lower = 0> b;
+  real<lower = 0> c;
+  real<lower = 0> u;
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, {r, O, h, b, c, u},
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  r ~ uniform(0, 10); // r = 2.5
+  log(O) ~ normal(0.5, 0.5); // O = 0.008
+  target += -log(O);
+  log(h) ~ normal(0.5, 0.5); // h = 0.06
+  target += -log(h);
+  b ~ uniform(0, 1000); // b = 35
+  c ~ uniform(0, 1); // c = 0.2
+  u ~ uniform(0, 1); // u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_6.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_6.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 123)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_6_FitObj.rds")
+```
+
+```{r DamOsc_Attempt6_Summ, eval = FALSE}
+fit <- readRDS("FitObjs/NM_DamOsc_6_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars)
+```
+
+Between when I originally wrote this model (\> 2 years ago) and now, the syntax for transforming parameters has changed, and I haven't been able to replicate what I did. But, I remember that logging priors decreased the efficiency of our model, and had negligable effects on the quality of the fit.
+
+#### Attempt 7: Give model initial values for select parameters
+
+```{r DamOsc_Attempt7_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real c = theta[5];
+    real u = theta[6];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> r;
+  real<lower = 0> O;
+  real<lower = 0> h;
+  real<lower = 0> b;
+  real<lower = 0> c;
+  real<lower = 0> u;
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, {r, O, h, b, c, u},
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  r ~ uniform(0, 10); // r = 2.5
+  O ~ uniform(0, 1); // O = 0.008
+  h ~ uniform(0, 1); // h = 0.06
+  b ~ uniform(0, 1000); // b = 35
+  c ~ uniform(0, 1); // c = 0.2, u = 0.2
+  u ~ uniform(0, 1); // c = 0.2, u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_7.stan")
+
+## Data
+# See above cell
+
+inits <- list(
+  O = 0.008,
+  h = 0.06
+); list_inits <- list(inits, inits)
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_7.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, init = list_inits, seed = 123)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_7_FitObj.rds")
+```
+
+```{r DamOsc_Attempt7_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_7_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("r", "O", "h", "b", "c", "u", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean    sd     10%     50%     90% n_eff  Rhat
+# r           2.954   0.032 0.423   2.438   2.940   3.506   179 1.001
+# O           0.010   0.000 0.001   0.008   0.010   0.012   184 1.001
+# h           0.027   0.002 0.025   0.003   0.020   0.060   272 1.000
+# b          25.254   0.508 8.374  16.292  23.462  36.536   272 0.999
+# c           0.242   0.006 0.077   0.156   0.229   0.343   163 1.003
+# u           0.184   0.002 0.035   0.144   0.179   0.232   243 1.000
+# sigma[1]    0.569   0.002 0.042   0.518   0.567   0.623   595 1.000
+# sigma[2]    0.083   0.000 0.006   0.075   0.082   0.091   737 1.000
+# z_init[1]  53.009   0.310 7.677  43.724  52.667  63.020   612 0.999
+# z_init[2] 224.136   0.492 9.465 212.207 224.139 236.586   370 0.999
+
+## Viz
+pars <- c("r", "O", "h", "b", "c", "u")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+Giving the model initial values for recognition rate and handling time seemed to help the model estimate those values, but didn't significantly improve fit, especially considering that to give reasonable initial values, we'd have to reference some empirical measure we don't have (making them similar to using very descriptive priors).
+
+#### Attempt 8: Giving the model the true replication rate
+
+Next, we'll trying giving the model some parameter values. We'll focus on some of the parameters that previous versions of the model had trouble estimating independently. Recall that trace plots showed boundary effects when estimating the handling time ($h$), and that pairs plots showed that estimates for replication rate ($r$) and recognition rate ($\theta$), and reproductive rate ($r$) and proliferation rate ($c$) were dependent on one another.
+
+Let's start by giving the model the true replication rate, ($r$).
+
+```{r DamOsc_Attempt8_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    // real r = theta[1];  
+    real O = theta[1];
+    real h = theta[2];
+    real b = theta[3];
+    real c = theta[4];
+    real u = theta[5];
+
+    real dP_dt = P*2.5 - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {O, h, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  // theta[{1}] ~ uniform(0, 10); // r = 2.5
+  theta[{1, 2}] ~ uniform(0, 1); // O = 0.008, h = 0.06
+  theta[{3}] ~ uniform(0, 1000); // b = 35
+  theta[{4, 5}] ~ uniform(0, 1); // c = 0.2, u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_8.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_8.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 132)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_8_FitObj.rds")
+```
+
+```{r DamOsc_Attempt8_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_8_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#             mean se_mean      sd   10%    50%     90% n_eff   Rhat
+# theta[1]   0.563   0.183   0.187 0.341  0.719   0.744     1  6.101
+# theta[2]   0.596   0.263   0.265 0.334  0.517   0.895     1  9.301
+# theta[3]  91.321  91.149 105.263 2.628 10.999 242.576     1  3.407
+# theta[4]   0.159   0.027   0.059 0.127  0.137   0.266     5  1.654
+# theta[5]   0.652   0.154   0.203 0.502  0.502   0.966     2  2.827
+# sigma[1]  65.492  63.372  63.539 2.204 56.934 133.499     1 15.161
+# sigma[2]   2.320   1.995   1.998 0.202  2.527   4.314     1 31.904
+# z_init[1] 22.041  17.472  21.395 5.581  5.581  49.049     1  2.041
+# z_init[2] 17.078   9.106  15.472 4.918  7.628  42.200     3  3.333
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+Giving the mode the true replication rate didn't improve the fit. `n_eff` values are very low, and `Rhat` values are greater than 1. Further, the trace plot shows that the chains didn't mix or converge.
+
+#### Attempt 9: Giving the model the true recognition rate
+
+```{r DamOsc_Attempt9_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    //real O = theta[2];
+    real h = theta[2];
+    real b = theta[3];
+    real c = theta[4];
+    real u = theta[5];
+
+    real dP_dt = P*r - H*(0.008*P/(1 + 0.008*h*P));
+    real dH_dt = b + H*(c*(0.008*P/(1 + 0.008*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, h, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  theta[{2}] ~ uniform(0, 1); // h = 0.06
+  theta[{3}] ~ uniform(0, 1000); // b = 35
+  theta[{4, 5}] ~ uniform(0, 1); // c = 0.2, u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_9.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_9.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 132)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_9_FitObj.rds")
+```
+
+```{r DamOsc_Attempt9_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_9_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean    sd     10%     50%     90% n_eff  Rhat
+# theta[1]    2.386   0.002 0.033   2.341   2.390   2.425   192 1.004
+# theta[2]    0.038   0.003 0.033   0.004   0.028   0.088   107 1.005
+# theta[3]   26.715   0.753 7.992  18.022  24.973  38.223   113 1.004
+# theta[4]    0.354   0.002 0.028   0.320   0.351   0.390   198 0.999
+# theta[5]    0.209   0.003 0.031   0.175   0.201   0.254   110 1.004
+# sigma[1]    0.578   0.003 0.047   0.521   0.577   0.640   257 1.005
+# sigma[2]    0.083   0.000 0.006   0.076   0.083   0.091   624 1.001
+# z_init[1]  51.995   0.353 6.971  43.283  51.231  61.461   390 0.999
+# z_init[2] 214.366   0.318 6.734 205.519 214.566 222.883   449 1.007
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+```{r DamOsc_Attempt9_ObsEstComp, eval = TRUE, echo = FALSE}
+fit <- readRDS("FitObjs/NM_DamOsc_9_FitObj.rds")
+output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_H <- z_means[-c(1:x)]  
+ncol(z_means_H)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_H <- t(z_means_H)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_H) <- c("post_means_H")
+
+## "Real data" ##
+NM_StochSim_DamOsc <- read_csv("Data/NM_StochSim_DamOsc.csv")
+N <- length(NM_StochSim_DamOsc$Time) - 1
+ts <- 1:N
+y_init <- c(NM_StochSim_DamOsc$Parasites[1], NM_StochSim_DamOsc$ImmuneCells[1])
+y <- as.matrix(NM_StochSim_DamOsc[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","H")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_H,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", col = "cornflowerblue", ylim = c(0, max(df$post_means_H)), xlab = "Time", ylab = "Population Abundance")
+lines(df$ts, df$H, col = "firebrick2")
+lines(df$ts, df$post_means_P, col = "cornflowerblue", lty = 2)
+lines(df$ts, df$post_means_H, col = "firebrick2", lty = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("cornflowerblue", "firebrick2", "cornflowerblue", "firebrick2"), lty = c(1, 1, 2, 2))
+```
+
+Giving the model the true recognition rate did improve the fit. `n_eff` values are higher, and `Rhat` values are all around one. The trace plot shows that the chains mixed well, and the pairs plot shows improvement, though some parameters still cannot be estimated independently.
+
+#### Attempt 10: Giving the model the true handling time
+
+```{r DamOsc_Attempt10_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    // real h = theta[3];
+    real b = theta[3];
+    real c = theta[4];
+    real u = theta[5];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*0.06*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*0.06*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, O, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  theta[{2}] ~ uniform(0, 1); // O = 0.008
+  theta[{3}] ~ uniform(0, 1000); // b = 35
+  theta[{4, 5}] ~ uniform(0, 1); // c = 0.2, u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_10.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_10.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 132)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_10_FitObj.rds")
+```
+
+```{r DamOsc_Attempt10_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_10_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean    sd     10%     50%     90% n_eff  Rhat
+# theta[1]    2.838   0.034 0.375   2.367   2.805   3.334   125 1.012
+# theta[2]    0.010   0.000 0.001   0.008   0.010   0.011   124 1.012
+# theta[3]   37.252   0.425 5.535  30.802  36.402  44.867   170 1.010
+# theta[4]    0.269   0.006 0.072   0.184   0.261   0.367   135 1.012
+# theta[5]    0.231   0.001 0.011   0.218   0.230   0.246   349 1.006
+# sigma[1]    0.573   0.001 0.040   0.521   0.573   0.625   922 1.000
+# sigma[2]    0.083   0.000 0.006   0.076   0.083   0.091   957 0.999
+# z_init[1]  50.553   0.254 6.927  41.825  50.121  59.316   746 1.004
+# z_init[2] 226.004   0.705 9.286 214.202 226.166 237.973   173 1.009
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+```{r DamOsc_Attempt10_ObsEstComp, eval = TRUE, echo = FALSE}
+fit <- readRDS("FitObjs/NM_DamOsc_10_FitObj.rds")
+output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_H <- z_means[-c(1:x)]  
+ncol(z_means_H)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_H <- t(z_means_H)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_H) <- c("post_means_H")
+
+## "Real data" ##
+NM_StochSim_DamOsc <- read_csv("Data/NM_StochSim_DamOsc.csv")
+N <- length(NM_StochSim_DamOsc$Time) - 1
+ts <- 1:N
+y_init <- c(NM_StochSim_DamOsc$Parasites[1], NM_StochSim_DamOsc$ImmuneCells[1])
+y <- as.matrix(NM_StochSim_DamOsc[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","H")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_H,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", col = "cornflowerblue", ylim = c(0, max(df$post_means_H)), xlab = "Time", ylab = "Population Abundance")
+lines(df$ts, df$H, col = "firebrick2")
+lines(df$ts, df$post_means_P, col = "cornflowerblue", lty = 2)
+lines(df$ts, df$post_means_H, col = "firebrick2", lty = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("cornflowerblue", "firebrick2", "cornflowerblue", "firebrick2"), lty = c(1, 1, 2, 2))
+```
+
+Again, giving the model the true handling time resulted in a better fit. Compared to the previous attempt, the model has a slightly harder time making independent estimates.
+
+#### Attempt 11: Giving the model the true proliferation rate
+
+```{r DamOsc_Attempt11_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    // real c = theta[5];
+    real u = theta[5];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(0.2*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, O, h, b, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  theta[{2, 3}] ~ uniform(0, 1); // O = 0.008, h = 0.06
+  theta[{4}] ~ uniform(0, 1000); // b = 35
+  theta[{5}] ~ uniform(0, 1); // u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_11.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_11.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 132)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_11_FitObj.rds")
+```
+
+```{r DamOsc_Attempt11_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_11_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#            mean se_mean    sd   10%   50%   90% n_eff       Rhat
+# theta[1]  2.383   0.344 0.344 2.039 2.384 2.728     1   2886.252
+# theta[2]  0.920   0.080 0.080 0.840 0.920 1.000     1 110950.906
+# theta[3]  0.475   0.125 0.125 0.350 0.475 0.599     1  19990.811
+# theta[4]  2.428   0.668 0.668 1.760 2.428 3.096     1  25873.738
+# theta[5]  0.726   0.043 0.043 0.683 0.726 0.769     1   2672.985
+# sigma[1]  3.254   2.190 2.191 1.064 3.254 5.444     1  73996.034
+# sigma[2]  1.035   0.828 0.829 0.206 1.035 1.863     1 952636.568
+# z_init[1] 0.395     NaN 0.239 0.155 0.394 0.634   NaN  29112.744
+# z_init[2] 1.636   1.296 1.296 0.340 1.636 2.932     1  31070.189
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+# stan_trace(fit, pars)
+# mcmc_pairs(fit, pars)
+# mcmc_dens(fit, pars) 
+```
+
+Giving the model the true proliferation rate resulted in one of the worst fits we've seen so far. Why?
+
+#### Attempt 12: Giving the model the true recognition rate, and true handling time
+
+```{r DamOsc_Attempt12_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    // real O = theta[2];
+    // real h = theta[3];
+    real b = theta[2];
+    real c = theta[3];
+    real u = theta[4];
+
+    real dP_dt = P*r - H*(0.008*P/(1 + 0.008*0.06*P));
+    real dH_dt = b + H*(c*(0.008*P/(1 + 0.008*0.06*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[4];   // {r, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  // theta[{2, 3}] ~ uniform(0, 1); // O = 0.008, h = 0.06
+  theta[{2}] ~ uniform(0, 1000); // b = 35
+  theta[{3, 4}] ~ uniform(0, 1); // c = 0.2, u = 0.2
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_12.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_12.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 132)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_12_FitObj.rds")
+```
+
+```{r DamOsc_Attempt12_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_12_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean    sd     10%     50%     90% n_eff  Rhat
+# theta[1]    2.367   0.001 0.019   2.342   2.367   2.393   898 0.999
+# theta[2]   31.833   0.137 2.792  28.493  31.642  35.498   417 1.004
+# theta[3]    0.363   0.001 0.020   0.339   0.362   0.387   536 1.000
+# theta[4]    0.228   0.000 0.009   0.217   0.228   0.241   387 1.004
+# sigma[1]    0.583   0.002 0.045   0.530   0.580   0.641   614 1.000
+# sigma[2]    0.084   0.000 0.007   0.076   0.083   0.092   999 0.999
+# z_init[1]  51.577   0.287 6.502  43.703  51.129  60.322   513 0.999
+# z_init[2] 216.475   0.291 6.457 207.896 216.526 224.370   494 1.001
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+```{r DamOsc_Attempt12_ObsEstComp, eval = TRUE, echo = FALSE}
+fit <- readRDS("FitObjs/NM_DamOsc_12_FitObj.rds")
+output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_H <- z_means[-c(1:x)]  
+ncol(z_means_H)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_H <- t(z_means_H)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_H) <- c("post_means_H")
+
+## "Real data" ##
+NM_StochSim_DamOsc <- read_csv("Data/NM_StochSim_DamOsc.csv")
+N <- length(NM_StochSim_DamOsc$Time) - 1
+ts <- 1:N
+y_init <- c(NM_StochSim_DamOsc$Parasites[1], NM_StochSim_DamOsc$ImmuneCells[1])
+y <- as.matrix(NM_StochSim_DamOsc[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","H")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_H,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", col = "cornflowerblue", ylim = c(0, max(df$post_means_H)), xlab = "Time", ylab = "Population Abundance")
+lines(df$ts, df$H, col = "firebrick2")
+lines(df$ts, df$post_means_P, col = "cornflowerblue", lty = 2)
+lines(df$ts, df$post_means_H, col = "firebrick2", lty = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("cornflowerblue", "firebrick2", "cornflowerblue", "firebrick2"), lty = c(1, 1, 2, 2))
+```
+
+Giving the model the true recognition rate and true handling time resulted in the best fit we've seen so far. `n_eff` values are very high, and all `Rhat` values are around one. All chains mixed well and converged, and posterior distributions do not show boundary effects.
+
+#### Attempt 13: Changing the distribution of the likelihood function
+
+Here, we tried to estimate all 6 free parameters using the `bdf` solver, and a poisson distribution in the likelihood function.
+
+```{r DamOsc_Attempt13_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real c = theta[5];
+    real u = theta[6];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  int y_init[2];            // initial measured populations
+  int<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> r;
+  real<lower = 0> O;
+  real<lower = 0> h;
+  real<lower = 0> b;
+  real<lower = 0> c;
+  real<lower = 0> u;
+  real<lower = 0> z_init[2];  // initial population
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, {r, O, h, b, c, u},
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  r ~ uniform(0, 10); // r = 2.5
+  O ~ uniform(0, 1); // O = 0.008
+  h ~ uniform(0, 1); // h = 0.06
+  b ~ uniform(0, 1000); // b = 35
+  c ~ uniform(0, 1); // c = 0.2, u = 0.2
+  u ~ uniform(0, 1); // c = 0.2, u = 0.2
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ poisson(z_init[k]);
+    y[ ,k] ~ poisson(z[ ,k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = poisson_rng(z_init[k]);
+    for (n in 1:N)
+      y_rep[n, k] = poisson_rng(z[n, k]);
+  }
+}      
+", file = "Stan_Models/NM_DamOsc_13.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_13.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc, chains = 2, iter = 1000, cores = 2, seed = 123)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_13_FitObj.rds")
+```
+
+```{r DamOsc_Attempt13_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_13_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("r", "O", "h", "b", "c", "u", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean    sd     10%     50%     90% n_eff  Rhat
+# r           3.118   0.012 0.207   2.854   3.108   3.392   282 1.009
+# O           0.010   0.000 0.001   0.009   0.010   0.011   292 1.009
+# h           0.011   0.001 0.009   0.002   0.009   0.023   250 1.004
+# b          20.607   0.276 4.359  15.884  19.572  26.558   250 1.003
+# c           0.172   0.001 0.022   0.144   0.170   0.202   304 1.009
+# u           0.161   0.001 0.016   0.143   0.158   0.183   244 1.003
+# z_init[1]  66.852   0.113 2.895  63.352  66.782  70.530   656 1.002
+# z_init[2] 225.170   0.285 5.085 218.569 225.087 231.806   318 1.013
+
+## Viz
+pars <- c("r", "O", "h", "b", "c", "u")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+There doesn't appear to be a significant difference between lognormally distributed likelihood function, and the poisson distributed likelihood function. If anything, the poisson distributed likelihood function performs less well.
+
+#### Attempt 14: Moving to an autoregressive framework
+
+```{r DamOsc_Attempt14_DatCompFit, eval = FALSE}
+write("
+data {
+  int<lower=0> N;
+  real P[N];
+  real H[N];
+}
+parameters {
+  real<lower = 0> r; // Replication rate of parasite
+  // real<lower = 0> O; // Recognition rate of parasite by host immune system
+  // real<lower = 0> h; // Handling time of parasite by immune system
+  real<lower = 0> b; // Immigration rate of immune cells in absence of infection
+  real<lower = 0> c; // Activation/proliferation rate of host immune system
+  real<lower = 0> u; // Natural mortality rate of host immune cells
+  real<lower=0> sigma; // Error
+}
+model {
+  r ~ uniform(0, 10); // 2.5
+  // O ~ uniform(0, 1); // 0.008
+  // h ~ uniform(0, 1); // 0.06
+  b ~ uniform(0, 1000); // 35
+  c ~ uniform(0, 1); // 0.2
+  u ~ uniform(0, 1); // 0.2
+  sigma ~ lognormal(-1, 1);
+  for (t in 2:N) {
+    P[t] ~ normal(P[t-1] + r*P[t-1] - (1-exp((-0.008/(1 + 0.008*0.06*P[t-1]))*H[t-1]))*P[t-1], sigma);
+    H[t] ~ normal(H[t-1] + b + c*(0.008*P[t-1]/(1 + 0.008*P[t-1]*0.06))*H[t-1] - (1-exp(-u))*H[t-1], sigma);
+  }
+}
+", file = "Stan_Models/NM_DamOsc_14.stan")
+
+## Data
+NM_StochSim_DamOsc <- read.csv("Data/NM_StochSim_DamOsc.csv")
+N <- length(NM_StochSim_DamOsc$Time) - 1
+ts <- 1:N
+P <- as.vector(NM_StochSim_DamOsc[2:(N + 1), 2:2])
+H <- as.vector(NM_StochSim_DamOsc[2:(N + 1), 3:3])
+NM_StochSim_DamOsc_AR <- list(N = N, ts = ts, P = P, H = H)
+
+## Compile model
+model <- stan_model("Stan_Models/NM_DamOsc_14.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_DamOsc_AR, chains = 4, iter = 2000, cores = 2, seed = 123)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_14_FitObj.rds")
+```
+
+```{r DamOsc_Attempt14_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_14_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("r", "b", "c", "u"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#     mean se_mean     sd    10%    50%    90% n_eff  Rhat
+# r  0.794   0.001  0.029  0.759  0.795  0.830   751 1.000
+# b 62.857   0.740 16.276 42.479 62.628 84.084   484 1.010
+# c  0.195   0.001  0.020  0.170  0.194  0.220   635 1.001
+# u  0.339   0.003  0.076  0.246  0.333  0.438   473 1.011
+
+## Viz
+pars <- c("r", "b", "c", "u")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+Given the same information as our best global model, the autoregressive model fits... Not terribly? The chains appear healthy, but the estimation just isn't very accurate.
+
+#### Attempt 15: Moving to an autoregressive framework in JAGS
+
+We went through a similar fitting process JAGS, first asking the model to estimate all six free parameters, and then giving the model more information. For brevity, here's the JAGS version of the global model, when given the true recognition rate, and true handling time.
+
+```{r DamOsc_Attempt15_DatCompFit, eval = FALSE}
+write("
+model { # Keep priors simple for now
+  r ~ dunif(0, 10) # Intrinsic growth rate of parasite
+  # O ~ dunif(0, 1) # Rate at which immune system correctly recognizes parasites
+  # h ~ dunif(0, 1) # Handelling time
+  b ~ dunif(0, 1000) # Immigration rate of immune cells to infection site
+  c ~ dunif(0, 1) # Growth rate of immune system as a response to infection
+  u ~ dunif(0, 1) # Natural mortality rate of immune cells
+  
+  # State vars
+  P[1] <- 80
+  H[1] <- 200 # Dat
+  
+  y_hat_P[1] <- 80
+  y_hat_H[1] <- 200 # Est
+  
+  for (i in 2:L_T){
+    P[i] <- P[i-1] + (P[i-1]*r - H[i-1]*(0.008*P[i-1]/(1 + 0.008*P[i-1]*0.06)))*dt
+    H[i] <- H[i-1] + (b + H[i-1]*(c*(0.008*P[i-1]/(1 + 0.008*P[i-1]*0.06)) - u))*dt
+    
+    y_hat_P[i] <- P[i];
+    y_hat_H[i] <- H[i]; # Expectation
+    
+    C_P[i] ~ dpois(y_hat_P[i]);
+    C_H[i] ~ dpois(y_hat_H[i]);
+  }
+}
+", file = "JAGS_Models/NM_DamOsc_15.R")
+
+## Data
+NM_StochSim_DamOsc <- read.csv("Data/NM_StochSim_DamOsc.csv")
+L_T = length(NM_StochSim_DamOsc$Time)
+C_P = as.integer(NM_StochSim_DamOsc$Parasites); C_H = as.integer(NM_StochSim_DamOsc$ImmuneCells)
+dt <- 0.001
+
+fit <- run.jags(
+  model = "JAGS_Models/NM_DamOsc_15.R",
+  data = list('L_T' = L_T, 'C_P' = C_P, 'C_H' = C_H, 'dt' = dt),
+  monitor = c('r','b','c','u'),
+  adapt = 1000,
+  burnin = 4000,
+  sample = 10000,
+  n.chains = 2,
+  summarise = TRUE,
+  plots = TRUE)
+saveRDS(fit, file = "FitObjs/NM_DamOsc_15_FitObj.rds")
+```
+
+```{r DamOsc_Attempt15_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_DamOsc_15_FitObj.rds")
+
+## Summarise the fit
+summary(fit) 
+
+## Viz
+plot(fit)
+```
+
+Okay, so, given the same information as the Stan model, the JAGS model performs *very* poorly, and notably, shows some pretty persistent boundary effects.
+
+### Stable limit cycle
+
+Because the data we're using look pretty similar, I'll just show a subset of the above attempts.
+
+#### Attempt 1: Wide priors with `bdf` solver, estimating six free parameters
+
+```{r SLC_Attempt1_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    real O = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real c = theta[5];
+    real u = theta[6];
+
+    real dP_dt = P*r - H*(O*P/(1 + O*h*P));
+    real dH_dt = b + H*(c*(O*P/(1 + O*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[6];   // {r, O, h, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  theta[{2, 3}] ~ uniform(0, 1); // O = 0.012, h = 0.075
+  theta[{4}] ~ uniform(0, 1000); // b = 35
+  theta[{5, 6}] ~ uniform(0, 1); // c = 0.3, u = 0.41
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_SLC_1.stan")
+
+## Data
+N <- length(NM_StochSim_SLC$Time) - 1
+ts <- 1:N
+y_init <- c(NM_StochSim_SLC$Parasites[1], NM_StochSim_SLC$ImmuneCells[1])
+y <- as.matrix(NM_StochSim_SLC[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2]); 
+NM_StochSim_SLC <- list(N = N, ts = ts, y_init = y_init, y = y)
+
+## Compile model
+model <- stan_model("Stan_Models/NM_SLC_1.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_SLC, chains = 2, iter = 1000, cores = 2, seed = 123)
+saveRDS(fit, file = "FitObjs/NM_SLC_1_FitObj.rds")
+```
+
+```{r SLC_Attempt1_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_SLC_1_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean     sd     10%     50%     90% n_eff  Rhat
+# theta[1]    1.702   0.216  0.691   0.514   1.712   2.486    10 1.166
+# theta[2]    0.051   0.048  0.172   0.007   0.010   0.016    13 1.121
+# theta[3]    0.255   0.080  0.218   0.081   0.175   0.532     7 1.227
+# theta[4]   20.713   7.471 33.048   1.662  12.017  33.588    20 1.087
+# theta[5]    0.516   0.038  0.240   0.199   0.497   0.864    41 1.022
+# theta[6]    0.374   0.050  0.153   0.230   0.335   0.590     9 1.165
+# sigma[1]    0.328   0.016  0.046   0.275   0.323   0.389     9 1.216
+# sigma[2]    0.283   0.238  0.773   0.073   0.085   0.108    11 1.152
+# z_init[1]  58.081   0.443  5.395  51.420  57.534  65.045   148 1.005
+# z_init[2] 186.218  14.248 46.823 189.386 197.264 205.111    11 1.148
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+Okay, so that worked about as well as it did with the damping oscillations data.
+
+#### Attempt 2: Wide priors with `bdf` solver, estimating five free parameters
+
+```{r SLC_Attempt2_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    //real O = theta[2];
+    real h = theta[2];
+    real b = theta[3];
+    real c = theta[4];
+    real u = theta[5];
+
+    real dP_dt = P*r - H*(0.012*P/(1 + 0.012*h*P));
+    real dH_dt = b + H*(c*(0.012*P/(1 + 0.012*h*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, h, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  theta[{2}] ~ uniform(0, 1); // h = 0.075
+  theta[{3}] ~ uniform(0, 1000); // b = 35
+  theta[{4, 5}] ~ uniform(0, 1); // c = 0.3, u = 0.41
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_SLC_2.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_SLC_2.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_SLC, chains = 2, iter = 1000, cores = 2, seed = 132)
+saveRDS(fit, file = "FitObjs/NM_SLC_2_FitObj.rds")
+```
+
+```{r SLC_Attempt2_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_SLC_2_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean    sd     10%     50%     90% n_eff  Rhat
+# theta[1]    2.175   0.013 0.063   2.103   2.171   2.259    24 1.075
+# theta[2]    0.104   0.008 0.045   0.044   0.103   0.165    30 1.105
+# theta[3]   18.122   1.144 9.745   5.667  18.492  30.344    73 1.038
+# theta[4]    0.377   0.006 0.049   0.322   0.378   0.438    67 1.012
+# theta[5]    0.305   0.009 0.066   0.220   0.308   0.393    60 1.033
+# sigma[1]    0.540   0.004 0.037   0.495   0.544   0.577    70 1.025
+# sigma[2]    0.122   0.001 0.010   0.111   0.121   0.133    57 1.079
+# z_init[1]  44.879   0.516 3.979  40.947  44.616  48.468    60 1.024
+# z_init[2] 186.218   0.726 6.084 180.374 184.868 193.951    70 1.012
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+```{r SLC_Attempt2_ObsEstComp, eval = TRUE, echo = FALSE}
+fit <- readRDS("FitObjs/NM_SLC_2_FitObj.rds")
+output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_H <- z_means[-c(1:x)]  
+ncol(z_means_H)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_H <- t(z_means_H)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_H) <- c("post_means_H")
+
+## "Real data" ##
+NM_StochSim_SLC <- read_csv("Data/NM_StochSim_SLC.csv")
+N <- length(NM_StochSim_SLC$Time) - 1
+ts <- 1:N
+y_init <- c(NM_StochSim_SLC$Parasites[1], NM_StochSim_SLC$ImmuneCells[1])
+y <- as.matrix(NM_StochSim_SLC[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","H")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_H,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", col = "cornflowerblue", ylim = c(0, max(df$post_means_H)), xlab = "Time", ylab = "Population Abundance")
+lines(df$ts, df$H, col = "firebrick2")
+lines(df$ts, df$post_means_P, col = "cornflowerblue", lty = 2)
+lines(df$ts, df$post_means_H, col = "firebrick2", lty = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("cornflowerblue", "firebrick2", "cornflowerblue", "firebrick2"), lty = c(1, 1, 2, 2))
+```
+
+#### Attempt 3: Wide priors with `bdf` solver, estimating four free parameters
+
+```{r SLC_Attempt3_DatCompFit, eval = FALSE}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real H = z[2];
+
+    real r = theta[1];  
+    //real O = theta[2];
+    // real h = theta[2];
+    real b = theta[2];
+    real c = theta[3];
+    real u = theta[4];
+
+    real dP_dt = P*r - H*(0.012*P/(1 + 0.012*0.075*P));
+    real dH_dt = b + H*(c*(0.012*P/(1 + 0.012*0.075*P))-u);
+
+    return { dP_dt, dH_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[4];   // {r, b, c, u}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0),
+                         1e-10, 1e-10, 1e8);
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r = 2.5
+  // theta[{2}] ~ uniform(0, 1); // h = 0.075
+  theta[{2}] ~ uniform(0, 1000); // b = 35
+  theta[{3, 4}] ~ uniform(0, 1); // c = 0.3, u = 0.41
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "Stan_Models/NM_SLC_3.stan")
+
+## Data
+# See above cell
+
+## Compile model
+model <- stan_model("Stan_Models/NM_SLC_3.stan")
+
+## Fitting
+fit <- sampling(model, data = NM_StochSim_SLC, chains = 2, iter = 1000, cores = 2, seed = 132)
+saveRDS(fit, file = "FitObjs/NM_SLC_3_FitObj.rds")
+```
+
+```{r SLC_Attempt3_Summ, eval = TRUE}
+fit <- readRDS("FitObjs/NM_SLC_3_FitObj.rds")
+
+## Summarise the fit
+fitSumm <- print(fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "sigma", "z_init"),
+                 probs=c(0.1, 0.5, 0.9), digits = 3)
+
+#              mean se_mean     sd     10%     50%     90% n_eff  Rhat
+# theta[1]    2.192   0.013  0.035   2.146   2.195   2.241     7 1.431
+# theta[2]   38.790  10.882 29.611  13.145  24.714  87.906     7 1.275
+# theta[3]    0.564   0.091  0.167   0.360   0.560   0.794     3 1.567
+# theta[4]    0.515   0.102  0.212   0.293   0.437   0.860     4 1.429
+# sigma[1]    0.652   0.004  0.040   0.598   0.660   0.696   104 1.063
+# sigma[2]    0.146   0.002  0.009   0.137   0.145   0.158    33 1.065
+# z_init[1]  56.310   1.793 10.049  44.182  54.517  69.931    31 1.047
+# z_init[2] 196.360   3.743 18.602 169.638 198.648 216.279    25 1.105
+
+## Viz
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars) 
+```
+
+```{r SLC_Attempt3_ObsEstComp, eval = TRUE, echo = FALSE}
+fit <- readRDS("FitObjs/NM_SLC_3_FitObj.rds")
+output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_H <- z_means[-c(1:x)]  
+ncol(z_means_H)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_H <- t(z_means_H)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_H) <- c("post_means_H")
+
+## "Real data" ##
+NM_StochSim_SLC <- read_csv("Data/NM_StochSim_SLC.csv")
+N <- length(NM_StochSim_SLC$Time) - 1
+ts <- 1:N
+y_init <- c(NM_StochSim_SLC$Parasites[1], NM_StochSim_SLC$ImmuneCells[1])
+y <- as.matrix(NM_StochSim_SLC[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","H")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_H,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", col = "cornflowerblue", ylim = c(0, max(df$post_means_H)), xlab = "Time", ylab = "Population Abundance")
+lines(df$ts, df$H, col = "firebrick2")
+lines(df$ts, df$post_means_P, col = "cornflowerblue", lty = 2)
+lines(df$ts, df$post_means_H, col = "firebrick2", lty = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("cornflowerblue", "firebrick2", "cornflowerblue", "firebrick2"), lty = c(1, 1, 2, 2))
+```
