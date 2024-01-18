@@ -18,17 +18,17 @@ library(MCMCvis)
 
 # Models & Dynamics
 
-+----------+---------------------+----------------------------+--------------------------+
-|          | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
-+==========+=====================+============================+==========================+
-| Type I   | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type II  | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
-|          |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type III | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-|          |                     | 2.  Damping oscillations   |                          |
-+----------+---------------------+----------------------------+--------------------------+
++--------------+---------------------+----------------------------+--------------------------+
+|              | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
++==============+=====================+============================+==========================+
+| Type I       | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type II      | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
+|              |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type III     | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
+|              |                     | 2.  Damping oscillations   |                          |
++--------------+---------------------+----------------------------+--------------------------+
 
 # To Do:
 
@@ -519,58 +519,31 @@ LV_Model <- function(t, y, p){
 }
 alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024 # From posterior estimates
 parms <- c(alpha, beta, gamma, delta)
-
-## Initial conditions as per Bob Carpenter's work
-u0 <- 33.956; v0 <- 5.933 # In thousands, as per Carpenter
-N0 <- c(u0, v0)
 TT <- seq(1, 21, 1) # Twenty years, assessed every year
-results <- lsoda(N0, TT, LV_Model, parms, verbose = FALSE)
-LV_DetSim_BC <- data.frame(results); colnames(LV_DetSim_BC) <- c("Time", "Lynx", "Hare")
 
-plot(LV_DetSim_BC$Time, LV_DetSim_BC$Lynx, type = "l", col = "navy", main = "Deterministic LV Model", sub = "Initial Conditions: As per Carpenter", xlab = "Time", ylab = "Population Abundance", ylim = c(0, 100))
-points(LV_DetSim_BC$Time, LV_DetSim_BC$Hare, type = "l", col = "red4")
-points(1:21, lynx_hare_df$Lynx, type = "l", col = "cornflowerblue")
-points(1:21, lynx_hare_df$Hare, type = "l", col = "firebrick2")
-
-## At/near equilibrium
-# u0 <- 33.45833; v0 <- 19.46429 # At equilibrium
-u0 <- 30; v0 <- 20 # Near equilibrium
+u0 <- 30; v0 <- 4 # In thousands, as per Carpenter
 N0 <- c(u0, v0)
-TT <- seq(0, 25, 1) # Twenty years, assessed every year
 results <- lsoda(N0, TT, LV_Model, parms, verbose = FALSE)
-LV_DetSim_Eq <- data.frame(results); colnames(LV_DetSim_Eq) <- c("Time", "Lynx", "Hare")
+LV_DetSim_BC <- data.frame(results); colnames(LV_DetSim_BC) <- c("Time", "Hare", "Lynx")
 
-plot(LV_DetSim_Eq$Time, LV_DetSim_Eq$Lynx, type = "l", col = "navy", main = "Deterministic LV Model", sub = "Initial Conditions: Near Equilibrium", xlab = "Time", ylab = "Population Abundance", ylim = c(min(LV_DetSim_Eq[ ,2:3]), max(LV_DetSim_Eq[ ,2:3])))
-points(LV_DetSim_Eq$Time, LV_DetSim_Eq$Hare, type = "l", col = "red4")
+u0 <- 33.956; v0 <- 5.933 # As estimate by model
+N0 <- c(u0, v0)
+results <- lsoda(N0, TT, LV_Model, parms, verbose = FALSE)
+LV_DetSim_Est <- data.frame(results); colnames(LV_DetSim_Est) <- c("Time", "Hare", "Lynx")
+
+plot(LV_DetSim_BC$Time, LV_DetSim_BC$Lynx, type = "l", main = "Deterministic LV Model", sub = "Initial Conditions: As per Carpenter or as Estimated by Model", xlab = "Time", ylab = "Population Abundance", ylim = c(0, 100), col = "firebrick2", lwd = 2)
+points(LV_DetSim_BC$Time, LV_DetSim_BC$Hare, type = "l", col = "orchid", lwd = 2)
+points(1:21, lynx_hare_df$Lynx, type = "l", col = "firebrick2", lwd = 2, lty = 2)
+points(1:21, lynx_hare_df$Hare, type = "l", col = "orchid", lwd = 2, lty = 2)
+points(1:21, LV_DetSim_Est$Lynx, type = "l", col = "firebrick2", lwd = 2, lty = 3)
+points(1:21, LV_DetSim_Est$Hare, type = "l", col = "orchid", lwd = 2, lty = 3)
+legend("topright", legend = c("Deterministic", "Data", "Estimate"), lwd = 2, lty = c(1, 2, 3))
 ```
 
 Now, let's generate some stochastic data:
 
 ```{r}
 ## Initial conditions as per Bob Carpenter's work
-x0 <- c(u = 4, v = 30) # Given by Carpenter
-a <- c("alpha*u",
-       "beta*v*u", 
-       "gamma*v",
-       "delta*u*v")
-nu <- matrix(c(+1, -1, 0, 0,
-               0, 0, -1, +1), nrow = 2, byrow = TRUE)
-alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
-parms1 <- c(alpha = alpha, beta = beta, gamma = gamma, delta = delta)
-tf = 25
-method <- "OTL"
-simName <- "LV"
-set.seed(1)
-LV_StochSim_BC <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
-                                  verbose = FALSE, 
-                                  consoleInterval = 1, 
-                                  censusInterval = 1, 
-                                  maxWallTime = 30, 
-                                  ignoreNegativeState = TRUE)) 
-LV_StochSim_BC <- LV_StochSim_BC$data; LV_StochSim_BC <- as.data.frame(LV_StochSim_BC)
-colnames(LV_StochSim_BC) <- c("Time", "Lynx", "Hare")
-FirstZero <- which(LV_StochSim_BC$Hare == 0)[1]
-LV_StochSim_BC <- LV_StochSim_BC[1:FirstZero - 1, ]
 
 plot(LV_StochSim_BC$Time, LV_StochSim_BC$Lynx, type = "l", col = "navy", main = "Demographically Stochastic LV Model", sub = "Initial Conditions: As per Carpenter", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(LV_StochSim_BC[ ,2:3])))
 points(LV_StochSim_BC$Time, LV_StochSim_BC$Hare, type = "l", col = "red4")
@@ -580,99 +553,204 @@ lines(LV_DetSim_BC$Time, LV_DetSim_BC$Hare, col = "red4")
 lines(LV_StochSim_BC$Time, LV_StochSim_BC$Lynx, col = "navy", lty = 2)
 lines(LV_StochSim_BC$Time, LV_StochSim_BC$Hare, col = "red4", lty = 2)
 
-## At/near equilibrium
-x0 <- c(u = 30, v = 20) # At equilibrium: u = gamma/delta; v = alpha/beta
-set.seed(1)
-LV_StochSim_Eq <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
-                                  verbose = FALSE, 
-                                  consoleInterval = 1, 
-                                  censusInterval = 1, 
-                                  maxWallTime = 30, 
-                                  ignoreNegativeState = TRUE)) 
-LV_StochSim_Eq <- LV_StochSim_Eq$data; LV_StochSim_Eq <- as.data.frame(LV_StochSim_Eq)
-colnames(LV_StochSim_Eq) <- c("Time", "Lynx", "Hare")
-FirstZero <- which(LV_StochSim_Eq$Hare == 0)[1]
-LV_StochSim_Eq <- LV_StochSim_Eq[1:FirstZero - 1, ]
+x0 <- c(u = 30, v = 4) # Given by Carpenter
+a <- c("alpha*u",
+       "beta*v*u", 
+       "gamma*v",
+       "delta*u*v")
+nu <- matrix(c(+1, -1, 0, 0,
+               0, 0, -1, +1), nrow = 2, byrow = TRUE)
+alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
+parms1 <- c(alpha = alpha, beta = beta, gamma = gamma, delta = delta)
+tf = 20
+method <- "OTL"
+simName <- "LV"
 
-plot(LV_StochSim_Eq$Time, LV_StochSim_Eq$Lynx, type = "l", col = "navy", main = "Demographically Stochastic LV Model", sub = "Initial Conditions: Near Equilibrium", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(LV_StochSim_Eq[ ,2:3])))
-points(LV_StochSim_Eq$Time, LV_StochSim_Eq$Hare, type = "l", col = "red4")
+Seeds <- c(1, 3, 4, 5, 7); BC_Stoch_List <- list()
+for (i in 1:length(Seeds)){
+  set.seed(Seeds[i])
+  BC_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                    verbose = FALSE, 
+                                    consoleInterval = 1, 
+                                    censusInterval = 1, 
+                                    maxWallTime = 30, 
+                                    ignoreNegativeState = TRUE)) 
+  BC_Stoch <- BC_Stoch$data; BC_Stoch <- as.data.frame(BC_Stoch)
+  colnames(BC_Stoch) <- c("Time", "Hare", "Lynx")
+  FirstZero <- which(BC_Stoch$Lynx == 0)[1]
+  if (is.na(FirstZero)){
+    BC_Stoch_List[[i]] <- BC_Stoch
+  } else {
+    BC_Stoch <- BC_Stoch[1:FirstZero - 1, ]
+    BC_Stoch_List[[i]] <- BC_Stoch
+  }
+}
 
-plot(LV_DetSim_Eq$Time, LV_DetSim_Eq$Lynx, type = "l", col = "navy", main = "Deterministic LV Model", sub = "Initial Conditions: Near Equilibrium",  xlab = "Time", ylab = "Population Abundance", ylim = c(min(LV_StochSim_Eq[ ,2:3]), max(LV_StochSim_Eq[ ,2:3])))
-lines(LV_DetSim_Eq$Time, LV_DetSim_Eq$Hare, col = "red4")
-lines(LV_StochSim_Eq$Time, LV_StochSim_Eq$Lynx, col = "navy", lty = 2)
-lines(LV_StochSim_Eq$Time, LV_StochSim_Eq$Hare, col = "red4", lty = 2)
-```
-
-Here's the data BC used, for comparison:
-
-```{r}
-# Read in data
-lynx_hare_df <- read_csv("/Users/mjarviscross/Desktop/Github/FcnalRespProj/Chapter1Review/Bob-Carpenter_Example/hudson-bay-lynx-hare.csv")
-lynx_hare_df <- as.data.frame(lynx_hare_df)
-
-# Plotting
-plot(lynx_hare_df$Year, lynx_hare_df$Lynx, type = "l", col = "cornflowerblue", ylim = c(0, max(lynx_hare_df$Hare)), main = "Empirical Data Used to Fit LV Model", xlab = "Year", ylab = "Population Abundance", lwd = 2)
-lines(lynx_hare_df$Year, lynx_hare_df$Hare, col = "firebrick2", lwd = 2)
-
-df <- data.frame(cbind(lynx_hare_df$Year, lynx_hare_df$Lynx, lynx_hare_df$Hare, LV_DetSim_BC$Lynx, LV_DetSim_BC$Hare, LV_StochSim_BC$Lynx, LV_StochSim_BC$Hare)) 
-colnames(df) <- c("Year", "Dat_Lynx", "Dat_Hare", "Det_Lynx", "Det_Hare", "Stoch_Lynx", "Stoch_Hare") 
-df <- df[1:nrow(lynx_hare_df), ]
-
-plot(df$Year, df$Dat_Lynx, type = "l", col = "cornflowerblue", xlab = "Year", ylab = "Population Abundance", ylim = c(0, 120), lwd = 2)
-lines(df$Year, df$Dat_Hare, col = "firebrick2", lwd = 2)
-lines(df$Year, df$Det_Lynx, col = "navy", lwd = 2)
-lines(df$Year, df$Det_Hare, col = "red4", lwd = 2)
-lines(df$Year, df$Stoch_Lynx, col = "navy", lty = 2, lwd = 2)
-lines(df$Year, df$Stoch_Hare, col = "red4", lty = 2, lwd = 2)
-legend("topright", legend = c("Dat_Lynx", "Dat_Hare", "Det_Lynx", "Det_Hare", "Stoch_Lynx", "Stoch_Hare"), col = c("cornflowerblue", "firebrick2", "navy", "red4", "navy", "red4"), lty = c(1, 1, 1, 1, 2, 2))
+plot(lynx_hare_df$Year, lynx_hare_df$Hare, type = "l", main = "Stochastic LV Model (Five Implementations)", sub = "Initial Conditions: As per Carpenter", xlab = "Time", ylab = "Population Abundance", ylim = c(0, 120), col = "orchid", lwd = 2)
+lines(lynx_hare_df$Year, lynx_hare_df$Lynx, col = "firebrick2", lwd = 2)
+lines(lynx_hare_df$Year, BC_Stoch_List[[1]]$Hare, col = "orchid", lwd = 2, lty = 3)
+lines(lynx_hare_df$Year, BC_Stoch_List[[1]]$Lynx, col = "firebrick2", lwd = 2, lty = 3)
+lines(lynx_hare_df$Year, BC_Stoch_List[[2]]$Hare, col = "orchid", lwd = 2, lty = 3)
+lines(lynx_hare_df$Year, BC_Stoch_List[[2]]$Lynx, col = "firebrick2", lwd = 2, lty = 3)
+lines(lynx_hare_df$Year, BC_Stoch_List[[3]]$Hare, col = "orchid", lwd = 2, lty = 3)
+lines(lynx_hare_df$Year, BC_Stoch_List[[3]]$Lynx, col = "firebrick2", lwd = 2, lty = 3)
+lines(lynx_hare_df$Year, BC_Stoch_List[[4]]$Hare, col = "orchid", lwd = 2, lty = 3)
+lines(lynx_hare_df$Year, BC_Stoch_List[[4]]$Lynx, col = "firebrick2", lwd = 2, lty = 3)
+lines(lynx_hare_df$Year, BC_Stoch_List[[5]]$Hare, col = "orchid", lwd = 2, lty = 3)
+lines(lynx_hare_df$Year, BC_Stoch_List[[5]]$Lynx, col = "firebrick2", lwd = 2, lty = 3)
 ```
 
 Okay, now let's fit the LV model to our generated data:
 
 ```{r, eval = FALSE}
 ## Data
-N <- length(LV_StochSim_BC$Time) - 1
-ts <- 1:N
-y_init <- c(LV_StochSim_BC$Hare[1], LV_StochSim_BC$Lynx[1])
-y <- as.matrix(LV_StochSim_BC[2:(N + 1), 2:3])
-y <- cbind(y[ , 2], y[ , 1])
-LV_StochSim_Stan <- list(N = N, ts = ts, y_init = y_init, y = y)
+BC_StanData_List <- list()
+for (i in 1:length(Seeds)){
+  BC_Stoch <- BC_Stoch_List[[i]]
+  N <- length(BC_Stoch$Time) - 1
+  ts <- 1:N
+  y_init <- c(BC_Stoch$Hare[1], BC_Stoch$Lynx[1])
+  y <- as.matrix(BC_Stoch[2:(N + 1), 2:3])
+  y <- cbind(y[ , 1], y[ , 2]); 
+  BC_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  BC_StanData_List[[i]] <- BC_StanData
+}
 
 ## Compile model
-model <- stan_model("/Users/mjarviscross/Desktop/Github/FcnalRespProj/Chapter1Review/Bob-Carpenter_Example/lotka-volterra.stan")
+model <- stan_model("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/lotka-volterra.stan")
 
 ## Fit
-fit <- sampling(model, data = LV_StochSim_Stan, iter = 2000, chains = 4, cores = 4, seed = 123)
-saveRDS(fit, file = "/Users/mjarviscross/Desktop/Github/FcnalRespProj/Chapter1Review/Bob-Carpenter_Example/GenDat_FitObj.rds")
+Fit_1 <- sampling(model, data = BC_StanData_List[[1]], iter = 2000, chains = 4, cores = 4, seed = 123)
+Fit_2 <- sampling(model, data = BC_StanData_List[[2]], iter = 2000, chains = 4, cores = 4, seed = 123)
+Fit_3 <- sampling(model, data = BC_StanData_List[[3]], iter = 2000, chains = 4, cores = 4, seed = 123)
+Fit_4 <- sampling(model, data = BC_StanData_List[[4]], iter = 2000, chains = 4, cores = 4, seed = 123)
+Fit_5 <- sampling(model, data = BC_StanData_List[[5]], iter = 2000, chains = 4, cores = 4, seed = 123)
+
+saveRDS(Fit_1, file = "3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_1.rds")
+saveRDS(Fit_2, file = "3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_2.rds")
+saveRDS(Fit_3, file = "3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_3.rds")
+saveRDS(Fit_4, file = "3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_4.rds")
+saveRDS(Fit_5, file = "3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_5.rds")
 ```
 
 ```{r}
-fit <- readRDS("/Users/mjarviscross/Desktop/Github/FcnalRespProj/Chapter1Review/Bob-Carpenter_Example/GenDat_FitObj.rds")
-
 ## Summarise the fit
-print(fit, pars = c("theta", "sigma", "z_init"),
+Fit_1 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_1.rds")
+print(Fit_1, pars = c("theta", "sigma", "z_init"),
       probs = c(0.1, 0.5, 0.9), digits = 3)
 
 # "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
 
-#             mean se_mean    sd   10%    50%    90% n_eff  Rhat
-# theta[1]   0.635   0.060 0.503 0.200  0.354  1.403    69 1.035
-# theta[2]   0.037   0.004 0.037 0.007  0.015  0.095    82 1.030
-# theta[3]   0.866   0.042 0.409 0.318  0.882  1.392    95 1.035
-# theta[4]   0.083   0.004 0.039 0.029  0.083  0.134    84 1.033
-# sigma[1]   1.533   0.057 0.477 0.851  1.556  2.136    70 1.033
-# sigma[2]   0.885   0.045 0.413 0.472  0.712  1.477    83 1.032
-# z_init[1] 13.702   0.819 8.689 6.538 11.134 23.904   112 1.032
-# z_init[2]  9.340   0.507 5.782 4.870  7.126 17.168   130 1.031
+#             mean se_mean    sd    10%    50%    90% n_eff  Rhat
+# theta[1]   0.591   0.003 0.094  0.478  0.586  0.709  1058 1.002
+# theta[2]   0.035   0.000 0.008  0.025  0.034  0.045  1223 1.003
+# theta[3]   0.626   0.003 0.108  0.499  0.616  0.760  1089 1.002
+# theta[4]   0.019   0.000 0.005  0.014  0.019  0.025  1203 1.002
+# sigma[1]   0.467   0.002 0.085  0.369  0.457  0.582  2446 1.001
+# sigma[2]   0.448   0.002 0.082  0.357  0.437  0.554  2312 1.000
+# z_init[1] 17.960   0.061 2.845 14.422 17.802 21.781  2209 1.001
+# z_init[2]  5.190   0.019 0.837  4.164  5.139  6.299  2002 1.002
 
 ## Viz
 pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
-stan_trace(fit, pars = pars)
-mcmc_pairs(fit, pars = pars)
-mcmc_dens(fit, pars = pars) 
+stan_trace(Fit_1, pars = pars)
+mcmc_pairs(Fit_1, pars = pars)
+mcmc_dens(Fit_1, pars = pars) 
+
+## Summarise the fit
+Fit_2 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_2.rds")
+print(Fit_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+# "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
+
+#             mean se_mean    sd    10%    50%    90% n_eff  Rhat
+# theta[1]   0.656   0.003 0.122  0.512  0.645  0.811  1253 1.000
+# theta[2]   0.037   0.000 0.010  0.026  0.035  0.049  1419 1.000
+# theta[3]   0.911   0.005 0.164  0.717  0.896  1.123  1273 1.000
+# theta[4]   0.030   0.000 0.007  0.022  0.029  0.040  1329 1.000
+# sigma[1]   0.423   0.002 0.077  0.337  0.412  0.525  2256 1.000
+# sigma[2]   0.440   0.002 0.083  0.345  0.429  0.549  2244 1.000
+# z_init[1] 33.067   0.116 5.915 25.824 32.664 40.873  2621 1.001
+# z_init[2]  5.067   0.018 0.793  4.145  4.998  6.054  1876 1.001
+
+## Viz
+pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(Fit_2, pars = pars)
+mcmc_pairs(Fit_2, pars = pars)
+mcmc_dens(Fit_2, pars = pars) 
+
+## Summarise the fit
+Fit_3 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_3.rds")
+print(Fit_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+# "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
+
+#             mean se_mean    sd    10%    50%    90% n_eff  Rhat
+# theta[1]   0.611   0.002 0.078  0.516  0.607  0.713  1455 1.001
+# theta[2]   0.031   0.000 0.005  0.025  0.031  0.038  1612 1.001
+# theta[3]   0.780   0.002 0.088  0.673  0.773  0.891  1329 1.002
+# theta[4]   0.022   0.000 0.005  0.017  0.022  0.029  1439 1.001
+# sigma[1]   0.506   0.002 0.083  0.410  0.494  0.615  2612 1.000
+# sigma[2]   0.290   0.001 0.053  0.229  0.283  0.358  2171 1.001
+# z_init[1] 29.157   0.084 4.135 24.015 28.958 34.459  2449 1.000
+# z_init[2]  3.369   0.009 0.386  2.909  3.341  3.847  2041 1.002
+
+## Viz
+pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(Fit_3, pars = pars)
+mcmc_pairs(Fit_3, pars = pars)
+mcmc_dens(Fit_3, pars = pars) 
+
+## Summarise the fit
+Fit_4 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_4.rds")
+print(Fit_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+# "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
+
+#             mean se_mean    sd    10%    50%    90% n_eff  Rhat
+# theta[1]   0.528   0.003 0.082  0.432  0.518  0.634  1043 1.002
+# theta[2]   0.031   0.000 0.009  0.021  0.030  0.042  1228 1.001
+# theta[3]   0.881   0.004 0.140  0.708  0.878  1.064  1078 1.002
+# theta[4]   0.027   0.000 0.006  0.020  0.027  0.035  1191 1.002
+# sigma[1]   0.369   0.001 0.067  0.294  0.361  0.458  2698 1.000
+# sigma[2]   0.598   0.002 0.103  0.479  0.584  0.731  2563 1.001
+# z_init[1] 31.989   0.104 4.702 26.337 31.645 37.979  2055 1.001
+# z_init[2]  3.001   0.014 0.618  2.282  2.931  3.793  1845 1.002
+
+## Viz
+pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(Fit_4, pars = pars)
+mcmc_pairs(Fit_4, pars = pars)
+mcmc_dens(Fit_4, pars = pars) 
+
+## Summarise the fit
+Fit_5 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_5.rds")
+print(Fit_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+# "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
+
+#             mean se_mean    sd    10%    50%    90% n_eff  Rhat
+# theta[1]   0.426   0.002 0.052  0.363  0.423  0.493  1191 1.002
+# theta[2]   0.023   0.000 0.005  0.017  0.023  0.030  1406 1.002
+# theta[3]   1.265   0.005 0.161  1.070  1.255  1.472  1145 1.002
+# theta[4]   0.038   0.000 0.006  0.031  0.038  0.046  1221 1.003
+# sigma[1]   0.249   0.001 0.045  0.198  0.243  0.309  2361 1.003
+# sigma[2]   0.470   0.002 0.080  0.379  0.460  0.573  2774 0.999
+# z_init[1] 31.554   0.055 2.877 28.067 31.408 35.314  2760 1.001
+# z_init[2]  3.196   0.010 0.480  2.621  3.155  3.823  2199 1.000
+
+## Viz
+pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(Fit_5, pars = pars)
+mcmc_pairs(Fit_5, pars = pars)
+mcmc_dens(Fit_5, pars = pars) 
 ```
 
-That's not ideal! Let's compare the "real" data to the estimation.
+Let's compare the "real" data to the estimation.
 
 ```{r}
 rows <- nrow(LV_StochSim_BC); dim <- ncol(LV_StochSim_BC) - 1
