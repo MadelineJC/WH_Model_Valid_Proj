@@ -781,7 +781,7 @@ saveRDS(fit, file = "2_FitObjects/Antia_FitObj_5.rds")
 
 ### Hollings Type I Functional Response
 
-``` {r}
+```{r}
 write("
 functions {
   real[] dz_dt(real t,       // time
@@ -1396,7 +1396,7 @@ fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[5]], chains =
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FourParms_5.rds")
 ```
 
-### Hollings Type III Functional Response 
+### Hollings Type III Functional Response
 
 ##### Estimating All Parms
 
@@ -2174,7 +2174,7 @@ mcmc_dens(ModFentonPerkins_3_FitObj_FourParms_5, pars)
 
 ## Antia et al. (1994)
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(Antia_FitObj1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -2395,7 +2395,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ### Hollings Type I Functional Response
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_1_FitObj1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -2618,7 +2618,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ##### Estimating All Parameters
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -2837,7 +2837,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ##### Estimating Five Parameters
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -3056,7 +3056,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ##### Estimating Four Parameters
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -3277,7 +3277,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ##### Estimating All Parameters
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -3496,7 +3496,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ##### Estimating Five Parameters
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -3715,7 +3715,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ##### Estimating Four Parameters
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -3936,7 +3936,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ##### Estimating All Parameters
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -4155,7 +4155,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ##### Estimating Five Parameters
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FiveParms_1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
@@ -4374,7 +4374,7 @@ legend("topleft", legend = c("Observed parasite abundance", "Observed immune cel
 
 ##### Estimating Four Parameters
 
-``` {r}
+```{r}
 #### Time Series 1 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FourParms_1, permuted = TRUE, include = TRUE)
 y_rep <- output$y_rep
