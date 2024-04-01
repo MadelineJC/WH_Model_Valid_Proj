@@ -318,7 +318,7 @@ Mod_FP_T2 <- function(t, y, p){
   list(c(dP, dI))
 }
 r <- 2.5; B <- 0.012; h <- 0.075; e <- 0.3; delta <- 0.41; b <- 35
-parms <- c(r, B, h, e, delta)
+parms <- c(r, B, h, e, delta, b)
 P0 <- 80; I0 <- 200
 N0 <- c(P0, I0)
 TT <- seq(0, 50, 0.1)
@@ -341,7 +341,7 @@ Mod_FP_T2 <- function(t, y, p){
   list(c(dP, dI))
 }
 r <- 2.5; B <- 0.008; h <- 0.06; e <- 0.2; delta <- 0.2; b <- 35
-parms <- c(r, B, h, e, delta)
+parms <- c(r, B, h, e, delta, b)
 P0 <- 80; I0 <- 200
 N0 <- c(P0, I0)
 TT <- seq(0, 200, 0.1)
@@ -364,7 +364,7 @@ Mod_FP_T3 <- function(t, y, p){
   list(c(dP, dI))
 }
 r <- 3.0; B <- 0.0015; h <- 0.2; e <- 0.2; delta <- 0.5; b <- 35
-parms <- c(r, B, h, e, delta)
+parms <- c(r, B, h, e, delta, b)
 P0 <- 1; I0 <- 1
 N0 <- c(P0, I0)
 TT <- seq(0, 25, 0.1)
@@ -2433,11 +2433,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topright", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_1_FitObj2, permuted = TRUE, include = TRUE)
@@ -2476,11 +2476,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topright", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_1_FitObj3, permuted = TRUE, include = TRUE)
@@ -2519,11 +2519,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topright", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_1_FitObj4, permuted = TRUE, include = TRUE)
@@ -2562,11 +2562,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topright", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_1_FitObj5, permuted = TRUE, include = TRUE)
@@ -2605,11 +2605,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topright", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
 
 ### Hollings Type II Functional Response
@@ -2656,11 +2656,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj2, permuted = TRUE, include = TRUE)
@@ -2699,11 +2699,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj3, permuted = TRUE, include = TRUE)
@@ -2742,11 +2742,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj4, permuted = TRUE, include = TRUE)
@@ -2785,11 +2785,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj5, permuted = TRUE, include = TRUE)
@@ -2828,11 +2828,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
 
 ##### Estimating Five Parameters
@@ -2875,11 +2875,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, permuted = TRUE, include = TRUE)
@@ -2918,11 +2918,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_3, permuted = TRUE, include = TRUE)
@@ -2961,11 +2961,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_4, permuted = TRUE, include = TRUE)
@@ -3004,11 +3004,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, permuted = TRUE, include = TRUE)
@@ -3047,11 +3047,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
 
 ##### Estimating Four Parameters
@@ -3094,11 +3094,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_2, permuted = TRUE, include = TRUE)
@@ -3137,11 +3137,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_3, permuted = TRUE, include = TRUE)
@@ -3180,11 +3180,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_4, permuted = TRUE, include = TRUE)
@@ -3223,11 +3223,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_5, permuted = TRUE, include = TRUE)
@@ -3266,11 +3266,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
 
 #### Damping Oscillations
@@ -3315,11 +3315,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj2, permuted = TRUE, include = TRUE)
@@ -3358,11 +3358,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj3, permuted = TRUE, include = TRUE)
@@ -3401,11 +3401,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj4, permuted = TRUE, include = TRUE)
@@ -3444,11 +3444,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj5, permuted = TRUE, include = TRUE)
@@ -3487,11 +3487,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
 
 ##### Estimating Five Parameters
@@ -3534,11 +3534,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_2, permuted = TRUE, include = TRUE)
@@ -3577,11 +3577,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_3, permuted = TRUE, include = TRUE)
@@ -3620,11 +3620,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_4, permuted = TRUE, include = TRUE)
@@ -3663,11 +3663,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_5, permuted = TRUE, include = TRUE)
@@ -3706,11 +3706,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
 
 ##### Estimating Four Parameters
@@ -3753,11 +3753,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_2, permuted = TRUE, include = TRUE)
@@ -3796,11 +3796,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_3, permuted = TRUE, include = TRUE)
@@ -3839,11 +3839,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_4, permuted = TRUE, include = TRUE)
@@ -3882,11 +3882,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_5, permuted = TRUE, include = TRUE)
@@ -3925,11 +3925,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
 
 ### Hollings Type III Functional Response
@@ -3974,11 +3974,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj2, permuted = TRUE, include = TRUE)
@@ -4017,11 +4017,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj3, permuted = TRUE, include = TRUE)
@@ -4060,11 +4060,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj4, permuted = TRUE, include = TRUE)
@@ -4103,11 +4103,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj5, permuted = TRUE, include = TRUE)
@@ -4146,11 +4146,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
 
 ##### Estimating Five Parameters
@@ -4193,11 +4193,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FiveParms_2, permuted = TRUE, include = TRUE)
@@ -4236,11 +4236,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FiveParms_3, permuted = TRUE, include = TRUE)
@@ -4279,11 +4279,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FiveParms_4, permuted = TRUE, include = TRUE)
@@ -4322,11 +4322,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FiveParms_5, permuted = TRUE, include = TRUE)
@@ -4365,11 +4365,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
 
 ##### Estimating Four Parameters
@@ -4412,11 +4412,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 2 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FourParms_2, permuted = TRUE, include = TRUE)
@@ -4455,11 +4455,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 3 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FourParms_3, permuted = TRUE, include = TRUE)
@@ -4498,11 +4498,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 4 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FourParms_4, permuted = TRUE, include = TRUE)
@@ -4541,11 +4541,11 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 
 #### Time Series 5 ####
 output <- rstan::extract(ModFentonPerkins_3_FitObj_FourParms_5, permuted = TRUE, include = TRUE)
@@ -4584,9 +4584,9 @@ ts <- data.frame(ts)
 # Final df
 df <- cbind(df,ts)
 
-plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_P)), col = "forestgreen", lwd = 2)
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
 lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
-legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
