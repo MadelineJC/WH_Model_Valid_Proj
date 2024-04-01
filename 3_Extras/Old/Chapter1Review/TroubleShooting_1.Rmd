@@ -285,7 +285,7 @@ $\frac{dP}{dt} = rP - kPI$, if $P < D$, where $D = 10^9$. If $P < D$, $P \righta
 $\frac{dI}{dt} = \rho I(\frac{P}{P + \phi})$
 
 | Symbol | Parameter                                                                              | Value        |
-|------------|-------------------------------------------------|------------|
+|--------|----------------------------------------------------------------------------------------|--------------|
 | $P$    | Parasite abundance                                                                     | $1**$        |
 | $I$    | Host immune cell abundance                                                             | $1**$        |
 | $r$    | Replication rate of parasite                                                           | $0.1 - 10.0$ |
@@ -530,7 +530,7 @@ $\frac{dH}{dt} = b + (c(\frac{\theta P^2}{1+h \theta P^2}) - \mu)H$
 We added an additional parameter, $b$, to the model.
 
 | Symbol   | Parameter                                                | Value           |
-|--------------|--------------------------------------------|--------------|
+|----------|----------------------------------------------------------|-----------------|
 | $P$      | Parasite abundance                                       | $80**$          |
 | $H$      | Host immune cell abundance                               | $200**$         |
 | $r$      | Replication rate of parasite                             | $2.5$           |

@@ -18,34 +18,26 @@ library(MCMCvis)
 
 # Models & Dynamics
 
-+----------+---------------------+----------------------------+--------------------------+
-|          | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
-+==========+=====================+============================+==========================+
-| Type I   | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type II  | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
-|          |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type III | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-|          |                     | 2.  Damping oscillations   |                          |
-+----------+---------------------+----------------------------+--------------------------+
++--------------+---------------------+----------------------------+--------------------------+
+|              | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
++==============+=====================+============================+==========================+
+| Type I       | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type II      | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
+|              |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type III     | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
+|              |                     | 2.  Damping oscillations   |                          |
++--------------+---------------------+----------------------------+--------------------------+
 
 # To Do:
 
 0.  Use single microparasite models from Fenton and Perkins (*Parasitology*, 2010) to fit the unmodified model with Type I, II, and III FRs
-
-<!-- -->
-
 1.  ~~Use LV model to generate stochastic data; fit BC model to those data~~
-
     (a) Fit modified (with $b$) Fenton and Perkins w/ a Type I FR
-
 2.  ~~Autoregressive model: Compare true and estimated data in a plot like you did with global model to identify potential structural unidentifiability~~
-
 3.  ~~Fit NM model to deterministic data~~
-
 4.  Look at how changing single parameters values ($\theta$, $h$, maybe $c$) change the time series data
-
 5.  ~~Fit NM model to a few different stochastic time series~~
 
 ## 0. Use single microparasite models from Fenton and Perkins (*Parasitology*, 2010) to do above
@@ -531,7 +523,7 @@ N0 <- c(u0, v0)
 results <- lsoda(N0, TT, LV_Model, parms, verbose = FALSE)
 LV_DetSim_Est <- data.frame(results); colnames(LV_DetSim_Est) <- c("Time", "Hare", "Lynx")
 
-hare_lynx_df <- read.csv("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/hudson-bay-lynx-hare.csv")
+hare_lynx_df <- read_csv("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/hudson-bay-lynx-hare.csv")
 
 plot(LV_DetSim_BC$Time, LV_DetSim_BC$Lynx, type = "l", main = "Deterministic LV Model", sub = "Initial Conditions: As per Carpenter or as Estimated by Model", xlab = "Time", ylab = "Population Abundance", ylim = c(0, 100), col = "firebrick2", lwd = 2)
 points(LV_DetSim_BC$Time, LV_DetSim_BC$Hare, type = "l", col = "orchid", lwd = 2)
@@ -582,8 +574,8 @@ plot(hare_lynx_df$Year, hare_lynx_df$Hare, type = "l", main = "Stochastic LV Mod
 lines(hare_lynx_df$Year, hare_lynx_df$Lynx, col = "firebrick2", lwd = 2)
 lines(hare_lynx_df$Year, BC_Stoch_List[[1]]$Hare, col = "orchid", lwd = 2, lty = 3)
 lines(hare_lynx_df$Year, BC_Stoch_List[[1]]$Lynx, col = "firebrick2", lwd = 2, lty = 3)
-lines(hare_lynx_df$Year, BC_Stoch_List[[2]]$Hare, col = "orchid", lwd = 2, lty = 3)
-lines(hare_lynx_df$Year, BC_Stoch_List[[2]]$Lynx, col = "firebrick2", lwd = 2, lty = 3)
+lines(1:19, BC_Stoch_List[[2]]$Hare, col = "orchid", lwd = 2, lty = 3)
+lines(1:19, BC_Stoch_List[[2]]$Lynx, col = "firebrick2", lwd = 2, lty = 3)
 lines(hare_lynx_df$Year, BC_Stoch_List[[3]]$Hare, col = "orchid", lwd = 2, lty = 3)
 lines(hare_lynx_df$Year, BC_Stoch_List[[3]]$Lynx, col = "firebrick2", lwd = 2, lty = 3)
 lines(hare_lynx_df$Year, BC_Stoch_List[[4]]$Hare, col = "orchid", lwd = 2, lty = 3)
@@ -788,8 +780,8 @@ lines(df$Time, df$Hare_StochGen, col = "firebrick2", lwd = 2, lty = 2)
 lines(df$Time, df$Lynx_StochGen, col = "orchid", lwd = 2, lty = 2)
 lines(df$Time, df$Hare_Est, col = "firebrick2", lwd = 2, lty = 3)
 lines(df$Time, df$Lynx_Est, col = "orchid", lwd = 2, lty = 3)
-legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
-       lwd = 2, lty = c(1, 2, 3))
+# legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
+#        lwd = 2, lty = c(1, 2, 3))
 
 #### Fit 2 ####
 ## Model estimates
@@ -833,8 +825,8 @@ lines(df$Time, df$Hare_StochGen, col = "firebrick2", lwd = 2, lty = 2)
 lines(df$Time, df$Lynx_StochGen, col = "orchid", lwd = 2, lty = 2)
 lines(df$Time, df$Hare_Est, col = "firebrick2", lwd = 2, lty = 3)
 lines(df$Time, df$Lynx_Est, col = "orchid", lwd = 2, lty = 3)
-legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
-       lwd = 2, lty = c(1, 2, 3))
+# legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
+#        lwd = 2, lty = c(1, 2, 3))
 
 #### Fit 3 ####
 ## Model estimates

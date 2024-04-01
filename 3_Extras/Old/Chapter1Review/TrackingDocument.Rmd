@@ -6,17 +6,17 @@ output: html_document
 
 # Models, Forms, and Associated Dynamics:
 
-+--------------+---------------------+----------------------------+--------------------------+
-|              | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
-+==============+=====================+============================+==========================+
-| Type I       | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-+--------------+---------------------+----------------------------+--------------------------+
-| Type II      | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
-|              |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
-+--------------+---------------------+----------------------------+--------------------------+
-| Type III     | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-|              |                     | 2.  Damping oscillations   |                          |
-+--------------+---------------------+----------------------------+--------------------------+
++----------+---------------------+----------------------------+--------------------------+
+|          | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
++==========+=====================+============================+==========================+
+| Type I   | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
++----------+---------------------+----------------------------+--------------------------+
+| Type II  | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
+|          |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
++----------+---------------------+----------------------------+--------------------------+
+| Type III | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
+|          |                     | 2.  Damping oscillations   |                          |
++----------+---------------------+----------------------------+--------------------------+
 
 ## Antia et al. (1994)
 
@@ -26,23 +26,15 @@ $\frac{dP}{dt} = rP - kPI$, if $P < D$, where $D = 10^9$. If $P < D$, $P \righta
 
 $\frac{dI}{dt} = \rho I(\frac{P}{P + \phi})$
 
-+----------+----------------------------------------------------------------------------------------+--------------+
-| Symbol   | Parameter                                                                              | Value        |
-+==========+========================================================================================+==============+
-| $P$      | Parasite abundance                                                                     | $1**$        |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $I$      | Host immune cell abundance                                                             | $1**$        |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $r$      | Replication rate of parasite                                                           | $0.1 - 10.0$ |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $k$      | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $\rho$   | Maximum replication rate of host's immune system                                       | $1$          |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $\phi$   | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $D$      | Lethal within-host parasite abundance                                                  | $10^9$       |
-+----------+----------------------------------------------------------------------------------------+--------------+
+| Symbol | Parameter                                                                              | Value        |
+|--------|----------------------------------------------------------------------------------------|--------------|
+| $P$    | Parasite abundance                                                                     | $1**$        |
+| $I$    | Host immune cell abundance                                                             | $1**$        |
+| $r$    | Replication rate of parasite                                                           | $0.1 - 10.0$ |
+| $k$    | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
+| $\rho$ | Maximum replication rate of host's immune system                                       | $1$          |
+| $\phi$ | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
+| $D$    | Lethal within-host parasite abundance                                                  | $10^9$       |
 
 ## Fenton and Perkins (2010)
 
@@ -58,23 +50,15 @@ With a TII functional response, $f(P)=\frac{\beta P}{1+h \beta P}$
 
 With a TIII functional response, $f(P)=\frac{\beta P^2}{1+h \beta P^2}$
 
-+-----------+------------------------------------------------------------------------+--------------+
-| Symbol    | Parameter                                                              | Value        |
-+===========+========================================================================+==============+
-| $P$       | Parasite abundance                                                     | $1$          |
-+-----------+------------------------------------------------------------------------+--------------+
-| $I$       | Host immune cell abundance                                             | $1$          |
-+-----------+------------------------------------------------------------------------+--------------+
-| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-+-----------+------------------------------------------------------------------------+--------------+
-| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-+-----------+------------------------------------------------------------------------+--------------+
-| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
-+-----------+------------------------------------------------------------------------+--------------+
-| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
-+-----------+------------------------------------------------------------------------+--------------+
-| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
-+-----------+------------------------------------------------------------------------+--------------+
+| Symbol   | Parameter                                                              | Value        |
+|----------|------------------------------------------------------------------------|--------------|
+| $P$      | Parasite abundance                                                     | $1$          |
+| $I$      | Host immune cell abundance                                             | $1$          |
+| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
+| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
+| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
+| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
+| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
 
 ## Modified Fenton and Perkins (2010)
 
@@ -82,25 +66,16 @@ $\frac{dP}{dt}=rP-If(P)$
 
 $\frac{dI}{dt}=b + ef(P)I - \delta I$
 
-+-----------+------------------------------------------------------------------------+--------------+
-| Symbol    | Parameter                                                              | Value        |
-+===========+========================================================================+==============+
-| $P$       | Parasite abundance                                                     | $1$          |
-+-----------+------------------------------------------------------------------------+--------------+
-| $I$       | Host immune cell abundance                                             | $1$          |
-+-----------+------------------------------------------------------------------------+--------------+
-| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-+-----------+------------------------------------------------------------------------+--------------+
-| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-+-----------+------------------------------------------------------------------------+--------------+
-| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
-+-----------+------------------------------------------------------------------------+--------------+
-| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
-+-----------+------------------------------------------------------------------------+--------------+
-| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
-+-----------+------------------------------------------------------------------------+--------------+
-| $b$       | Immigration of immune cells in absence of infection                    | $35$         |
-+-----------+------------------------------------------------------------------------+--------------+
+| Symbol   | Parameter                                                              | Value        |
+|----------|------------------------------------------------------------------------|--------------|
+| $P$      | Parasite abundance                                                     | $1$          |
+| $I$      | Host immune cell abundance                                             | $1$          |
+| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
+| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
+| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
+| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
+| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
+| $b$      | Immigration of immune cells in absence of infection                    | $35$         |
 
 # Deterministic Simulations:
 
@@ -330,7 +305,7 @@ plot(Mod_FP_2_DO_Det$Times, Mod_FP_2_DO_Det$P, type = "l", ylim = c(0, max(Mod_F
 lines(Mod_FP_2_DO_Det$Times, Mod_FP_2_DO_Det$I, col = "cornflowerblue", lwd = 2)
 ```
 
-### *** Hollings Type III Functional Response
+### \*\*\* Hollings Type III Functional Response
 
 ```{r}
 Mod_FP_T3 <- function(t, y, p){
@@ -622,16 +597,3 @@ saveRDS(fit, file = "FitObjs/Antia_FitObj_4.rds")
 fit <- sampling(model, data = Antia_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
 saveRDS(fit, file = "FitObjs/Antia_FitObj_5.rds")
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
