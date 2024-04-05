@@ -18,17 +18,17 @@ library(MCMCvis)
 
 # Models & Dynamics
 
-+--------------+---------------------+----------------------------+--------------------------+
-|              | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
-+==============+=====================+============================+==========================+
-| Type I       | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-+--------------+---------------------+----------------------------+--------------------------+
-| Type II      | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
-|              |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
-+--------------+---------------------+----------------------------+--------------------------+
-| Type III     | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-|              |                     | 2.  Damping oscillations   |                          |
-+--------------+---------------------+----------------------------+--------------------------+
++----------+---------------------+----------------------------+--------------------------+
+|          | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
++==========+=====================+============================+==========================+
+| Type I   | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
++----------+---------------------+----------------------------+--------------------------+
+| Type II  | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
+|          |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
++----------+---------------------+----------------------------+--------------------------+
+| Type III | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
+|          |                     | 2.  Damping oscillations   |                          |
++----------+---------------------+----------------------------+--------------------------+
 
 # To Do:
 

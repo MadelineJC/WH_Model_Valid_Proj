@@ -1477,10 +1477,10 @@ saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FiveParms-ExHT_2.
 fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FiveParms-ExHT_3.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[4]], chains = 4, iter = 1000, cores = 4, seed = 123)
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FiveParms-ExHT_4.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[5]], chains = 4, iter = 1000, cores = 4, seed = 123)
+fit <- sampling(model, data = ModFentonPerkins_2_DO_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DO_FitObj_FiveParms-ExHT_5.rds")
 ```
 
@@ -1840,19 +1840,19 @@ model <- stan_model("1_Models/FP_3_FiveParms-ExHT.stan")
 ```
 
 ```{r}
-fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[1]], chains = 4, iter = 1000, cores = 4, seed = 123)
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms-ExHT_1.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[2]], chains = 4, iter = 1000, cores = 4, seed = 123)
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms-ExHT_2.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[3]], chains = 4, iter = 1000, cores = 4, seed = 123)
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms-ExHT_3.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[4]], chains = 4, iter = 1000, cores = 4, seed = 123)
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms-ExHT_4.rds")
 
-fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+fit <- sampling(model, data = ModFentonPerkins_3_StanData_List[[5]], chains = 4, iter = 1000, cores = 4, seed = 123)
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FiveParms-ExHT_5.rds")
 ```
 
