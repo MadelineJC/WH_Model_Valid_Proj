@@ -1921,6 +1921,162 @@ saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_3_FitObj_FourParms_5.rds")
 
 # Summarizing and Visualizing
 
+```{r}
+print(Antia_FitObj1, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(Antia_FitObj2, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(Antia_FitObj3, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(Antia_FitObj4, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(Antia_FitObj5, pars = c("r", "k", "p", "o", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_1_FitObj1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_1_FitObj2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_1_FitObj3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_1_FitObj4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_1_FitObj5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_2_SLC_FitObj1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_SLC_FitObj_FourParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_2_DO_FitObj1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FiveParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_2_DO_FitObj_FourParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FourParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FourParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FourParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_FitObj_FourParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_3_FitObj1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_3_FitObj_FiveParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FiveParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FiveParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FiveParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FiveParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_3_FitObj_FiveParms.ExHT_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FiveParms.ExHT_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FiveParms.ExHT_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FiveParms.ExHT_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FiveParms.ExHT_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_3_FitObj_FourParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FourParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FourParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FourParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_3_FitObj_FourParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+```
+
 ## Antia et al. (1994)
 
 ```{r}

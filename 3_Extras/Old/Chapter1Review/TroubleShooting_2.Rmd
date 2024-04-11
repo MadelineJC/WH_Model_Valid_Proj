@@ -18,17 +18,17 @@ library(MCMCvis)
 
 # Models & Dynamics
 
-+----------+---------------------+----------------------------+--------------------------+
-|          | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
-+==========+=====================+============================+==========================+
-| Type I   | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type II  | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
-|          |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type III | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-|          |                     | 2.  Damping oscillations   |                          |
-+----------+---------------------+----------------------------+--------------------------+
++--------------+---------------------+----------------------------+--------------------------+
+|              | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
++==============+=====================+============================+==========================+
+| Type I       | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type II      | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
+|              |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type III     | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
+|              |                     | 2.  Damping oscillations   |                          |
++--------------+---------------------+----------------------------+--------------------------+
 
 # To Do:
 
@@ -619,21 +619,21 @@ saveRDS(Fit_5, file = "3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_
 
 ```{r}
 ## Summarise the fit
-Fit_1 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_1.rds")
+# Fit_1 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_1.rds")
 print(Fit_1, pars = c("theta", "sigma", "z_init"),
       probs = c(0.1, 0.5, 0.9), digits = 3)
 
 # "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
 
 #             mean se_mean    sd    10%    50%    90% n_eff  Rhat
-# theta[1]   0.591   0.003 0.094  0.478  0.586  0.709  1058 1.002
-# theta[2]   0.035   0.000 0.008  0.025  0.034  0.045  1223 1.003
-# theta[3]   0.626   0.003 0.108  0.499  0.616  0.760  1089 1.002
-# theta[4]   0.019   0.000 0.005  0.014  0.019  0.025  1203 1.002
-# sigma[1]   0.467   0.002 0.085  0.369  0.457  0.582  2446 1.001
-# sigma[2]   0.448   0.002 0.082  0.357  0.437  0.554  2312 1.000
-# z_init[1] 17.960   0.061 2.845 14.422 17.802 21.781  2209 1.001
-# z_init[2]  5.190   0.019 0.837  4.164  5.139  6.299  2002 1.002
+# theta[1]   0.599   0.004 0.095  0.485  0.592  0.726   614 1.006
+# theta[2]   0.035   0.000 0.008  0.026  0.035  0.046   745 1.004
+# theta[3]   0.617   0.004 0.108  0.488  0.606  0.751   581 1.006
+# theta[4]   0.019   0.000 0.005  0.014  0.018  0.025   580 1.006
+# sigma[1]   0.466   0.002 0.086  0.367  0.453  0.577  1368 1.000
+# sigma[2]   0.445   0.002 0.077  0.359  0.433  0.540  1585 1.000
+# z_init[1] 17.951   0.077 2.839 14.464 17.790 21.690  1366 1.001
+# z_init[2]  5.200   0.026 0.821  4.187  5.142  6.296   979 1.004
 
 ## Viz
 pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
@@ -642,21 +642,21 @@ mcmc_pairs(Fit_1, pars = pars)
 mcmc_dens(Fit_1, pars = pars) 
 
 ## Summarise the fit
-Fit_2 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_2.rds")
+# Fit_2 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_2.rds")
 print(Fit_2, pars = c("theta", "sigma", "z_init"),
       probs = c(0.1, 0.5, 0.9), digits = 3)
 
 # "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
 
 #             mean se_mean    sd    10%    50%    90% n_eff  Rhat
-# theta[1]   0.656   0.003 0.122  0.512  0.645  0.811  1253 1.000
-# theta[2]   0.037   0.000 0.010  0.026  0.035  0.049  1419 1.000
-# theta[3]   0.911   0.005 0.164  0.717  0.896  1.123  1273 1.000
-# theta[4]   0.030   0.000 0.007  0.022  0.029  0.040  1329 1.000
-# sigma[1]   0.423   0.002 0.077  0.337  0.412  0.525  2256 1.000
-# sigma[2]   0.440   0.002 0.083  0.345  0.429  0.549  2244 1.000
-# z_init[1] 33.067   0.116 5.915 25.824 32.664 40.873  2621 1.001
-# z_init[2]  5.067   0.018 0.793  4.145  4.998  6.054  1876 1.001
+# theta[1]   0.657   0.006 0.127  0.510  0.646  0.820   486 1.004
+# theta[2]   0.037   0.000 0.010  0.026  0.035  0.049   540 1.004
+# theta[3]   0.913   0.008 0.167  0.710  0.899  1.128   494 1.003
+# theta[4]   0.030   0.000 0.008  0.021  0.029  0.040   569 1.002
+# sigma[1]   0.424   0.002 0.077  0.335  0.415  0.525  1448 1.000
+# sigma[2]   0.442   0.003 0.086  0.343  0.431  0.551  1085 1.001
+# z_init[1] 33.028   0.171 5.732 26.367 32.620 40.170  1118 0.999
+# z_init[2]  5.066   0.029 0.828  4.131  4.979  6.151   817 1.001
 
 ## Viz
 pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
@@ -665,21 +665,21 @@ mcmc_pairs(Fit_2, pars = pars)
 mcmc_dens(Fit_2, pars = pars) 
 
 ## Summarise the fit
-Fit_3 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_3.rds")
+# Fit_3 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_3.rds")
 print(Fit_3, pars = c("theta", "sigma", "z_init"),
       probs = c(0.1, 0.5, 0.9), digits = 3)
 
 # "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
 
 #             mean se_mean    sd    10%    50%    90% n_eff  Rhat
-# theta[1]   0.611   0.002 0.078  0.516  0.607  0.713  1455 1.001
-# theta[2]   0.031   0.000 0.005  0.025  0.031  0.038  1612 1.001
-# theta[3]   0.780   0.002 0.088  0.673  0.773  0.891  1329 1.002
-# theta[4]   0.022   0.000 0.005  0.017  0.022  0.029  1439 1.001
-# sigma[1]   0.506   0.002 0.083  0.410  0.494  0.615  2612 1.000
-# sigma[2]   0.290   0.001 0.053  0.229  0.283  0.358  2171 1.001
-# z_init[1] 29.157   0.084 4.135 24.015 28.958 34.459  2449 1.000
-# z_init[2]  3.369   0.009 0.386  2.909  3.341  3.847  2041 1.002
+# theta[1]   0.609   0.003 0.080  0.511  0.605  0.710   646 1.008
+# theta[2]   0.031   0.000 0.005  0.024  0.031  0.037   629 1.006
+# theta[3]   0.783   0.004 0.094  0.675  0.774  0.898   591 1.008
+# theta[4]   0.022   0.000 0.005  0.016  0.022  0.029   735 1.007
+# sigma[1]   0.507   0.002 0.089  0.407  0.493  0.624  1408 1.001
+# sigma[2]   0.292   0.002 0.054  0.229  0.286  0.363  1178 1.002
+# z_init[1] 29.220   0.114 4.244 24.012 29.019 34.714  1389 1.001
+# z_init[2]  3.365   0.011 0.391  2.909  3.320  3.879  1172 1.001
 
 ## Viz
 pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
@@ -688,21 +688,21 @@ mcmc_pairs(Fit_3, pars = pars)
 mcmc_dens(Fit_3, pars = pars) 
 
 ## Summarise the fit
-Fit_4 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_4.rds")
+# Fit_4 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_4.rds")
 print(Fit_4, pars = c("theta", "sigma", "z_init"),
       probs = c(0.1, 0.5, 0.9), digits = 3)
 
 # "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
 
 #             mean se_mean    sd    10%    50%    90% n_eff  Rhat
-# theta[1]   0.528   0.003 0.082  0.432  0.518  0.634  1043 1.002
-# theta[2]   0.031   0.000 0.009  0.021  0.030  0.042  1228 1.001
-# theta[3]   0.881   0.004 0.140  0.708  0.878  1.064  1078 1.002
-# theta[4]   0.027   0.000 0.006  0.020  0.027  0.035  1191 1.002
-# sigma[1]   0.369   0.001 0.067  0.294  0.361  0.458  2698 1.000
-# sigma[2]   0.598   0.002 0.103  0.479  0.584  0.731  2563 1.001
-# z_init[1] 31.989   0.104 4.702 26.337 31.645 37.979  2055 1.001
-# z_init[2]  3.001   0.014 0.618  2.282  2.931  3.793  1845 1.002
+# theta[1]   0.533   0.004 0.086  0.432  0.523  0.642   478 1.000
+# theta[2]   0.032   0.000 0.010  0.021  0.030  0.044   548 1.000
+# theta[3]   0.876   0.006 0.142  0.696  0.875  1.060   490 1.000
+# theta[4]   0.027   0.000 0.006  0.020  0.027  0.035   536 0.999
+# sigma[1]   0.370   0.002 0.064  0.296  0.360  0.455  1341 0.999
+# sigma[2]   0.605   0.003 0.107  0.483  0.592  0.739  1055 1.003
+# z_init[1] 31.749   0.128 4.682 25.874 31.522 37.692  1333 1.002
+# z_init[2]  3.005   0.022 0.629  2.243  2.931  3.809   817 1.000
 
 ## Viz
 pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
@@ -711,21 +711,21 @@ mcmc_pairs(Fit_4, pars = pars)
 mcmc_dens(Fit_4, pars = pars) 
 
 ## Summarise the fit
-Fit_5 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_5.rds")
+# Fit_5 <- readRDS("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/FitObj_5.rds")
 print(Fit_5, pars = c("theta", "sigma", "z_init"),
       probs = c(0.1, 0.5, 0.9), digits = 3)
 
 # "True" values: alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
 
 #             mean se_mean    sd    10%    50%    90% n_eff  Rhat
-# theta[1]   0.426   0.002 0.052  0.363  0.423  0.493  1191 1.002
-# theta[2]   0.023   0.000 0.005  0.017  0.023  0.030  1406 1.002
-# theta[3]   1.265   0.005 0.161  1.070  1.255  1.472  1145 1.002
-# theta[4]   0.038   0.000 0.006  0.031  0.038  0.046  1221 1.003
-# sigma[1]   0.249   0.001 0.045  0.198  0.243  0.309  2361 1.003
-# sigma[2]   0.470   0.002 0.080  0.379  0.460  0.573  2774 0.999
-# z_init[1] 31.554   0.055 2.877 28.067 31.408 35.314  2760 1.001
-# z_init[2]  3.196   0.010 0.480  2.621  3.155  3.823  2199 1.000
+# theta[1]   0.426   0.002 0.053  0.361  0.421  0.495   501 1.003
+# theta[2]   0.024   0.000 0.005  0.017  0.023  0.030   615 1.003
+# theta[3]   1.263   0.008 0.162  1.061  1.260  1.464   446 1.004
+# theta[4]   0.038   0.000 0.006  0.031  0.038  0.046   457 1.005
+# sigma[1]   0.250   0.001 0.045  0.198  0.244  0.307  1262 1.001
+# sigma[2]   0.476   0.002 0.083  0.380  0.465  0.586  1357 1.000
+# z_init[1] 31.571   0.070 2.898 27.946 31.520 35.351  1705 1.002
+# z_init[2]  3.210   0.016 0.506  2.622  3.155  3.882  1003 1.001
 
 ## Viz
 pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
@@ -774,8 +774,8 @@ colnames(df) <- c("Time", "Hare_Est", "Lynx_Est", "Hare_EmpDat", "Lynx_EmpDat", 
 plot(df$Time, df$Hare_EmpDat, 
      main = "Stochastically Generated Time Series #1", xlab = "Time", ylab = "Abundance", 
      ylim = c(0, 120), type = "l", 
-     col = "firebrick2", lwd = 2)
-lines(df$Time, df$Lynx_EmpDat, col = "orchid", lwd = 2)
+     col = "red4", lwd = 2)
+lines(df$Time, df$Lynx_EmpDat, col = "orchid4", lwd = 2)
 lines(df$Time, df$Hare_StochGen, col = "firebrick2", lwd = 2, lty = 2)
 lines(df$Time, df$Lynx_StochGen, col = "orchid", lwd = 2, lty = 2)
 lines(df$Time, df$Hare_Est, col = "firebrick2", lwd = 2, lty = 3)
@@ -819,8 +819,8 @@ colnames(df) <- c("Time", "Hare_Est", "Lynx_Est", "Hare_EmpDat", "Lynx_EmpDat", 
 plot(df$Time, df$Hare_EmpDat, 
      main = "Stochastically Generated Time Series #2", xlab = "Time", ylab = "Abundance", 
      ylim = c(0, 120), type = "l", 
-     col = "firebrick2", lwd = 2)
-lines(df$Time, df$Lynx_EmpDat, col = "orchid", lwd = 2)
+     col = "red4", lwd = 2)
+lines(df$Time, df$Lynx_EmpDat, col = "orchid4", lwd = 2)
 lines(df$Time, df$Hare_StochGen, col = "firebrick2", lwd = 2, lty = 2)
 lines(df$Time, df$Lynx_StochGen, col = "orchid", lwd = 2, lty = 2)
 lines(df$Time, df$Hare_Est, col = "firebrick2", lwd = 2, lty = 3)
@@ -864,14 +864,14 @@ colnames(df) <- c("Time", "Hare_Est", "Lynx_Est", "Hare_EmpDat", "Lynx_EmpDat", 
 plot(df$Time, df$Hare_EmpDat, 
      main = "Stochastically Generated Time Series #3", xlab = "Time", ylab = "Abundance", 
      ylim = c(0, 120), type = "l", 
-     col = "firebrick2", lwd = 2)
-lines(df$Time, df$Lynx_EmpDat, col = "orchid", lwd = 2)
+     col = "red4", lwd = 2)
+lines(df$Time, df$Lynx_EmpDat, col = "orchid4", lwd = 2)
 lines(df$Time, df$Hare_StochGen, col = "firebrick2", lwd = 2, lty = 2)
 lines(df$Time, df$Lynx_StochGen, col = "orchid", lwd = 2, lty = 2)
 lines(df$Time, df$Hare_Est, col = "firebrick2", lwd = 2, lty = 3)
 lines(df$Time, df$Lynx_Est, col = "orchid", lwd = 2, lty = 3)
-legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
-       lwd = 2, lty = c(1, 2, 3))
+# legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
+#        lwd = 2, lty = c(1, 2, 3))
 
 #### Fit 4 ####
 ## Model estimates
@@ -909,14 +909,14 @@ colnames(df) <- c("Time", "Hare_Est", "Lynx_Est", "Hare_EmpDat", "Lynx_EmpDat", 
 plot(df$Time, df$Hare_EmpDat, 
      main = "Stochastically Generated Time Series #4", xlab = "Time", ylab = "Abundance", 
      ylim = c(0, 120), type = "l", 
-     col = "firebrick2", lwd = 2)
-lines(df$Time, df$Lynx_EmpDat, col = "orchid", lwd = 2)
+     col = "red4", lwd = 2)
+lines(df$Time, df$Lynx_EmpDat, col = "orchid4", lwd = 2)
 lines(df$Time, df$Hare_StochGen, col = "firebrick2", lwd = 2, lty = 2)
 lines(df$Time, df$Lynx_StochGen, col = "orchid", lwd = 2, lty = 2)
 lines(df$Time, df$Hare_Est, col = "firebrick2", lwd = 2, lty = 3)
 lines(df$Time, df$Lynx_Est, col = "orchid", lwd = 2, lty = 3)
-legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
-       lwd = 2, lty = c(1, 2, 3))
+# legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
+#        lwd = 2, lty = c(1, 2, 3))
 
 #### Fit 5 ####
 ## Model estimates
@@ -954,14 +954,14 @@ colnames(df) <- c("Time", "Hare_Est", "Lynx_Est", "Hare_EmpDat", "Lynx_EmpDat", 
 plot(df$Time, df$Hare_EmpDat, 
      main = "Stochastically Generated Time Series #5", xlab = "Time", ylab = "Abundance", 
      ylim = c(0, 120), type = "l", 
-     col = "firebrick2", lwd = 2)
-lines(df$Time, df$Lynx_EmpDat, col = "orchid", lwd = 2)
+     col = "red4", lwd = 2)
+lines(df$Time, df$Lynx_EmpDat, col = "orchid4", lwd = 2)
 lines(df$Time, df$Hare_StochGen, col = "firebrick2", lwd = 2, lty = 2)
 lines(df$Time, df$Lynx_StochGen, col = "orchid", lwd = 2, lty = 2)
 lines(df$Time, df$Hare_Est, col = "firebrick2", lwd = 2, lty = 3)
 lines(df$Time, df$Lynx_Est, col = "orchid", lwd = 2, lty = 3)
-legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
-       lwd = 2, lty = c(1, 2, 3))
+# legend("topright", legend = c("Empirical Data", "Stochastically Generated Data", "Model Estimates"),
+#        lwd = 2, lty = c(1, 2, 3))
 ```
 
 ### Outcome:
@@ -1194,6 +1194,80 @@ The parameter estimates made by the autoregressive model do not replicate the da
 
 ## 3. Fit NM model to deterministic data
 
+```{r}
+Mod_FP_1_Det <- read.csv("0_Data/0_Deterministic/Mod_FP_1_Det.csv")
+Mod_FP_2_SLC_Det <- read.csv("0_Data/0_Deterministic/Mod_FP_2_SLC_Det.csv")
+Mod_FP_2_DO_Det <- read.csv("0_Data/0_Deterministic/Mod_FP_2_DO_Det.csv")
+Mod_FP_3_Det <- read.csv("0_Data/0_Deterministic/Mod_FP_3_DO_Det.csv")
+
+N <- length(Mod_FP_1_Det$Time) - 1
+ts <- 1:N
+y_init <- c(Mod_FP_1_Det$P[1], Mod_FP_1_Det$I[1])
+y <- as.matrix(Mod_FP_1_Det[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2])
+Mod_FP_1_Det <- list(N = N, ts = ts, y_init = y_init, y = y)
+
+N <- length(Mod_FP_2_SLC_Det$Time) - 1
+ts <- 1:N
+y_init <- c(Mod_FP_2_SLC_Det$P[1], Mod_FP_2_SLC_Det$I[1])
+y <- as.matrix(Mod_FP_2_SLC_Det[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2])
+Mod_FP_2_SLC_Det <- list(N = N, ts = ts, y_init = y_init, y = y)
+
+N <- length(Mod_FP_2_DO_Det$Time) - 1
+ts <- 1:N
+y_init <- c(Mod_FP_2_DO_Det$P[1], Mod_FP_2_DO_Det$I[1])
+y <- as.matrix(Mod_FP_2_DO_Det[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2])
+Mod_FP_2_DO_Det <- list(N = N, ts = ts, y_init = y_init, y = y)
+
+N <- length(Mod_FP_3_Det$Time) - 1
+ts <- 1:N
+y_init <- c(Mod_FP_3_Det$P[1], Mod_FP_3_Det$I[1])
+y <- as.matrix(Mod_FP_3_Det[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2])
+Mod_FP_3_Det <- list(N = N, ts = ts, y_init = y_init, y = y)
+
+model <- stan_model("1_Models/FP_1_AllParms.stan")
+Mod_FP_1_Det_Fit <- sampling(model, data = Mod_FP_1_Det, chains = 4, iter = 1000, cores = 4, seed = 123)
+
+model <- stan_model("1_Models/FP_2_AllParms.stan")
+Mod_FP_2_SLC_Det_Fit <- sampling(model, data = Mod_FP_2_SLC_Det, chains = 4, iter = 1000, cores = 4, seed = 123)
+Mod_FP_2_DO_Det_Fit <- sampling(model, data = Mod_FP_2_DO_Det, chains = 4, iter = 1000, cores = 4, seed = 123)
+
+model <- stan_model("1_Models/FP_3_AllParms.stan")
+Mod_FP_3_Det_Fit <- sampling(model, data = Mod_FP_3_Det, chains = 4, iter = 1000, cores = 4, seed = 123)
+
+saveRDS(Mod_FP_1_Det_Fit, "3_Extras/Old/Chapter1Review/FitObjs/Mod_FP_1_Det_Fit.rds")
+saveRDS(Mod_FP_2_SLC_Det_Fit, "3_Extras/Old/Chapter1Review/FitObjs/Mod_FP_2_SLC_Det_Fit.rds")
+saveRDS(Mod_FP_2_DO_Det_Fit, "3_Extras/Old/Chapter1Review/FitObjs/Mod_FP_2_DO_Det_Fit.rds")
+saveRDS(Mod_FP_3_Det_Fit, "3_Extras/Old/Chapter1Review/FitObjs/Mod_FP_3_Det_Fit.rds")
+
+print(Mod_FP_1_Det_Fit, pars = c("theta", "sigma", "z_init"), probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars)
+
+print(Mod_FP_2_SLC_Det_Fit, pars = c("theta", "sigma", "z_init"), probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars)
+
+print(Mod_FP_2_DO_Det_Fit, pars = c("theta", "sigma", "z_init"), probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars)
+
+print(Mod_FP_3_Det_Fit, pars = c("theta", "sigma", "z_init"), probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(fit, pars)
+mcmc_pairs(fit, pars)
+mcmc_dens(fit, pars)
+```
+
 Here's some deterministic data:
 
 ```{r}
@@ -1214,17 +1288,15 @@ TT <- seq(0, 100, 1)
 results <- lsoda(N0, TT, NowakMay_T2_Dam, parms)
 NM_DetSim <- data.frame(results); colnames(NM_DetSim) <- c("Time", "Parasites", "ImmuneCells")
 
-write_csv(NM_DetSim, "Chapter1Review/Data/NM_DetSim_DamOsc.csv")
-
 plot(NM_DetSim$Time, NM_DetSim$Parasites, type = "l", col = "cornflowerblue", ylim = c(0, max(NM_DetSim$ImmuneCells)), xlab = "Time", ylab = "Population Abundance", main = "Parameterization: Damping Oscillations")
 lines(NM_DetSim$Time, NM_DetSim$ImmuneCells, col = "firebrick2")
 ```
 
 Now, let's use these data to fit the model. We'll start with 6 free parameters.
 
-```{r}
+```{r, include = FALSE}
 ## Data
-NM_DetSim <- read_csv("/Users/mjarviscross/Desktop/Github/FcnalRespProj/Chapter1Review/Data/NM_DetSim_DamOsc.csv"); head(NM_DetSim)
+head(NM_DetSim)
 N <- length(NM_DetSim$Time) - 1
 ts <- 1:N
 y_init <- c(NM_DetSim$Parasites[1], NM_DetSim$ImmuneCells[1])
@@ -1234,19 +1306,16 @@ y <- cbind(y[ , 1], y[ , 2])
 NM_DetSim <- list(N = N, ts = ts, y_init = y_init, y = y)
 
 ## Compile model
-model <- stan_model("/Users/mjarviscross/Desktop/Github/FcnalRespProj/Chapter1Review/Stan_Models/NM_DamOsc_3.stan")
+model <- stan_model("3_Extras/Old/Chapter1Review/Stan_Models/NM_DamOsc_3.stan")
 
 ## Fitting
-fit <- sampling(model, data = NM_DetSim, chains = 2, iter = 1000, cores = 2, seed = 123)
-saveRDS(fit, file = "/Users/mjarviscross/Desktop/Github/FcnalRespProj/Chapter1Review/FitObjs/NM_DetSim_DamOsc_FitObj.rds")
+fit <- sampling(model, data = NM_DetSim, chains = 4, iter = 2000, cores = 4, seed = 123)
 ```
 
 ```{r}
-fit <- readRDS("/Users/mjarviscross/Desktop/Github/FcnalRespProj/Chapter1Review/FitObjs/NM_DetSim_DamOsc_FitObj.rds")
-
 ## Summarise the fit
 fitSumm <- print(fit, pars = c("theta", "sigma", "z_init"),
-                 probs=c(0.1, 0.5, 0.9), digits = 3)
+                 probs = c(0.1, 0.5, 0.9), digits = 3)
 
 #              mean se_mean    sd     10%     50%     90% n_eff  Rhat
 # theta[1]    2.917   0.019 0.408   2.442   2.884   3.444   448 1.009
