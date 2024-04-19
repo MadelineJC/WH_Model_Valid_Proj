@@ -20,17 +20,17 @@ library(MCMCvis)
 
 # Models, Forms, and Associated Dynamics
 
-+----------+---------------------+----------------------------+--------------------------+
-|          | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
-+==========+=====================+============================+==========================+
-| Type I   | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type II  | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
-|          |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type III | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-|          |                     | 2.  Damping oscillations   |                          |
-+----------+---------------------+----------------------------+--------------------------+
++--------------+---------------------+----------------------------+--------------------------+
+|              | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
++==============+=====================+============================+==========================+
+| Type I       | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type II      | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
+|              |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type III     | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
+|              |                     | 2.  Damping oscillations   |                          |
++--------------+---------------------+----------------------------+--------------------------+
 
 ## Antia et al. (1994)
 
@@ -40,15 +40,23 @@ $\frac{dP}{dt} = rP - kPI$, if $P < D$, where $D = 10^9$. If $P < D$, $P \righta
 
 $\frac{dI}{dt} = \rho I(\frac{P}{P + \phi})$
 
-| Symbol | Parameter                                                                              | Value        |
-|--------|----------------------------------------------------------------------------------------|--------------|
-| $P$    | Parasite abundance                                                                     | $1**$        |
-| $I$    | Host immune cell abundance                                                             | $1**$        |
-| $r$    | Replication rate of parasite                                                           | $0.1 - 10.0$ |
-| $k$    | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
-| $\rho$ | Maximum replication rate of host's immune system                                       | $1$          |
-| $\phi$ | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
-| $D$    | Lethal within-host parasite abundance                                                  | $10^9$       |
++----------+----------------------------------------------------------------------------------------+--------------+
+| Symbol   | Parameter                                                                              | Value        |
++==========+========================================================================================+==============+
+| $P$      | Parasite abundance                                                                     | $1**$        |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $I$      | Host immune cell abundance                                                             | $1**$        |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $r$      | Replication rate of parasite                                                           | $0.1 - 10.0$ |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $k$      | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $\rho$   | Maximum replication rate of host's immune system                                       | $1$          |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $\phi$   | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $D$      | Lethal within-host parasite abundance                                                  | $10^9$       |
++----------+----------------------------------------------------------------------------------------+--------------+
 
 ## Fenton and Perkins (2010)
 
@@ -64,15 +72,23 @@ With a TII functional response, $f(P)=\frac{\beta P}{1+h \beta P}$
 
 With a TIII functional response, $f(P)=\frac{\beta P^2}{1+h \beta P^2}$
 
-| Symbol   | Parameter                                                              | Value        |
-|----------|------------------------------------------------------------------------|--------------|
-| $P$      | Parasite abundance                                                     | $1$          |
-| $I$      | Host immune cell abundance                                             | $1$          |
-| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
-| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
-| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
+| Symbol    | Parameter                                                              | Value        |
++===========+========================================================================+==============+
+| $P$       | Parasite abundance                                                     | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $I$       | Host immune cell abundance                                             | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++-----------+------------------------------------------------------------------------+--------------+
+| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++-----------+------------------------------------------------------------------------+--------------+
+| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
++-----------+------------------------------------------------------------------------+--------------+
+| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
 
 ## Modified Fenton and Perkins (2010)
 
@@ -80,16 +96,25 @@ $\frac{dP}{dt}=rP-If(P)$
 
 $\frac{dI}{dt}=b + ef(P)I - \delta I$
 
-| Symbol   | Parameter                                                              | Value        |
-|----------|------------------------------------------------------------------------|--------------|
-| $P$      | Parasite abundance                                                     | $1$          |
-| $I$      | Host immune cell abundance                                             | $1$          |
-| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
-| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
-| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
-| $b$      | Immigration of immune cells in absence of infection                    | $35$         |
++-----------+------------------------------------------------------------------------+--------------+
+| Symbol    | Parameter                                                              | Value        |
++===========+========================================================================+==============+
+| $P$       | Parasite abundance                                                     | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $I$       | Host immune cell abundance                                             | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++-----------+------------------------------------------------------------------------+--------------+
+| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++-----------+------------------------------------------------------------------------+--------------+
+| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
++-----------+------------------------------------------------------------------------+--------------+
+| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $b$       | Immigration of immune cells in absence of infection                    | $35$         |
++-----------+------------------------------------------------------------------------+--------------+
 
 # Deterministic Simulations
 
@@ -5766,4 +5791,206 @@ lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
 lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
 # legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+```
+
+# Troubleshooting: Time Series Length
+
+Here, we'll be fitting the adapted Fenton and Perkins (II) model to a shorter time series that contains fewer oscillations, and the Lotka-Volterra model to a longer time series (more oscillations), to determine how differences between model expectations and data (in terms of phase) affect estimability.
+
+## Mod. Fenton and Perkins (2010)
+
+### Stable Limit Cycle
+
+```{r}
+ModFentonPerkins_2_SLC_Stoch_1_SHORT <- ModFentonPerkins_2_SLC_Stoch_List[[1]][1:15, ]
+plot(ModFentonPerkins_2_SLC_Stoch_1_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_1_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_1_SHORT)))
+lines(ModFentonPerkins_2_SLC_Stoch_1_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_1_SHORT$I)
+
+ModFentonPerkins_2_SLC_Stoch_2_SHORT <- ModFentonPerkins_2_SLC_Stoch_List[[2]][1:15, ]
+ModFentonPerkins_2_SLC_Stoch_3_SHORT <- ModFentonPerkins_2_SLC_Stoch_List[[3]][1:15, ]
+ModFentonPerkins_2_SLC_Stoch_4_SHORT <- ModFentonPerkins_2_SLC_Stoch_List[[4]][1:15, ]
+ModFentonPerkins_2_SLC_Stoch_5_SHORT <- ModFentonPerkins_2_SLC_Stoch_List[[5]][1:15, ]
+
+## Comparing to empirical data
+Mod_FP_2_SLC_Det_SHORT <- Mod_FP_2_SLC_Det[1:140, ]
+
+plot(ModFentonPerkins_2_SLC_Stoch_1_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_1_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_1_SHORT)), col = "forestgreen")
+lines(ModFentonPerkins_2_SLC_Stoch_1_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_1_SHORT$I, col = "cornflowerblue")
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$P, col = "forestgreen", lty = 3)
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$I, col = "cornflowerblue", lty = 3)
+
+plot(ModFentonPerkins_2_SLC_Stoch_2_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_2_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_2_SHORT)), col = "forestgreen")
+lines(ModFentonPerkins_2_SLC_Stoch_2_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_2_SHORT$I, col = "cornflowerblue")
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$P, col = "forestgreen", lty = 3)
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$I, col = "cornflowerblue", lty = 3)
+
+plot(ModFentonPerkins_2_SLC_Stoch_3_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_3_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_3_SHORT)), col = "forestgreen")
+lines(ModFentonPerkins_2_SLC_Stoch_3_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_3_SHORT$I, col = "cornflowerblue")
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$P, col = "forestgreen", lty = 3)
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$I, col = "cornflowerblue", lty = 3)
+
+plot(ModFentonPerkins_2_SLC_Stoch_4_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_4_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_4_SHORT)), col = "forestgreen")
+lines(ModFentonPerkins_2_SLC_Stoch_4_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_4_SHORT$I, col = "cornflowerblue")
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$P, col = "forestgreen", lty = 3)
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$I, col = "cornflowerblue", lty = 3)
+
+plot(ModFentonPerkins_2_SLC_Stoch_5_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_5_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_5_SHORT)), col = "forestgreen")
+lines(ModFentonPerkins_2_SLC_Stoch_5_SHORT$Time, ModFentonPerkins_2_SLC_Stoch_5_SHORT$I, col = "cornflowerblue")
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$P, col = "forestgreen", lty = 3)
+lines(Mod_FP_2_SLC_Det_SHORT$Time, Mod_FP_2_SLC_Det_SHORT$I, col = "cornflowerblue", lty = 3)
+```
+
+From this group, **Time Series 2** is the only one stat really stay in phase, so we'll use that.
+
+### Damping Oscillations
+
+```{r}
+nrow(ModFentonPerkins_2_DO_Stoch_List[[1]]); nrow(ModFentonPerkins_2_DO_Stoch_List[[2]])
+nrow(ModFentonPerkins_2_DO_Stoch_List[[3]]); nrow(ModFentonPerkins_2_DO_Stoch_List[[4]])
+nrow(ModFentonPerkins_2_DO_Stoch_List[[5]])
+
+ModFentonPerkins_2_DO_Stoch_2_SHORT <- ModFentonPerkins_2_DO_Stoch_List[[2]][1:15, ]
+plot(ModFentonPerkins_2_DO_Stoch_2_SHORT$Time, ModFentonPerkins_2_DO_Stoch_2_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_2_SHORT)))
+lines(ModFentonPerkins_2_DO_Stoch_2_SHORT$Time, ModFentonPerkins_2_DO_Stoch_2_SHORT$I)
+
+ModFentonPerkins_2_DO_Stoch_3_SHORT <- ModFentonPerkins_2_DO_Stoch_List[[3]][1:15, ]
+ModFentonPerkins_2_DO_Stoch_4_SHORT <- ModFentonPerkins_2_DO_Stoch_List[[4]][1:15, ]
+ModFentonPerkins_2_DO_Stoch_5_SHORT <- ModFentonPerkins_2_DO_Stoch_List[[5]][1:15, ]
+
+## Comparing to empirical data
+Mod_FP_2_DO_Det_SHORT <- Mod_FP_2_DO_Det[1:140, ]
+
+plot(ModFentonPerkins_2_DO_Stoch_2_SHORT$Time, ModFentonPerkins_2_DO_Stoch_2_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_2_SHORT)), col = "forestgreen")
+lines(ModFentonPerkins_2_DO_Stoch_2_SHORT$Time, ModFentonPerkins_2_DO_Stoch_2_SHORT$I, col = "cornflowerblue")
+lines(Mod_FP_2_DO_Det_SHORT$Time, Mod_FP_2_DO_Det_SHORT$P, col = "forestgreen", lty = 3)
+lines(Mod_FP_2_DO_Det_SHORT$Time, Mod_FP_2_DO_Det_SHORT$I, col = "cornflowerblue", lty = 3)
+
+plot(ModFentonPerkins_2_DO_Stoch_3_SHORT$Time, ModFentonPerkins_2_DO_Stoch_3_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_3_SHORT)), col = "forestgreen")
+lines(ModFentonPerkins_2_DO_Stoch_3_SHORT$Time, ModFentonPerkins_2_DO_Stoch_3_SHORT$I, col = "cornflowerblue")
+lines(Mod_FP_2_DO_Det_SHORT$Time, Mod_FP_2_DO_Det_SHORT$P, col = "forestgreen", lty = 3)
+lines(Mod_FP_2_DO_Det_SHORT$Time, Mod_FP_2_DO_Det_SHORT$I, col = "cornflowerblue", lty = 3)
+
+plot(ModFentonPerkins_2_DO_Stoch_4_SHORT$Time, ModFentonPerkins_2_DO_Stoch_4_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_4_SHORT)), col = "forestgreen")
+lines(ModFentonPerkins_2_DO_Stoch_4_SHORT$Time, ModFentonPerkins_2_DO_Stoch_4_SHORT$I, col = "cornflowerblue")
+lines(Mod_FP_2_DO_Det_SHORT$Time, Mod_FP_2_DO_Det_SHORT$P, col = "forestgreen", lty = 3)
+lines(Mod_FP_2_DO_Det_SHORT$Time, Mod_FP_2_DO_Det_SHORT$I, col = "cornflowerblue", lty = 3)
+
+plot(ModFentonPerkins_2_DO_Stoch_5_SHORT$Time, ModFentonPerkins_2_DO_Stoch_5_SHORT$P, type = "l", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_5_SHORT)), col = "forestgreen")
+lines(ModFentonPerkins_2_DO_Stoch_5_SHORT$Time, ModFentonPerkins_2_DO_Stoch_5_SHORT$I, col = "cornflowerblue")
+lines(Mod_FP_2_DO_Det_SHORT$Time, Mod_FP_2_DO_Det_SHORT$P, col = "forestgreen", lty = 3)
+lines(Mod_FP_2_DO_Det_SHORT$Time, Mod_FP_2_DO_Det_SHORT$I, col = "cornflowerblue", lty = 3)
+
+ModFentonPerkins_2_DO_Stoch_SHORT_List <- list(ModFentonPerkins_2_DO_Stoch_2_SHORT,
+                                               ModFentonPerkins_2_DO_Stoch_3_SHORT,
+                                               ModFentonPerkins_2_DO_Stoch_4_SHORT,
+                                               ModFentonPerkins_2_DO_Stoch_5_SHORT)
+```
+
+These all look good, so we'll use all of these.
+
+## Lotka-Volterra
+
+```{r}
+x0 <- c(u = 30, v = 4) # Given by Carpenter
+a <- c("alpha*u",
+       "beta*v*u", 
+       "gamma*v",
+       "delta*u*v")
+nu <- matrix(c(+1, -1, 0, 0,
+               0, 0, -1, +1), nrow = 2, byrow = TRUE)
+alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024
+parms1 <- c(alpha = alpha, beta = beta, gamma = gamma, delta = delta)
+tf = 60
+method <- "OTL"
+simName <- "LV"
+
+Seeds <- c(1); BC_Stoch_List <- list()
+for (i in 1:length(Seeds)){
+  set.seed(Seeds[i])
+  BC_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                    verbose = FALSE, 
+                                    consoleInterval = 1, 
+                                    censusInterval = 1, 
+                                    maxWallTime = 30, 
+                                    ignoreNegativeState = TRUE)) 
+  BC_Stoch <- BC_Stoch$data; BC_Stoch <- as.data.frame(BC_Stoch)
+  colnames(BC_Stoch) <- c("Time", "Hare", "Lynx")
+  FirstZero <- which(BC_Stoch$Lynx == 0)[1]
+  if (is.na(FirstZero)){
+    BC_Stoch_List[[i]] <- BC_Stoch
+  } else {
+    BC_Stoch <- BC_Stoch[1:FirstZero - 1, ]
+    BC_Stoch_List[[i]] <- BC_Stoch
+  }
+}
+
+
+plot(1:nrow(BC_Stoch_List[[1]]), BC_Stoch_List[[1]]$Hare, type = "l", col = "orchid", lwd = 2)
+lines(1:nrow(BC_Stoch_List[[1]]), BC_Stoch_List[[1]]$Lynx, col = "firebrick2", lwd = 2)
+```
+
+## Fitting
+
+```{r}
+## Mod. Fenton and Perkins, SLC
+N <- length(ModFentonPerkins_2_SLC_Stoch_2_SHORT$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_SLC_Stoch_2_SHORT$P[1], ModFentonPerkins_2_SLC_Stoch_2_SHORT$I[1])
+y <- as.matrix(ModFentonPerkins_2_SLC_Stoch_2_SHORT[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2]); 
+ModFentonPerkins_2_SLC_Stoch_2_SHORT_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+
+model <- stan_model("1_Models/FP_2_AllParms.stan")
+
+ModFentonPerkins_2_SLC_Stoch_2_SHORT_Fit <- sampling(model, data = ModFentonPerkins_2_SLC_Stoch_2_SHORT_StanData, chains = 4, iter = 1000, cores = 4, seed = 123)
+
+## Mod. Fenton and Perkins, DO
+ModFentonPerkins_2_DO_Stoch_SHORT_StanData_List <- list()
+for (i in 1:4){
+  ModFentonPerkins_2_DO_Stoch_SHORT <- ModFentonPerkins_2_DO_Stoch_SHORT_List[[i]]
+  N <- length(ModFentonPerkins_2_DO_Stoch_SHORT$Time) - 1
+  ts <- 1:N
+  y_init <- c(ModFentonPerkins_2_DO_Stoch_SHORT$P[1], ModFentonPerkins_2_DO_Stoch_SHORT$I[1])
+  y <- as.matrix(ModFentonPerkins_2_DO_Stoch_SHORT[2:(N + 1), 2:3])
+  y <- cbind(y[ , 1], y[ , 2]); 
+  ModFentonPerkins_2_DO_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  ModFentonPerkins_2_DO_Stoch_SHORT_StanData_List[[i]] <- ModFentonPerkins_2_DO_StanData
+}
+
+ModFentonPerkins_2_DO_Stoch_2_SHORT_Fit <- sampling(model, data = ModFentonPerkins_2_DO_Stoch_SHORT_StanData_List[[1]], chains = 4, iter = 1000, cores = 4, seed = 123)
+ModFentonPerkins_2_DO_Stoch_3_SHORT_Fit <- sampling(model, data = ModFentonPerkins_2_DO_Stoch_SHORT_StanData_List[[2]], chains = 4, iter = 1000, cores = 4, seed = 123)
+ModFentonPerkins_2_DO_Stoch_4_SHORT_Fit <- sampling(model, data = ModFentonPerkins_2_DO_Stoch_SHORT_StanData_List[[3]], chains = 4, iter = 1000, cores = 4, seed = 123)
+ModFentonPerkins_2_DO_Stoch_5_SHORT_Fit <- sampling(model, data = ModFentonPerkins_2_DO_Stoch_SHORT_StanData_List[[4]], chains = 4, iter = 1000, cores = 4, seed = 123)
+
+## Lotka-Volterra
+BC_Stoch <- BC_Stoch_List[[1]]
+N <- length(BC_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(BC_Stoch$Hare[1], BC_Stoch$Lynx[1])
+y <- as.matrix(BC_Stoch[2:(N + 1), 2:3])
+y <- cbind(y[ , 1], y[ , 2]); 
+BC_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+
+model <- stan_model("3_Extras/Old/Chapter1Review/Bob-Carpenter_Example/lotka-volterra.stan")
+
+LV_Long_Fit <- sampling(model, data = BC_StanData, iter = 1000, chains = 4, cores = 4, seed = 123)
+```
+
+### Summarising
+
+```{r}
+print(ModFentonPerkins_2_SLC_Stoch_2_SHORT_Fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"), probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(ModFentonPerkins_2_DO_Stoch_2_SHORT_Fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"), probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_Stoch_3_SHORT_Fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"), probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_Stoch_4_SHORT_Fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"), probs = c(0.1, 0.5, 0.9), digits = 3)
+print(ModFentonPerkins_2_DO_Stoch_5_SHORT_Fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"), probs = c(0.1, 0.5, 0.9), digits = 3)
+
+print(LV_Long_Fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]"), probs = c(0.1, 0.5, 0.9), digits = 3)
+```
+
+# Troubleshooting: Re-Scaling Parameters of Fenton and Perkins (2010) Model
+
+```{r}
+
 ```
