@@ -1,5 +1,3 @@
-#### Autoregressive Messing Around ==================================
-
 ## Packages ##
 library(rstan)
 library(bayesplot)
@@ -7,11 +5,11 @@ library(tidyverse)
 library(deSolve)
 library(GillespieSSA)
 
-#### Ex. Marty sent =================================================
+#### Ex. Marty sent ===========================================================
 # Source: https://medewitt.github.io/resources/stan_ar_models.html 
 
 ## Data generation ##
-fake_data <-arima.sim(n = 200, model = list(ar = c(.2, .5, .05)))
+fake_data <- arima.sim(n = 200, model = list(ar = c(0.2, 0.5, 0.05)))
 ts.plot(fake_data, main = "Time Series Plot of Our Fake Data")
 
 ## The model ##
@@ -34,10 +32,10 @@ model {
       y[n] ~ normal(mu, sigma);
   }
 }", 
-"AutoRegressive_Trial.stan")
+"3_Extras/AutoregressiveModel/GitExample.stan")
 
 ## Compile model ##
-model <- stan_model("AutoRegressive_Trial.stan")
+model <- stan_model("3_Extras/AutoregressiveModel/GitExample.stan")
 
 ## Format data ##
 stan_dat <- list(
@@ -48,14 +46,14 @@ stan_dat <- list(
 
 ## Fitting ##
 fit <- sampling(model, stan_dat,
-                cores = 2, iter = 1000,
-                refresh = 0, chains = 2)
+                cores = 4, iter = 2000,
+                refresh = 0, chains = 4)
 
 ## Model checks ##
-fit_summ <- print(fit, pars=c("alpha", "beta", "sigma"),
-                  probs=c(0.1, 0.5, 0.9), digits = 3)
+fit_summ <- print(fit, pars = c("alpha", "beta", "sigma"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("alpha", "beta[1]", "beta[2]", "beta[3]", "sigma")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
 fit_Trace <- stan_trace(fit,parms); fit_Trace
 fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
 fit_Dens <- mcmc_dens(fit,parms); fit_Dens
@@ -63,24 +61,27 @@ fit_Dens <- mcmc_dens(fit,parms); fit_Dens
 # Inference
 print(fit, pars = "beta")
 
-#### Stan user guide ================================================
-write("
-data {
-  int<lower=0> N;
-  vector[N] y;
-}
-parameters {
-  real alpha;
-  real beta;
-  real<lower=0> sigma;
-}
-model {
-  for (n in 2:N)
-    y[n] ~ normal(alpha + beta * y[n-1], sigma);
-}",
-"StanUserGuide_Model.stan")
+## Okay, so while the model seems to think it knows what it's doing, these estimates actually aren't incredible.
+## Recall that the true values are 0.2, 0.5, and 0.05.
 
-#### Attempt 3: Single species ================================================
+#### Stan user guide ==========================================================
+# write("
+# data {
+#   int<lower=0> N;
+#   vector[N] y;
+# }
+# parameters {
+#   real alpha;
+#   real beta;
+#   real<lower=0> sigma;
+# }
+# model {
+#   for (n in 2:N)
+#     y[n] ~ normal(alpha + beta * y[n-1], sigma);
+# }",
+# "3_Extras/AutoregressiveModel/StanUserGuide_Model.stan")
+
+#### Single Species: Logistic Growth ==========================================
 
 ## Let's generate some fake data ##
 ## Deterministic ##
@@ -160,18 +161,18 @@ model {
       //y[t] ~ normal(mu, sigma);
   }
 }",
-"Autoregressive_Attempt3.stan")
+"3_Extras/AutoregressiveModel/Autoregressive_LogisticGrowth.stan")
 
-model <- stan_model("Autoregressive_Attempt3.stan")
+model <- stan_model("3_Extras/AutoregressiveModel/Autoregressive_LogisticGrowth.stan")
 
 ## Fitting ##
 fit <- sampling(model, data = StanData, chains = 4, iter = 2000, cores = 4, seed = 123)
 
 ## Model checks ##
-fit_summ <- print(fit, pars=c("r", "K"),
-                  probs=c(0.1, 0.5, 0.9), digits = 3)
+fit_summ <- print(fit, pars = c("r", "K"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "K")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
 fit_Trace <- stan_trace(fit,parms); fit_Trace
 fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
 fit_Dens <- mcmc_dens(fit,parms); fit_Dens
@@ -246,193 +247,9 @@ Comp_Plot <- ggplot() +
         panel.grid.minor = element_blank())
 Comp_Plot
 
-#### Attempt 4: 2-species, Antia ====================================
+## Okay, so that actually went really well! I'd call this a working model. 
 
-## Let's generate some fake data ##
-## Deterministic ##
-Antia <- function(t,y,p){
-  r <- p[1]; K <- p[2]; b <- p[3]; o <- p[4]
-  P <- y[1]; I <- y[2]
-  dP = r*P - K*P*I
-  dI = b*I*(P/(P+o))
-  list(c(dP, dI))
-}
-r <- 1; K <- 0.01; b <- 1; o <- 1000
-parms <- c(r, K, b, o)
-P0 <- 1; I0 <- 1
-SysInit <- c(P0, I0)
-TT <- seq(1,20,0.1) 
-results <- lsoda(SysInit, TT, Antia, parms)
-N <- results[,2]
-Antia_Det = data.frame(results); colnames(Antia_Det) <- c("Time", "P", "I")
-Antia_Det_Plot <- ggplot(Antia_Det, aes(x = Time))+
-  geom_line(aes(y = P))+
-  geom_line(aes(y = I))+
-  theme_minimal()
-Antia_Det_Plot
-
-## Stochastic ##
-x0 <- c(P=1,I=1) 
-a <- c("P*r",
-       "k*P*I", 
-       "p*I*(P/(P + o))")
-nu <- matrix(c(+1,-1,0,
-               0,0,+1), nrow = 2, byrow = TRUE)
-
-r <- 1; k <- 0.01; p <- 1; o <- 1000
-parms1 <- c(r = r, k = k, p = p, o = o)
-tf = 20
-method <- "OTL"
-Name <- "Antia"
-set.seed(6)
-Antia_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, Name,
-                                  verbose = FALSE, 
-                                  consoleInterval = 1, 
-                                  censusInterval = 0.1, 
-                                  maxWallTime = 30, 
-                                  ignoreNegativeState = TRUE)) 
-Antia_Stoch <- Antia_Stoch$data 
-Antia_Stoch <- as.data.frame(Antia_Stoch)
-colnames(Antia_Stoch) <- c("Time", "P", "I")
-Antia_Stoch_Plot <- ggplot(Antia_Stoch,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = I))+
-  theme_minimal()
-Antia_Stoch_Plot
-
-## Wrangle data into form Stan likes ##
-N <- length(Antia_Stoch$Time) - 1
-ts <- 1:N
-# y_init <- c(LogisticGrowth_Stoch$Abundance[1])
-# y <- as.matrix(LogisticGrowth_Stoch[2:(N + 1), 2:2])
-# y <- as.vector(LogisticGrowth_Stoch$Abundance)
-P <- as.vector(Antia_Stoch[2:(N + 1), 2:2])
-I <- as.vector(Antia_Stoch[2:(N + 1), 3:3])
-StanData <- list(N = N, ts = ts, P = P, I = I)
-
-write("
-data {
-  int<lower=0> N; // Number of observations
-  //real<lower = 0> y[N, 2]; // Outcome
-  //vector[N] y;
-  real P[N];
-  real I[N];
-}
-parameters {
-  real<lower = 0> r; // Replication rate
-  real<lower = 0> K; // Rate of destruction of parasite
-  real<lower = 0> p; // Max. growth rate of immunity
-  real<lower = 0> o; // Parasite density at which immunity slows
-  real<lower=0> sigma; // Error
-}
-model {
-  r ~ normal(1, 1); // 1
-  K ~ normal(0, 1); // 0.01
-  p ~ normal(1, 1); // 1
-  o ~ normal(1000, 1); // 1000
-  sigma ~ lognormal(-1, 1);
-  for (t in 2:N) {
-    P[t] ~ normal(P[t-1] + r*P[t-1] - K*P[t-1]*I[t-1], sigma);
-    I[t] ~ normal(I[t-1] + p*I[t-1]*(P[t-1]/(P[t-1] + o)), sigma);
-  }
-}",
-"Autoregressive_Attempt4.stan")
-
-model <- stan_model("Autoregressive_Attempt4.stan")
-
-## Fitting ##
-fit <- sampling(model, data = StanData, chains = 4, iter = 2000, cores = 4, seed = 123)
-
-## Model checks ##
-fit_summ <- print(fit, pars=c("r", "K", "p", "o"),
-                  probs=c(0.1, 0.5, 0.9), digits = 3)
-parms <- c("r", "K", "p", "o")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Dens <- mcmc_dens(fit,parms); fit_Dens
-
-## Let's do some plotting to compare data to estimates ##
-posterior <- rstan::extract(fit)
-r_med <- median(posterior$r); K_med <- median(posterior$K); p_med <- median(posterior$p); o_med <- median(posterior$o)
-r_low <- quantile(posterior$r, 0.025); K_low <- quantile(posterior$K, 0.025); p_low <- quantile(posterior$p, 0.025); o_low <- quantile(posterior$o, 0.025)
-r_high <- quantile(posterior$r, 0.975); K_high <- quantile(posterior$K, 0.975); p_high <- quantile(posterior$p, 0.975); o_high <- quantile(posterior$o, 0.975)
-
-## Med estimates ##
-Antia <- function(t,y,p){
-  r <- p[1]; K <- p[2]; b <- p[3]; o <- p[4]
-  P <- y[1]; I <- y[2]
-  dP = r*P - K*P*I
-  dI = b*I*(P/(P+o))
-  list(c(dP, dI))
-}
-r <- r_med; K <- K_med; b <- p_med; o <- o_med
-parms <- c(r, K, b, o)
-P0 <- 1; I0 <- 1
-SysInit <- c(P0, I0)
-TT <- seq(1,20,0.1) 
-results <- lsoda(SysInit, TT, Antia, parms)
-N <- results[,2]
-Antia_Med = data.frame(results); colnames(Antia_Med) <- c("Time", "P", "I")
-
-## Low estimates ##
-Antia <- function(t,y,p){
-  r <- p[1]; K <- p[2]; b <- p[3]; o <- p[4]
-  P <- y[1]; I <- y[2]
-  dP = r*P - K*P*I
-  dI = b*I*(P/(P+o))
-  list(c(dP, dI))
-}
-r <- r_low; K <- K_low; b <- p_low; o <- o_low
-parms <- c(r, K, b, o)
-P0 <- 1; I0 <- 1
-SysInit <- c(P0, I0)
-TT <- seq(1,20,0.1) 
-results <- lsoda(SysInit, TT, Antia, parms)
-N <- results[,2]
-Antia_Low = data.frame(results); colnames(Antia_Low) <- c("Time", "P", "I")
-
-## High estimates ##
-Antia <- function(t,y,p){
-  r <- p[1]; K <- p[2]; b <- p[3]; o <- p[4]
-  P <- y[1]; I <- y[2]
-  dP = r*P - K*P*I
-  dI = b*I*(P/(P+o))
-  list(c(dP, dI))
-}
-r <- r_high; K <- K_high; b <- p_high; o <- o_high
-parms <- c(r, K, b, o)
-P0 <- 1; I0 <- 1
-SysInit <- c(P0, I0)
-TT <- seq(1,20,0.1) 
-results <- lsoda(SysInit, TT, Antia, parms)
-N <- results[,2]
-Antia_High = data.frame(results); colnames(Antia_High) <- c("Time", "P", "I")
-
-DetDF <- data.frame(Antia_Det); colnames(DetDF) <- c("Time", "P_Det",  "I_Det")
-DataDF <- data.frame(Antia_Stoch); colnames(DataDF) <- c("Time", "P_Stoch",  "I_Stoch")
-EstDF <- data.frame(Antia_Med$Time, Antia_Med$P, Antia_Med$I, Antia_Low$P, Antia_Low$I, Antia_High$P, Antia_High$I); colnames(EstDF) <- c("Time", "Med_P_Est", "Med_I_Est", "Low_P_Est", "Low_I_Est", "High_P_Est", "High_I_Est")
-
-## NOTE: I know this isn't a great way to plot the output/I'm not actually plotting the estimates, but here's a rough representation of what the model thinks is happening
-Comp_Plot <- ggplot() +
-  geom_line(data = DetDF, aes(x = Time, y = P_Det), linetype = "dotted") +
-  geom_line(data = DetDF, aes(x = Time, y = I_Det), linetype = "dotted") +
-  geom_line(data = DataDF, aes(x = Time, y = P_Stoch)) +
-  geom_line(data = DataDF, aes(x = Time, y = I_Stoch)) +
-  geom_line(data = EstDF, aes(x = Time, y = Med_P_Est), color = "springgreen4") +
-  geom_line(data = EstDF, aes(x = Time, y = Med_I_Est), color = "springgreen4") +
-  geom_line(data = EstDF, aes(x = Time, y = Low_P_Est), color = "royalblue1") +
-  geom_line(data = EstDF, aes(x = Time, y = Low_I_Est), color = "royalblue1") +
-  geom_line(data = EstDF, aes(x = Time, y = High_P_Est), color = "firebrick3") +
-  geom_line(data = EstDF, aes(x = Time, y = High_I_Est), color = "firebrick3") +
-  labs(y = "Abundance")+
-  theme_minimal()+
-  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
-Comp_Plot
-
-#### Attempt 5: Simple 2-species =====================================
-
+#### Two-Species: Logistic Growth =============================================
 ## Let's generate some fake data ##
 ## Stochastic ##
 x0 <- c(N = 10) 
@@ -494,7 +311,7 @@ StanData <- list(N = N, ts = ts, Y_init = Y_init, Y = Y, y_init = y_init, y = y)
 ## Let's compile this model, babey ##
 write("
 data {
-  int<lower=0> N; // Number of observations
+  int<lower = 0> N; // Number of observations
   vector [N] Y;
   vector [N] y;
 }
@@ -503,7 +320,7 @@ parameters {
   real<lower = 0> K; // Carrying capacity of pop'n 1 (Y)
   real<lower = 0> r; // Growth rate of pop'n 2 (y)
   real<lower = 0> k; // Carrying capacity of pop'n 2 (y)
-  real<lower=0> sigma; // Error
+  real<lower = 0> sigma; // Error
 }
 model {
   R ~ normal(0.1, 1);
@@ -516,18 +333,18 @@ model {
     y[t] ~ normal(y[t-1] + r*y[t-1]*(1-y[t-1]/k), sigma); // Pop'n 2
   }
 }",
-"Autoregressive_Attempt5.stan")
+"3_Extras/AutoregressiveModel/Autoregressive_TwoSp-LogisticGrowth.stan")
 
-model <- stan_model("Autoregressive_Attempt5.stan")
+model <- stan_model("3_Extras/AutoregressiveModel/Autoregressive_TwoSp-LogisticGrowth.stan")
 
 ## Fitting ##
 fit <- sampling(model, data = StanData, chains = 4, iter = 2000, cores = 4, seed = 123)
 
 ## Model checks ##
-fit_summ <- print(fit, pars=c("R", "K", "r", "k"),
-                  probs=c(0.1, 0.5, 0.9), digits = 3)
+fit_summ <- print(fit, pars = c("R", "K", "r", "k"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("R", "K", "r", "k")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
 fit_Trace <- stan_trace(fit,parms); fit_Trace
 fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
 fit_Dens <- mcmc_dens(fit,parms); fit_Dens
@@ -655,9 +472,309 @@ Comp_Plot <- ggplot() +
         panel.grid.minor = element_blank())
 Comp_Plot
 
-#### Attempt 6: 2-species, NowakMay =================================
+## Okay, so this also worked, but these populations don't interact. So, the bar is low. 
 
-## Let's generate some fake data ##
+#### Two Species: Antia et al. (Continuous Data) ==============================
+## Deterministic ##
+Antia <- function(t,y,p){
+  r <- p[1]; K <- p[2]; b <- p[3]; o <- p[4]
+  P <- y[1]; I <- y[2]
+  dP = r*P - K*P*I
+  dI = b*I*(P/(P+o))
+  list(c(dP, dI))
+}
+r <- 1; K <- 0.01; b <- 1; o <- 1000
+parms <- c(r, K, b, o)
+P0 <- 1; I0 <- 1
+SysInit <- c(P0, I0)
+TT <- seq(1, 20, 0.1) 
+results <- lsoda(SysInit, TT, Antia, parms)
+N <- results[ , 2]
+Antia_Det = data.frame(results); colnames(Antia_Det) <- c("Time", "P", "I")
+Antia_Det_Plot <- ggplot(Antia_Det, aes(x = Time))+
+  geom_line(aes(y = P))+
+  geom_line(aes(y = I))+
+  theme_minimal()
+Antia_Det_Plot
+
+## Stochastic ##
+x0 <- c(P = 1, I = 1) 
+a <- c("P*r",
+       "k*P*I", 
+       "p*I*(P/(P + o))")
+nu <- matrix(c(+1, -1, 0,
+               0, 0, +1), nrow = 2, byrow = TRUE)
+
+r <- 0.8; k <- 0.01; p <- 1; o <- 1000
+parms1 <- c(r = r, k = k, p = p, o = o)
+tf = 30
+method <- "OTL"
+Name <- "Antia"
+set.seed(6)
+Antia_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, Name,
+                                  verbose = FALSE, 
+                                  consoleInterval = 1, 
+                                  censusInterval = 0.1, 
+                                  maxWallTime = 30, 
+                                  ignoreNegativeState = TRUE)) 
+Antia_Stoch <- Antia_Stoch$data 
+Antia_Stoch <- as.data.frame(Antia_Stoch)
+Antia_Stoch <- Antia_Stoch[1:111, ] # Getting rid of zeros; I know this isn't a great way to do that. Sue me.
+colnames(Antia_Stoch) <- c("Time", "P", "I")
+Antia_Stoch_Plot <- ggplot(Antia_Stoch,aes(x = Time))+
+  geom_line(aes(y = P))+ 
+  geom_line(aes(y = I))+
+  theme_minimal()
+Antia_Stoch_Plot
+
+## Wrangle data into form Stan likes ##
+N <- length(Antia_Stoch$Time) - 1
+ts <- 1:N
+# y_init <- c(LogisticGrowth_Stoch$Abundance[1])
+# y <- as.matrix(LogisticGrowth_Stoch[2:(N + 1), 2:2])
+# y <- as.vector(LogisticGrowth_Stoch$Abundance)
+P <- as.vector(Antia_Stoch[2:(N + 1), 2:2])
+I <- as.vector(Antia_Stoch[2:(N + 1), 3:3])
+StanData <- list(N = N, ts = ts, P = P, I = I)
+
+write("
+data {
+  int<lower=0> N; // Number of observations
+  //real<lower = 0> y[N, 2]; // Outcome
+  //vector[N] y;
+  real P[N];
+  real I[N];
+}
+parameters {
+  real<lower = 0> r; // Replication rate
+  real<lower = 0> K; // Rate of destruction of parasite
+  real<lower = 0> p; // Max. growth rate of immunity
+  real<lower = 0> o; // Parasite density at which immunity slows
+  real<lower=0> sigma; // Error
+}
+model {
+  r ~ normal(1, 1); // 0.8
+  K ~ normal(0, 1); // 0.01
+  p ~ normal(1, 1); // 1
+  o ~ normal(1000, 1); // 1000
+  sigma ~ lognormal(-1, 1);
+  for (t in 2:N) {
+    P[t] ~ normal(P[t-1] + r*P[t-1] - K*P[t-1]*I[t-1], sigma);
+    I[t] ~ normal(I[t-1] + p*I[t-1]*(P[t-1]/(P[t-1] + o)), sigma);
+  }
+}",
+"3_Extras/AutoregressiveModel/Autoregressive_Antia.stan")
+
+model <- stan_model("3_Extras/AutoregressiveModel/Autoregressive_Antia.stan")
+
+## Fitting ##
+fit <- sampling(model, data = StanData, chains = 4, iter = 2000, cores = 4, seed = 123)
+
+## Model checks ##
+fit_summ <- print(fit, pars = c("r", "K", "p", "o"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "K", "p", "o")
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+fit_Trace <- stan_trace(fit,parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
+fit_Dens <- mcmc_dens(fit,parms); fit_Dens
+
+## Let's do some plotting to compare data to estimates ##
+posterior <- rstan::extract(fit)
+r_med <- median(posterior$r); K_med <- median(posterior$K); p_med <- median(posterior$p); o_med <- median(posterior$o)
+r_low <- quantile(posterior$r, 0.025); K_low <- quantile(posterior$K, 0.025); p_low <- quantile(posterior$p, 0.025); o_low <- quantile(posterior$o, 0.025)
+r_high <- quantile(posterior$r, 0.975); K_high <- quantile(posterior$K, 0.975); p_high <- quantile(posterior$p, 0.975); o_high <- quantile(posterior$o, 0.975)
+
+## Med estimates ##
+Antia <- function(t,y,p){
+  r <- p[1]; K <- p[2]; b <- p[3]; o <- p[4]
+  P <- y[1]; I <- y[2]
+  dP = r*P - K*P*I
+  dI = b*I*(P/(P+o))
+  list(c(dP, dI))
+}
+r <- r_med; K <- K_med; b <- p_med; o <- o_med
+parms <- c(r, K, b, o)
+P0 <- 1; I0 <- 1
+SysInit <- c(P0, I0)
+TT <- seq(1,20,0.1) 
+results <- lsoda(SysInit, TT, Antia, parms)
+N <- results[,2]
+Antia_Med = data.frame(results); colnames(Antia_Med) <- c("Time", "P", "I")
+
+## Low estimates ##
+Antia <- function(t,y,p){
+  r <- p[1]; K <- p[2]; b <- p[3]; o <- p[4]
+  P <- y[1]; I <- y[2]
+  dP = r*P - K*P*I
+  dI = b*I*(P/(P+o))
+  list(c(dP, dI))
+}
+r <- r_low; K <- K_low; b <- p_low; o <- o_low
+parms <- c(r, K, b, o)
+P0 <- 1; I0 <- 1
+SysInit <- c(P0, I0)
+TT <- seq(1,20,0.1) 
+results <- lsoda(SysInit, TT, Antia, parms)
+N <- results[,2]
+Antia_Low = data.frame(results); colnames(Antia_Low) <- c("Time", "P", "I")
+
+## High estimates ##
+Antia <- function(t,y,p){
+  r <- p[1]; K <- p[2]; b <- p[3]; o <- p[4]
+  P <- y[1]; I <- y[2]
+  dP = r*P - K*P*I
+  dI = b*I*(P/(P+o))
+  list(c(dP, dI))
+}
+r <- r_high; K <- K_high; b <- p_high; o <- o_high
+parms <- c(r, K, b, o)
+P0 <- 1; I0 <- 1
+SysInit <- c(P0, I0)
+TT <- seq(1,20,0.1) 
+results <- lsoda(SysInit, TT, Antia, parms)
+N <- results[,2]
+Antia_High = data.frame(results); colnames(Antia_High) <- c("Time", "P", "I")
+
+DetDF <- data.frame(Antia_Det); colnames(DetDF) <- c("Time", "P_Det",  "I_Det")
+DataDF <- data.frame(Antia_Stoch); colnames(DataDF) <- c("Time", "P_Stoch",  "I_Stoch")
+EstDF <- data.frame(Antia_Med$Time, Antia_Med$P, Antia_Med$I, Antia_Low$P, Antia_Low$I, Antia_High$P, Antia_High$I); colnames(EstDF) <- c("Time", "Med_P_Est", "Med_I_Est", "Low_P_Est", "Low_I_Est", "High_P_Est", "High_I_Est")
+
+## NOTE: I know this isn't a great way to plot the output/I'm not actually plotting the estimates, but here's a rough representation of what the model thinks is happening
+Comp_Plot <- ggplot() +
+  geom_line(data = DetDF, aes(x = Time, y = P_Det), linetype = "dotted") +
+  geom_line(data = DetDF, aes(x = Time, y = I_Det), linetype = "dotted") +
+  geom_line(data = DataDF, aes(x = Time, y = P_Stoch)) +
+  geom_line(data = DataDF, aes(x = Time, y = I_Stoch)) +
+  geom_line(data = EstDF, aes(x = Time, y = Med_P_Est), color = "springgreen4") +
+  geom_line(data = EstDF, aes(x = Time, y = Med_I_Est), color = "springgreen4") +
+  geom_line(data = EstDF, aes(x = Time, y = Low_P_Est), color = "royalblue1") +
+  geom_line(data = EstDF, aes(x = Time, y = Low_I_Est), color = "royalblue1") +
+  geom_line(data = EstDF, aes(x = Time, y = High_P_Est), color = "firebrick3") +
+  geom_line(data = EstDF, aes(x = Time, y = High_I_Est), color = "firebrick3") +
+  labs(y = "Abundance")+
+  theme_minimal()+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+Comp_Plot
+
+#### Two Species: Antia et al. (Discrete Data) ================================
+## Deterministic ##
+r = 0.2; k = 0.01; p = 1; o = 1000
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 1; t_stop = 55
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+Antia_Det <- data.frame(seq(1, t_stop, 1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+Antia_Det_Plot <- ggplot(Antia_Det,aes(x = Time)) +
+  geom_line(aes(y = P), colour = "forestgreen") + 
+  geom_line(aes(y = I), colour = "cornflowerblue") +
+  theme_minimal()
+Antia_Det_Plot
+
+## Stochastic ##
+DiscreteModel_Dem <- function(P_Last, I_Last){
+  ts = 1
+  r = 0.2; k = 0.01; p = 1; o = 1000
+  
+  P_B = rpois(1, r*P_Last*ts) 
+  P_D = rbinom(1, P_Last, (1-exp(-k*I_Last*ts))) 
+  I_B = rpois(1, p*I_Last*((P_Last/(P_Last + o)))*ts) 
+  
+  P_Next = P_Last + P_B - P_D
+  I_Next = I_Last + I_B
+  
+  P_Last <- P_Next
+  I_Last <- I_Next
+  
+  ## To prevent the populations from going negative
+  if (P_Last < 0){
+    P_Last <- 0
+  }
+  ## To get host death if parasite abundance exceeds D threshold set by Antia
+  if (P_Last > 10^9){
+    P_Last <- 0
+    I_Last <- 0
+  }
+  return(c(P_Last, I_Last))
+}
+
+ts <- 1; TT <- 55
+P_Last <- 1; I_Last <- 1
+Antia_Stoch <- data.frame()
+set.seed(123)
+for (j in 1:TT){
+  Output = DiscreteModel_Dem(P_Last, I_Last)
+  P_Last = Output[1]
+  I_Last = Output[2]
+  Addition <- c(P_Last, I_Last)
+  Antia_Stoch <- data.frame(rbind(Antia_Stoch, Addition))
+}
+Antia_Stoch <- cbind(seq(1, TT, 1), Antia_Stoch)
+colnames(Antia_Stoch) <- c("Time", "P", "I")
+Antia_Stoch_Plot <- ggplot(Antia_Stoch,aes(x = Time)) +
+  geom_line(aes(y = P), colour = "forestgreen") + 
+  geom_line(aes(y = I), colour = "cornflowerblue") +
+  theme_minimal()
+Antia_Stoch_Plot
+
+## Data wrangling for Stan ##
+x <- which(Antia_Stoch$P == 0)[1]
+Antia_Stoch <- Antia_Stoch[1:x - 1, ]
+N <- length(Antia_Stoch$Time) - 1
+ts <- 1:N
+P_init <- c(Antia_Stoch$P[1])
+I_init <- c(Antia_Stoch$I[1])
+P <- as.vector(Antia_Stoch[2:(N + 1), 2:2])
+I <- as.vector(Antia_Stoch[2:(N + 1), 3:3])
+StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+
+## Write model ##
+write("
+data {
+  int<lower = 0> N; // Number of observations
+  real<lower = 0> P[N];
+  real<lower = 0> I[N];
+}
+parameters {
+  real<lower = 0> r; // Replication rate
+  real<lower = 0> k; // Rate of destruction of parasite
+  real<lower = 0> p; // Max. growth rate of immunity
+  real<lower = 0> o; // Parasite density at which immunity slows
+  real<lower = 0> sigma; // Error
+}
+model {
+  r ~ normal(0, 1); // 0.2
+  k ~ normal(0, 1); // 0.01
+  p ~ normal(1, 1); // 1
+  o ~ normal(1000, 1); // 1000
+  // sigma ~ lognormal(-1, 1);
+  for (t in 2:N) {
+    P[t] ~ normal(P[t-1] + r*P[t-1] - (1 - exp(-k*I[t-1]))*P[t - 1], sigma);
+    I[t] ~ normal(I[t-1] + p*I[t-1]*(P[t-1]/(P[t-1] + o)), sigma);
+  }
+}",
+"3_Extras/AutoregressiveModel/Autoregressive_Antia.stan")
+
+## Compile model ##
+model <- stan_model("3_Extras/AutoregressiveModel/Autoregressive_Antia.stan")
+
+## Fitting ##
+fit <- sampling(model, data = StanData, chains = 4, iter = 2000, cores = 4, seed = 1)
+
+## Model checks ##
+fit_summ <- print(fit, pars = c("r", "k", "p", "o"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "k", "p", "o")
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+fit_Trace <- stan_trace(fit,parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
+fit_Overlay <- mcmc_dens_overlay(fit,parms); fit_Overlay
+
+#### Fenton and Perkins =======================================================
 ## Deterministic ##
 NowakMay <- function(t,y,p){
   r <- p[1]; O <- p[2]; h <- p[3]; b <- p[4]; c <- p[5]; u <- p[6]
@@ -755,7 +872,7 @@ fit <- sampling(model, data = StanData, chains = 4, iter = 2000, cores = 4, seed
 fit_summ <- print(fit, pars=c("r", "O", "h", "b", "c", "u"),
                   probs=c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "O", "h", "b", "c", "u")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
 fit_Trace <- stan_trace(fit,parms); fit_Trace
 fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
 fit_Dens <- mcmc_dens(fit,parms); fit_Dens
@@ -838,119 +955,6 @@ Comp_Plot <- ggplot() +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
 Comp_Plot
-
-#### Attempt 7: Antia, with data generated by discrete implementation ====
-## Deterministic ##
-r = 1; k = 0.01; p = 1; o = 100
-P <- c(); I <- c()
-P[1] = 1; I[1] = 1
-ts = 0.1; t_stop = 20/ts
-for (t in 2:t_stop){
-  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
-  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
-}
-Antia_Det <- data.frame(seq(1,t_stop,1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
-Antia_Det_Plot <- ggplot(Antia_Det,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = I))+
-  theme_minimal()
-Antia_Det_Plot
-
-## Stochastic ##
-DiscreteModel_Dem <- function(P_Last, I_Last){
-  ts = 0.1
-  r = 1; k = 0.01; p = 1; o = 100
-  
-  P_B = rpois(1, r*P_Last*ts) 
-  P_D = rbinom(1, P_Last, (1-exp(-k*I_Last*ts))) 
-  I_B = rpois(1, p*I_Last*((P_Last/(P_Last + o)))*ts) 
-  
-  P_Next = P_Last + P_B - P_D
-  I_Next = I_Last + I_B
-  
-  P_Last <- P_Next
-  I_Last <- I_Next
-  
-  ## To prevent the populations from going negative
-  if (P_Last < 0){
-    P_Last <- 0
-  }
-  ## To get host death if parasite abundance exceeds D threshold set by Antia
-  if (P_Last > 10^9){
-    P_Last <- 0
-    I_Last <- 0
-  }
-  return(c(P_Last, I_Last))
-}
-
-ts <- 0.1; TT <- 20/ts
-P_Last <- 1; I_Last <- 1
-Antia_Stoch <- data.frame()
-for (j in 1:TT){
-  Output = DiscreteModel_Dem(P_Last, I_Last)
-  P_Last = Output[1]
-  I_Last = Output[2]
-  Addition <- c(P_Last, I_Last)
-  Antia_Stoch <- data.frame(rbind(Antia_Stoch, Addition))
-}
-Antia_Stoch <- cbind(seq(1,TT,1), Antia_Stoch)
-colnames(Antia_Stoch) <- c("Time","P", "I")
-Antia_Stoch_Plot <- ggplot(Antia_Stoch,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = I))+
-  theme_minimal()
-Antia_Stoch_Plot
-
-## Data wrangling for Stan ##
-x <- which(Antia_Stoch$P == 0)[1]
-Antia_Stoch <- Antia_Stoch[1:x-1, ]
-N <- length(Antia_Stoch$Time)
-ts <- 1:N
-P <- as.vector(Antia_Stoch[1:N, 2:2])
-I <- as.vector(Antia_Stoch[1:N, 3:3])
-StanData <- list(N = N, ts = ts, P = P, I = I)
-
-## Write model ##
-write("
-data {
-  int<lower=0> N; // Number of observations
-  real<lower = 0> P[N];
-  real<lower = 0> I[N];
-}
-parameters {
-  real<lower = 0> r; // Replication rate
-  real<lower = 0> k; // Rate of destruction of parasite
-  real<lower = 0> p; // Max. growth rate of immunity
-  real<lower = 0> o; // Parasite density at which immunity slows
-  real<lower=0> sigma; // Error
-}
-model {
-  r ~ normal(1, 3); // 1
-  k ~ normal(0, 1); // 0.01
-  p ~ normal(1, 1); // 1
-  o ~ normal(100, 1); // 100
-  sigma ~ lognormal(-1, 1);
-  for (t in 2:N) {
-    P[t] ~ normal(P[t-1] + r*P[t-1] - (1 - exp(-k*I[t-1]))*P[t - 1], sigma);
-    I[t] ~ normal(I[t-1] + p*I[t-1]*(P[t-1]/(P[t-1] + o)), sigma);
-  }
-}",
-"Autoregressive_Attempt7.stan")
-
-## Compile model ##
-model <- stan_model("Autoregressive_Attempt7.stan")
-
-## Fitting ##
-fit <- sampling(model, data = StanData, chains = 4, iter = 1000, cores = 4, seed = 1)
-
-## Model checks ##
-fit_summ <- print(fit, pars=c("r", "k", "p", "o"),
-                  probs=c(0.1, 0.5, 0.9), digits = 3)
-parms <- c("r", "k", "p", "o")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Overlay <- mcmc_dens_overlay(fit,parms); fit_Overlay
 
 #### Attempt 8: NowakMay, with data generated by discrete implementation ====
 ## Deterministic ##
@@ -1059,7 +1063,7 @@ fit <- sampling(model, data = StanData, chains = 4, iter = 2000, cores = 4, seed
 fit_summ <- print(fit, pars=c("r", "O", "h", "b", "c", "u"),
                   probs=c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "O", "h", "b", "c", "u")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
 fit_Trace <- stan_trace(fit,parms); fit_Trace
 fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
 fit_Dens <- mcmc_dens(fit,parms); fit_Dens
@@ -1080,334 +1084,3 @@ NowakMay_Det_Plot <- ggplot(NowakMay_Det,aes(x = Time))+
   geom_line(aes(y = H))+
   theme_minimal()
 NowakMay_Det_Plot
-
-#### NM; give O and h ====
-## This is what worked for the continuous model/global fit, so, worth a try for comparison
-write("
-data {
-  int<lower=0> N;
-  real P[N];
-  real H[N];
-}
-parameters {
-  real<lower = 0> r; // Replication rate of parasite
-  // real<lower = 0> O; // Recognition rate of parasite by host immune system
-  // real<lower = 0> h; // Handling time of parasite by immune system
-  real<lower = 0> b; // Immigration rate of immune cells in absence of infection
-  real<lower = 0> c; // Activation/proliferation rate of host immune system
-  real<lower = 0> u; // Natural mortality rate of host immune cells
-  real<lower=0> sigma; // Error
-}
-model {
-  r ~ normal(2.5, 1); // 2.5
-  // O ~ normal(0, 1); // 0.008
-  // h ~ normal(0, 1); // 0.06
-  b ~ normal(35, 1); // 35
-  c ~ normal(0, 1); // 0.2
-  u ~ normal(0, 1); // 0.2
-  sigma ~ lognormal(-1, 1);
-  for (t in 2:N) {
-    P[t] ~ normal(P[t-1] + r*P[t-1] - (1-exp((-0.008/(1 + 0.008*0.06*P[t-1]))*H[t-1]))*P[t-1], sigma);
-    H[t] ~ normal(H[t-1] + b + c*(0.008*P[t-1]/(1 + 0.008*P[t-1]*0.06))*H[t-1] - (1-exp(-u))*H[t-1], sigma);
-  }
-}",
-"Autoregressive_Attempt8.stan")
-
-## Compile model ##
-model <- stan_model("Autoregressive_Attempt8.stan")
-
-## Fitting ##
-fit <- sampling(model, data = StanData, chains = 4, iter = 2000, cores = 4, seed = 1)
-
-## Model checks ##
-fit_summ <- print(fit, pars=c("r", "b", "c", "u"),
-                  probs=c(0.1, 0.5, 0.9), digits = 3)
-parms <- c("r", "b", "c", "u")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Dens <- mcmc_dens(fit,parms); fit_Dens
-
-## Putting the parameter estimates into the deterministic model:
-r = 0.909; O = 0.008; h = 0.06; b = 4.647; c = 0.020; u = 0.025
-P <- c(); H <- c()
-P[1] = 80; H[1] = 200
-ts = 0.1; t_stop = 100/ts
-for (t in 2:t_stop){
-  P[t] = (1 + r*ts - (1-exp((-O/(1 + O*h*P[t - 1]))*H[t - 1]*ts)))*P[t - 1]
-  # H[t] = H[t - 1] + b*ts + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*H[t - 1]*ts - (1-exp(-u*ts))*H[t - 1]
-  H[t] = (1 + b*ts*(1/H[t - 1]) + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*ts - (1-exp(-u*ts)))*H[t - 1]
-}
-NowakMay_Det <- data.frame(seq(1,t_stop,1), P, H); colnames(NowakMay_Det) <- c("Time", "P", "H")
-NowakMay_Det_Plot <- ggplot(NowakMay_Det,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = H))+
-  theme_minimal()
-NowakMay_Det_Plot
-
-#### NM; with informative data only ====
-## Deterministic ##
-r = 2.5; O = 0.008; h = 0.06; b = 35; c = 0.2; u = 0.2
-P <- c(); H <- c()
-P[1] = 80; H[1] = 200
-ts = 0.1; t_stop = 100/ts
-for (t in 2:t_stop){
-  P[t] = (1 + r*ts - (1-exp((-O/(1 + O*h*P[t - 1]))*H[t - 1]*ts)))*P[t - 1]
-  # H[t] = H[t - 1] + b*ts + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*H[t - 1]*ts - (1-exp(-u*ts))*H[t - 1]
-  H[t] = (1 + b*ts*(1/H[t - 1]) + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*ts - (1-exp(-u*ts)))*H[t - 1]
-}
-NowakMay_Det <- data.frame(seq(1,t_stop,1), P, H); colnames(NowakMay_Det) <- c("Time", "P", "H")
-NowakMay_Det_Plot <- ggplot(NowakMay_Det,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = H))+
-  theme_minimal()
-NowakMay_Det_Plot
-
-## Stochastic ##
-DiscreteModel_Dem <- function(P_Last, H_Last){
-  ts = 0.1
-  r = 2.5; O = 0.008; h = 0.06; b = 35; c = 0.2; u = 0.2
-  
-  P_B = rpois(1, r*P_Last*ts) 
-  P_D = rbinom(1, P_Last, (1-exp((-O/(1 + O*h*P_Last))*H_Last*ts))) ## ASK MARTY ABOUT THIS LINE
-  H_B = rpois(1, (b + c*(O*P_Last/(1 + O*P_Last*h))*H_Last)*ts)
-  H_D = rbinom(1, H_Last, (1-exp(-u*ts))) ## ASK MARTY ABOUT THIS LINE
-  
-  P_Next = P_Last + P_B - P_D
-  H_Next = H_Last + H_B - H_D
-  
-  P_Last <- P_Next
-  H_Last <- H_Next
-  
-  ## To prevent the populations from going negative
-  if (P_Last < 0){
-    P_Last <- 0
-  }
-  
-  return(c(P_Last, H_Last))
-}
-
-ts <- 0.1; TT <- 100/ts
-P_Last <- 80; H_Last <- 200
-NowakMay_Stoch <- data.frame()
-for (j in 1:TT){
-  Output = DiscreteModel_Dem(P_Last, H_Last)
-  P_Last = Output[1]
-  H_Last = Output[2]
-  Addition <- c(P_Last, H_Last)
-  NowakMay_Stoch <- data.frame(rbind(NowakMay_Stoch, Addition))
-}
-NowakMay_Stoch <- cbind(seq(1,TT,1), NowakMay_Stoch)
-colnames(NowakMay_Stoch) <- c("Time","P", "H")
-NowakMay_Stoch_Plot <- ggplot(NowakMay_Stoch,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = H))+
-  theme_minimal()
-NowakMay_Stoch_Plot
-
-x <- which(NowakMay_Stoch$P == 0); x <- x[1]
-NowakMay_Stoch <- NowakMay_Stoch[1:x,]
-
-## Data wrangling for Stan ##
-N <- length(NowakMay_Stoch$Time) - 1
-ts <- 1:N
-P <- as.vector(NowakMay_Stoch[2:(N + 1), 2:2])
-H <- as.vector(NowakMay_Stoch[2:(N + 1), 3:3])
-StanData <- list(N = N, ts = ts, P = P, H = H)
-
-write("
-data {
-  int<lower=0> N;
-  real P[N];
-  real H[N];
-}
-parameters {
-  real<lower = 0> r; // Replication rate of parasite
-  //real<lower = 0> O; // Recognition rate of parasite by host immune system
-  //real<lower = 0> h; // Handling time of parasite by immune system
-  real<lower = 0> b; // Immigration rate of immune cells in absence of infection
-  real<lower = 0> c; // Activation/proliferation rate of host immune system
-  real<lower = 0> u; // Natural mortality rate of host immune cells
-  real<lower=0> sigma; // Error
-}
-model {
-  r ~ normal(2.5, 1); // 2.5
-  //O ~ normal(0, 1); // 0.008
-  //h ~ normal(0, 1); // 0.06
-  b ~ normal(35, 1); // 35
-  c ~ normal(0, 1); // 0.2
-  u ~ normal(0, 1); // 0.2
-  sigma ~ lognormal(-1, 1);
-  for (t in 2:N) {
-    P[t] ~ normal(P[t-1] + r*P[t-1] - (1-exp((-0.008/(1 + 0.008*0.06*P[t-1]))*H[t-1]))*P[t-1], sigma);
-    H[t] ~ normal(H[t-1] + b + c*(0.008*P[t-1]/(1 + 0.008*P[t-1]*0.06))*H[t-1] - (1-exp(-u))*H[t-1], sigma);
-  }
-}",
-"Autoregressive_Attempt8.stan")
-
-## Compile model ##
-model <- stan_model("Autoregressive_Attempt8.stan")
-
-## Fitting ##
-fit <- sampling(model, data = StanData, chains = 4, iter = 1000, cores = 4)
-
-## Model checks ##
-fit_summ <- print(fit, pars=c("r", "b", "c", "u"),
-                  probs=c(0.1, 0.5, 0.9), digits = 3)
-parms <- c("r", "O", "h", "b", "c", "u")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Dens <- mcmc_dens(fit,parms); fit_Dens
-
-## Putting the parameter estimates into the deterministic model:
-r = median(Output$r); O = median(Output$O); h = median(Output$h); b = median(Output$b); c = median(Output$c); u = median(Output$u)
-P <- c(); H <- c()
-P[1] = 80; H[1] = 200
-ts = 0.1; t_stop = 50/ts
-for (t in 2:t_stop){
-  P[t] = (1 + r*ts - (1-exp((-O/(1 + O*h*P[t - 1]))*H[t - 1]*ts)))*P[t - 1]
-  # H[t] = H[t - 1] + b*ts + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*H[t - 1]*ts - (1-exp(-u*ts))*H[t - 1]
-  H[t] = (1 + b*ts*(1/H[t - 1]) + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*ts - (1-exp(-u*ts)))*H[t - 1]
-}
-NowakMay_Det <- data.frame(seq(1,t_stop,1), P, H); colnames(NowakMay_Det) <- c("Time", "P", "H")
-NowakMay_Det_Plot <- ggplot(NowakMay_Det,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = H))+
-  theme_minimal()
-NowakMay_Det_Plot
-
-#### NM; with informative data only ====
-## Deterministic ##
-r = 2.5; O = 0.012; h = 0.075; b = 35; c = 0.3; u = 0.41
-P <- c(); H <- c()
-P[1] = 80; H[1] = 200
-ts = 0.1; t_stop = 100/ts
-for (t in 2:t_stop){
-  P[t] = (1 + r*ts - (1-exp((-O/(1 + O*h*P[t - 1]))*H[t - 1]*ts)))*P[t - 1]
-  # H[t] = H[t - 1] + b*ts + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*H[t - 1]*ts - (1-exp(-u*ts))*H[t - 1]
-  H[t] = (1 + b*ts*(1/H[t - 1]) + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*ts - (1-exp(-u*ts)))*H[t - 1]
-}
-NowakMay_Det <- data.frame(seq(1,t_stop,1), P, H); colnames(NowakMay_Det) <- c("Time", "P", "H")
-NowakMay_Det_Plot <- ggplot(NowakMay_Det,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = H))+
-  theme_minimal()
-NowakMay_Det_Plot
-
-## Stochastic ##
-DiscreteModel_Dem <- function(P_Last, H_Last){
-  ts = 0.1
-  r = 2.5; O = 0.012; h = 0.075; b = 35; c = 0.3; u = 0.41
-  
-  P_B = rpois(1, r*P_Last*ts) 
-  P_D = rbinom(1, P_Last, (1-exp((-O/(1 + O*h*P_Last))*H_Last*ts))) ## ASK MARTY ABOUT THIS LINE
-  H_B = rpois(1, (b + c*(O*P_Last/(1 + O*P_Last*h))*H_Last)*ts)
-  H_D = rbinom(1, H_Last, (1-exp(-u*ts))) ## ASK MARTY ABOUT THIS LINE
-  
-  P_Next = P_Last + P_B - P_D
-  H_Next = H_Last + H_B - H_D
-  
-  P_Last <- P_Next
-  H_Last <- H_Next
-  
-  ## To prevent the populations from going negative
-  if (P_Last < 0){
-    P_Last <- 0
-  }
-  
-  return(c(P_Last, H_Last))
-}
-
-ts <- 0.1; TT <- 100/ts
-P_Last <- 80; H_Last <- 200
-NowakMay_Stoch <- data.frame()
-for (j in 1:TT){
-  Output = DiscreteModel_Dem(P_Last, H_Last)
-  P_Last = Output[1]
-  H_Last = Output[2]
-  Addition <- c(P_Last, H_Last)
-  NowakMay_Stoch <- data.frame(rbind(NowakMay_Stoch, Addition))
-}
-NowakMay_Stoch <- cbind(seq(1,TT,1), NowakMay_Stoch)
-colnames(NowakMay_Stoch) <- c("Time","P", "H")
-NowakMay_Stoch_Plot <- ggplot(NowakMay_Stoch,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = H))+
-  theme_minimal()
-NowakMay_Stoch_Plot
-
-x <- which(NowakMay_Stoch$P == 0); x <- x[1]
-NowakMay_Stoch <- NowakMay_Stoch[1:x,]
-
-## Data wrangling for Stan ##
-N <- length(NowakMay_Stoch$Time) - 1
-ts <- 1:N
-P <- as.vector(NowakMay_Stoch[2:(N + 1), 2:2])
-H <- as.vector(NowakMay_Stoch[2:(N + 1), 3:3])
-StanData <- list(N = N, ts = ts, P = P, H = H)
-
-write("
-data {
-  int<lower=0> N;
-  real P[N];
-  real H[N];
-}
-parameters {
-  real<lower = 0> r; // Replication rate of parasite
-  //real<lower = 0> O; // Recognition rate of parasite by host immune system
-  //real<lower = 0> h; // Handling time of parasite by immune system
-  real<lower = 0> b; // Immigration rate of immune cells in absence of infection
-  real<lower = 0> c; // Activation/proliferation rate of host immune system
-  real<lower = 0> u; // Natural mortality rate of host immune cells
-  real<lower=0> sigma; // Error
-}
-model {
-  r ~ normal(2.5, 1); // 2.5
-  //O ~ normal(0, 1); // 0.012
-  //h ~ normal(0, 1); // 0.075
-  b ~ normal(35, 1); // 35
-  c ~ normal(0, 1); // 0.3
-  u ~ normal(0, 1); // 0.41
-  sigma ~ lognormal(-1, 1);
-  for (t in 2:N) {
-    P[t] ~ normal(P[t-1] + r*P[t-1] - (1-exp((-0.012/(1 + 0.012*0.075*P[t-1]))*H[t-1]))*P[t-1], sigma);
-    H[t] ~ normal(H[t-1] + b + c*(0.012*P[t-1]/(1 + 0.012*P[t-1]*0.075))*H[t-1] - (1-exp(-u))*H[t-1], sigma);
-  }
-}",
-"Autoregressive_Attempt8.stan")
-
-## Compile model ##
-model <- stan_model("Autoregressive_Attempt8.stan")
-
-## Fitting ##
-fit <- sampling(model, data = StanData, chains = 4, iter = 1000, cores = 4)
-
-## Model checks ##
-fit_summ <- print(fit, pars=c("r", "b", "c", "u"),
-                  probs=c(0.1, 0.5, 0.9), digits = 3)
-parms <- c("r", "O", "h", "b", "c", "u")
-Output <- rstan::extract(fit,permuted=TRUE,include=TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Dens <- mcmc_dens(fit,parms); fit_Dens
-
-## Putting the parameter estimates into the deterministic model:
-r = median(Output$r); O = median(Output$O); h = median(Output$h); b = median(Output$b); c = median(Output$c); u = median(Output$u)
-P <- c(); H <- c()
-P[1] = 80; H[1] = 200
-ts = 0.1; t_stop = 50/ts
-for (t in 2:t_stop){
-  P[t] = (1 + r*ts - (1-exp((-O/(1 + O*h*P[t - 1]))*H[t - 1]*ts)))*P[t - 1]
-  # H[t] = H[t - 1] + b*ts + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*H[t - 1]*ts - (1-exp(-u*ts))*H[t - 1]
-  H[t] = (1 + b*ts*(1/H[t - 1]) + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*ts - (1-exp(-u*ts)))*H[t - 1]
-}
-NowakMay_Det <- data.frame(seq(1,t_stop,1), P, H); colnames(NowakMay_Det) <- c("Time", "P", "H")
-NowakMay_Det_Plot <- ggplot(NowakMay_Det,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = H))+
-  theme_minimal()
-NowakMay_Det_Plot
-
-
-
