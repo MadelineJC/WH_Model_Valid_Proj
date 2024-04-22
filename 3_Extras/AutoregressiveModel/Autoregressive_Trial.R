@@ -530,9 +530,6 @@ Antia_Stoch_Plot
 ## Wrangle data into form Stan likes ##
 N <- length(Antia_Stoch$Time) - 1
 ts <- 1:N
-# y_init <- c(LogisticGrowth_Stoch$Abundance[1])
-# y <- as.matrix(LogisticGrowth_Stoch[2:(N + 1), 2:2])
-# y <- as.vector(LogisticGrowth_Stoch$Abundance)
 P <- as.vector(Antia_Stoch[2:(N + 1), 2:2])
 I <- as.vector(Antia_Stoch[2:(N + 1), 3:3])
 StanData <- list(N = N, ts = ts, P = P, I = I)
@@ -776,7 +773,7 @@ fit_Overlay <- mcmc_dens_overlay(fit,parms); fit_Overlay
 
 #### Fenton and Perkins =======================================================
 ## Deterministic ##
-NowakMay <- function(t,y,p){
+ModFentonPerkins <- function(t,y,p){
   r <- p[1]; O <- p[2]; h <- p[3]; b <- p[4]; c <- p[5]; u <- p[6]
   P <- y[1]; H <- y[2]
   dP = r*P - H*(O*P/(1 + O*P*h))
@@ -788,14 +785,14 @@ parms <- c(r, O, h, b, c, u)
 P0 <- 80; H0 <- 200
 SysInit <- c(P0, H0)
 TT <- seq(1, 100, 0.1) 
-results <- lsoda(SysInit, TT, NowakMay, parms)
+results <- lsoda(SysInit, TT, ModFentonPerkins, parms)
 N <- results[,2]
-NowakMay_Det = data.frame(results); colnames(NowakMay_Det) <- c("Time", "P", "H")
-NowakMay_Det_Plot <- ggplot(NowakMay_Det, aes(x = Time))+
+ModFentonPerkins_Det = data.frame(results); colnames(ModFentonPerkins_Det) <- c("Time", "P", "H")
+ModFentonPerkins_Det_Plot <- ggplot(ModFentonPerkins_Det, aes(x = Time))+
   geom_line(aes(y = P))+
   geom_line(aes(y = H))+
   theme_minimal()
-NowakMay_Det_Plot
+ModFentonPerkins_Det_Plot
 
 ## Stochastic ##
 x0 <- c(P = 80, H = 200) 
@@ -809,28 +806,28 @@ r = 2.5; O = 0.008; h = 0.06; b = 35; c = 0.2; u = 0.2
 parms1 <- c(r = r, O = O, h = h, b = b, c = c, u = u)
 tf = 100
 method <- "OTL"
-simName <- "NowakMay_T2_Dam"
+simName <- "ModFentonPerkins_T2_Dam"
 set.seed(5)
-NowakMay_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+ModFentonPerkins_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
                                             verbose = FALSE, 
                                             consoleInterval = 1, 
                                             censusInterval = 0.1, 
                                             maxWallTime = 30, 
                                             ignoreNegativeState = TRUE)) 
-NowakMay_Stoch <- NowakMay_Stoch$data 
-NowakMay_Stoch <- as.data.frame(NowakMay_Stoch)
-colnames(NowakMay_Stoch) <- c("Time", "P", "H")
-NowakMay_Stoch_Plot <- ggplot(NowakMay_Stoch,aes(x = Time))+
+ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch$data 
+ModFentonPerkins_Stoch <- as.data.frame(ModFentonPerkins_Stoch)
+colnames(ModFentonPerkins_Stoch) <- c("Time", "P", "H")
+ModFentonPerkins_Stoch_Plot <- ggplot(ModFentonPerkins_Stoch,aes(x = Time))+
   geom_line(aes(y = P))+ 
   geom_line(aes(y = H))+
   theme_minimal()
-NowakMay_Stoch_Plot
+ModFentonPerkins_Stoch_Plot
 
 ## Wrangle data into form Stan likes ##
 N <- length(Antia_Stoch$Time) - 1
 ts <- 1:N
-P <- as.vector(NowakMay_Stoch[2:(N + 1), 2:2])
-H <- as.vector(NowakMay_Stoch[2:(N + 1), 3:3])
+P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
+H <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
 StanData <- list(N = N, ts = ts, P = P, H = H)
 
 write("
@@ -884,7 +881,7 @@ r_low <- quantile(posterior$r, 0.025); O_low <- quantile(posterior$O, 0.025); h_
 r_high <- quantile(posterior$r, 0.975); O_high <- quantile(posterior$O, 0.975); h_high <- quantile(posterior$h, 0.975); b_high <- quantile(posterior$b, 0.975); c_high <- quantile(posterior$c, 0.975); u_high <- quantile(posterior$u, 0.975)
 
 ## Med estimates ##
-NowakMay <- function(t,y,p){
+ModFentonPerkins <- function(t,y,p){
   r <- p[1]; O <- p[2]; h <- p[3]; b <- p[4]; c <- p[5]; u <- p[6]
   P <- y[1]; H <- y[2]
   dP = r*P - H*(O*P/(1 + O*P*h))
@@ -896,12 +893,12 @@ parms <- c(r, O, h, b, c, u)
 P0 <- 80; H0 <- 200
 SysInit <- c(P0, H0)
 TT <- seq(1, 100, 0.1) 
-results <- lsoda(SysInit, TT, NowakMay, parms)
+results <- lsoda(SysInit, TT, ModFentonPerkins, parms)
 N <- results[,2]
-NowakMay_Med = data.frame(results); colnames(NowakMay_Med) <- c("Time", "P", "H")
+ModFentonPerkins_Med = data.frame(results); colnames(ModFentonPerkins_Med) <- c("Time", "P", "H")
 
 ## Low estimates ##
-NowakMay <- function(t,y,p){
+ModFentonPerkins <- function(t,y,p){
   r <- p[1]; O <- p[2]; h <- p[3]; b <- p[4]; c <- p[5]; u <- p[6]
   P <- y[1]; H <- y[2]
   dP = r*P - H*(O*P/(1 + O*P*h))
@@ -913,12 +910,12 @@ parms <- c(r, O, h, b, c, u)
 P0 <- 80; H0 <- 200
 SysInit <- c(P0, H0)
 TT <- seq(1, 100, 0.1) 
-results <- lsoda(SysInit, TT, NowakMay, parms)
+results <- lsoda(SysInit, TT, ModFentonPerkins, parms)
 N <- results[,2]
-NowakMay_Low = data.frame(results); colnames(NowakMay_Low) <- c("Time", "P", "H")
+ModFentonPerkins_Low = data.frame(results); colnames(ModFentonPerkins_Low) <- c("Time", "P", "H")
 
 ## High estimates ##
-NowakMay <- function(t,y,p){
+ModFentonPerkins <- function(t,y,p){
   r <- p[1]; O <- p[2]; h <- p[3]; b <- p[4]; c <- p[5]; u <- p[6]
   P <- y[1]; H <- y[2]
   dP = r*P - H*(O*P/(1 + O*P*h))
@@ -930,13 +927,13 @@ parms <- c(r, O, h, b, c, u)
 P0 <- 80; H0 <- 200
 SysInit <- c(P0, H0)
 TT <- seq(1, 100, 0.1) 
-results <- lsoda(SysInit, TT, NowakMay, parms)
+results <- lsoda(SysInit, TT, ModFentonPerkins, parms)
 N <- results[,2]
-NowakMay_High = data.frame(results); colnames(NowakMay_High) <- c("Time", "P", "H")
+ModFentonPerkins_High = data.frame(results); colnames(ModFentonPerkins_High) <- c("Time", "P", "H")
 
 DetDF <- data.frame(Antia_Det); colnames(DetDF) <- c("Time", "P_Det",  "H_Det")
 DataDF <- data.frame(Antia_Stoch); colnames(DataDF) <- c("Time", "P_Stoch",  "H_Stoch")
-EstDF <- data.frame(NowakMay_Med$Time, NowakMay_Med$P, NowakMay_Med$H, NowakMay_Low$P, NowakMay_Low$H, NowakMay_High$P, NowakMay_High$H); colnames(EstDF) <- c("Time", "Med_P_Est", "Med_H_Est", "Low_P_Est", "Low_H_Est", "High_P_Est", "High_H_Est")
+EstDF <- data.frame(ModFentonPerkins_Med$Time, ModFentonPerkins_Med$P, ModFentonPerkins_Med$H, ModFentonPerkins_Low$P, ModFentonPerkins_Low$H, ModFentonPerkins_High$P, ModFentonPerkins_High$H); colnames(EstDF) <- c("Time", "Med_P_Est", "Med_H_Est", "Low_P_Est", "Low_H_Est", "High_P_Est", "High_H_Est")
 
 ## NOTE: I know this isn't a great way to plot the output/I'm not actually plotting the estimates, but here's a rough representation of what the model thinks is happening
 Comp_Plot <- ggplot() +
@@ -956,7 +953,7 @@ Comp_Plot <- ggplot() +
         panel.grid.minor = element_blank())
 Comp_Plot
 
-#### Attempt 8: NowakMay, with data generated by discrete implementation ====
+#### Attempt 8: ModFentonPerkins, with data generated by discrete implementation ====
 ## Deterministic ##
 r = 2.5; O = 0.008; h = 0.06; b = 35; c = 0.2; u = 0.2
 P <- c(); H <- c()
@@ -967,12 +964,12 @@ for (t in 2:t_stop){
   # H[t] = H[t - 1] + b*ts + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*H[t - 1]*ts - (1-exp(-u*ts))*H[t - 1]
   H[t] = (1 + b*ts*(1/H[t - 1]) + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*ts - (1-exp(-u*ts)))*H[t - 1]
 }
-NowakMay_Det <- data.frame(seq(1,t_stop,1), P, H); colnames(NowakMay_Det) <- c("Time", "P", "H")
-NowakMay_Det_Plot <- ggplot(NowakMay_Det,aes(x = Time))+
+ModFentonPerkins_Det <- data.frame(seq(1,t_stop,1), P, H); colnames(ModFentonPerkins_Det) <- c("Time", "P", "H")
+ModFentonPerkins_Det_Plot <- ggplot(ModFentonPerkins_Det,aes(x = Time))+
   geom_line(aes(y = P))+ 
   geom_line(aes(y = H))+
   theme_minimal()
-NowakMay_Det_Plot
+ModFentonPerkins_Det_Plot
 
 ## Stochastic ##
 DiscreteModel_Dem <- function(P_Last, H_Last){
@@ -1000,27 +997,27 @@ DiscreteModel_Dem <- function(P_Last, H_Last){
 
 ts <- 0.1; TT <- 100/ts
 P_Last <- 80; H_Last <- 200
-NowakMay_Stoch <- data.frame()
+ModFentonPerkins_Stoch <- data.frame()
 for (j in 1:TT){
   Output = DiscreteModel_Dem(P_Last, H_Last)
   P_Last = Output[1]
   H_Last = Output[2]
   Addition <- c(P_Last, H_Last)
-  NowakMay_Stoch <- data.frame(rbind(NowakMay_Stoch, Addition))
+  ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
 }
-NowakMay_Stoch <- cbind(seq(1,TT,1), NowakMay_Stoch)
-colnames(NowakMay_Stoch) <- c("Time","P", "H")
-NowakMay_Stoch_Plot <- ggplot(NowakMay_Stoch,aes(x = Time))+
+ModFentonPerkins_Stoch <- cbind(seq(1,TT,1), ModFentonPerkins_Stoch)
+colnames(ModFentonPerkins_Stoch) <- c("Time","P", "H")
+ModFentonPerkins_Stoch_Plot <- ggplot(ModFentonPerkins_Stoch,aes(x = Time))+
   geom_line(aes(y = P))+ 
   geom_line(aes(y = H))+
   theme_minimal()
-NowakMay_Stoch_Plot
+ModFentonPerkins_Stoch_Plot
 
 ## Data wrangling for Stan ##
-N <- length(NowakMay_Stoch$Time) - 1
+N <- length(ModFentonPerkins_Stoch$Time) - 1
 ts <- 1:N
-P <- as.vector(NowakMay_Stoch[2:(N + 1), 2:2])
-H <- as.vector(NowakMay_Stoch[2:(N + 1), 3:3])
+P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
+H <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
 StanData <- list(N = N, ts = ts, P = P, H = H)
 
 write("
@@ -1078,9 +1075,9 @@ for (t in 2:t_stop){
   # H[t] = H[t - 1] + b*ts + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*H[t - 1]*ts - (1-exp(-u*ts))*H[t - 1]
   H[t] = (1 + b*ts*(1/H[t - 1]) + c*(O*P[t - 1]/(1 + O*P[t - 1]*h))*ts - (1-exp(-u*ts)))*H[t - 1]
 }
-NowakMay_Det <- data.frame(seq(1,t_stop,1), P, H); colnames(NowakMay_Det) <- c("Time", "P", "H")
-NowakMay_Det_Plot <- ggplot(NowakMay_Det,aes(x = Time))+
+ModFentonPerkins_Det <- data.frame(seq(1,t_stop,1), P, H); colnames(ModFentonPerkins_Det) <- c("Time", "P", "H")
+ModFentonPerkins_Det_Plot <- ggplot(ModFentonPerkins_Det,aes(x = Time))+
   geom_line(aes(y = P))+ 
   geom_line(aes(y = H))+
   theme_minimal()
-NowakMay_Det_Plot
+ModFentonPerkins_Det_Plot
