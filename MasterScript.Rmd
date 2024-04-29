@@ -5774,7 +5774,7 @@ Here, we'll be fitting the adapted Fenton and Perkins (II) model to a shorter ti
 
 ## Mod. Fenton and Perkins (2010)
 
-###  Stable Limit Cycle
+### Stable Limit Cycle
 
 ```{r}
 ModFentonPerkins_2_SLC_Stoch_1_SHORT <- ModFentonPerkins_2_SLC_Stoch_List[[1]][1:15, ]
