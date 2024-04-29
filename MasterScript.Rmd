@@ -5799,7 +5799,7 @@ Here, we'll be fitting the adapted Fenton and Perkins (II) model to a shorter ti
 
 ## Mod. Fenton and Perkins (2010)
 
-### Stable Limit Cycle
+###  Stable Limit Cycle
 
 ```{r}
 ModFentonPerkins_2_SLC_Stoch_1_SHORT <- ModFentonPerkins_2_SLC_Stoch_List[[1]][1:15, ]
@@ -5924,9 +5924,26 @@ for (i in 1:length(Seeds)){
   }
 }
 
+LV_Model <- function(t, y, p){
+  alpha <- p[1]; beta <- p[2]; gamma <- p[3]; delta <- p[4] 
+  u <- y[1]; v <- y[2]
+  du = (alpha - beta * v) * u
+  dv = (-gamma + delta * u) * v
+  list(c(du, dv))
+}
+alpha <- 0.545; beta <- 0.028; gamma <- 0.803; delta <- 0.024 # From posterior estimates
+parms <- c(alpha, beta, gamma, delta)
+TT <- seq(1, 60, 1) # Twenty years, assessed every year
+
+u0 <- 30; v0 <- 4 # In thousands, as per Carpenter
+N0 <- c(u0, v0)
+results <- lsoda(N0, TT, LV_Model, parms, verbose = FALSE)
+LV_DetSim_BC <- data.frame(results); colnames(LV_DetSim_BC) <- c("Time", "Hare", "Lynx")
 
 plot(1:nrow(BC_Stoch_List[[1]]), BC_Stoch_List[[1]]$Hare, type = "l", col = "orchid", lwd = 2)
 lines(1:nrow(BC_Stoch_List[[1]]), BC_Stoch_List[[1]]$Lynx, col = "firebrick2", lwd = 2)
+lines(1:nrow(LV_DetSim_BC), LV_DetSim_BC$Hare, col = "orchid", lwd = 2, lty = 3)
+lines(1:nrow(LV_DetSim_BC), LV_DetSim_BC$Lynx, col = "firebrick2", lwd = 2, lty = 3)
 ```
 
 ## Fitting
