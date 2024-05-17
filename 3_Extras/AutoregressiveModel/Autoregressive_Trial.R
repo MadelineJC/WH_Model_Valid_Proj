@@ -609,22 +609,20 @@ legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 r = 2.5; B = 0.008; h = 0.06; b = 35; e = 0.2; delta = 0.2
 P <- c(); I <- c()
 P[1] = 80; I[1] = 200
-ts = 0.1; t_stop = 100/ts
+ts = 0.1; t_stop = 50/ts
 for (t in 2:t_stop){
   P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
   # I[t] = I[t - 1] + b*ts + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*I[t - 1]*ts - (1-exp(-delta*ts))*I[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Det <- data.frame(seq(1,t_stop,1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
-ModFentonPerkins_Det_Plot <- ggplot(ModFentonPerkins_Det,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = I))+
-  theme_minimal()
-ModFentonPerkins_Det_Plot
+ModFentonPerkins_Det <- data.frame(seq(0.1, 50, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
+     main = "Deterministic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Det[ , 2:3])))
+lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue")
 
 ## Stochastic ##
 DiscreteModel_Dem <- function(P_Last, I_Last){
-  ts = 1
+  ts = 0.1
   r = 2.5; B = 0.008; h = 0.06; b = 35; e = 0.2; delta = 0.2
   
   P_B = rpois(1, r*P_Last*ts) 
@@ -646,7 +644,7 @@ DiscreteModel_Dem <- function(P_Last, I_Last){
   return(c(P_Last, I_Last))
 }
 
-ts <- 0.1; TT <- 100/ts
+ts <- 0.1; TT <- 20/ts
 P_Last <- 80; I_Last <- 200
 ModFentonPerkins_Stoch <- data.frame()
 for (j in 1:TT){
@@ -656,13 +654,16 @@ for (j in 1:TT){
   Addition <- c(P_Last, I_Last)
   ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
 }
-ModFentonPerkins_Stoch <- cbind(seq(1,TT,1), ModFentonPerkins_Stoch)
+ModFentonPerkins_Stoch <- cbind(seq(1, TT, 1), ModFentonPerkins_Stoch)
 colnames(ModFentonPerkins_Stoch) <- c("Time","P", "I")
-ModFentonPerkins_Stoch_Plot <- ggplot(ModFentonPerkins_Stoch,aes(x = Time))+
-  geom_line(aes(y = P))+ 
-  geom_line(aes(y = I))+
-  theme_minimal()
-ModFentonPerkins_Stoch_Plot
+
+## Plotting the deterministic and stochastic implementations together:
+plot(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 1000))
+lines(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$I, col = "cornflowerblue")
+lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$P, col = "forestgreen", lty = 3)
+lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Deterministic", "Stochastic"), lty = c(1, 3))
 
 ## Data wrangling for Stan ##
 N <- length(ModFentonPerkins_Stoch$Time) - 1
@@ -733,6 +734,149 @@ ModFentonPerkins_Det_Plot <- ggplot(ModFentonPerkins_Det,aes(x = Time))+
   theme_minimal()
 ModFentonPerkins_Det_Plot
 
+#### Mod. Fenton and Perkins (2) ==============================================
+## Deterministic ##
+r = 2.5; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.41
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
+     main = "Deterministic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Det[ , 2:3])))
+lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue")
+
+## Stochastic ##
+DiscreteModel_Dem <- function(P_Last, I_Last){
+  ts = 0.1
+  r = 2.5; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.41
+  
+  P_B = rpois(1, r*P_Last*ts) 
+  P_D = rbinom(1, P_Last, (1-exp((-B/(1 + B*h*P_Last))*I_Last*ts))) ## ASK MARTY ABOUT THIS LINE
+  I_B = rpois(1, (b + e*(B*P_Last/(1 + B*P_Last*h))*I_Last)*ts)
+  I_D = rbinom(1, I_Last, (1-exp(-delta*ts))) ## ASK MARTY ABOUT THIS LINE
+  
+  P_Next = P_Last + P_B - P_D
+  I_Next = I_Last + I_B - I_D
+  
+  P_Last <- P_Next
+  I_Last <- I_Next
+  
+  ## To prevent the populations from going negative
+  if (P_Last < 0){
+    P_Last <- 0
+  }
+  
+  return(c(P_Last, I_Last))
+}
+
+ts <- 0.1; t_stop <- 60/ts
+P_Last <- 80; I_Last <- 200
+ModFentonPerkins_Stoch <- data.frame()
+set.seed(3)
+for (j in 1:t_stop){
+  Output = DiscreteModel_Dem(P_Last, I_Last)
+  P_Last = Output[1]
+  I_Last = Output[2]
+  Addition <- c(P_Last, I_Last)
+  ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
+}
+ModFentonPerkins_Stoch <- data.frame(seq(0.1, 60, 0.1), ModFentonPerkins_Stoch); colnames(ModFentonPerkins_Stoch) <- c("Time","P", "I")
+plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
+     main = "Stochastic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+
+## Plotting the deterministic and stochastic implementations together:
+plot(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$I, col = "cornflowerblue")
+lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$P, col = "forestgreen", lty = 3)
+lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Deterministic", "Stochastic"), lty = c(1, 3))
+
+## Data wrangling for Stan ##
+x <- which(ModFentonPerkins_Stoch$P == 0)[1]
+# ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch[1:x - 1, ]
+N <- length(ModFentonPerkins_Stoch$Time) - 1
+ts <- 1:N
+P_init <- c(ModFentonPerkins_Stoch$P[80])
+I_init <- c(ModFentonPerkins_Stoch$I[200])
+P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
+I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
+StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+
+## Write model ##
+write("
+data {
+  int<lower = 0> N;
+  real P[N];
+  real I[N];
+}
+parameters {
+  real<lower = 0> r; // Replication rate of parasite
+  real<lower = 0> B; // Recognition rate of parasite by host immune system
+  real<lower = 0> h; // Handling time of parasite by immune system
+  real<lower = 0> b; // Immigration rate of immune cells in absence of infection
+  real<lower = 0> e; // Activation/proliferation rate of host immune system
+  real<lower = 0> delta; // Natural mortality rate of host immune cells
+  real<lower=0> sigma; // Error
+}
+model {
+  r ~ normal(2.5, 1); // 2.5
+  B ~ normal(0, 1); // 0.012
+  h ~ normal(0, 1); // 0.075
+  b ~ normal(35, 1); // 35
+  e ~ normal(0, 1); // 0.3
+  delta ~ normal(0, 1); // 0.41
+  sigma ~ lognormal(-1, 1);
+  for (t in 2:N) {
+    // P[t] ~ normal(P[t-1] + r*P[t-1]*0.1 - (1-exp((-B/(1 + B*h*P[t-1]))*I[t-1]*0.1))*P[t-1], sigma);
+    // I[t] ~ normal(I[t-1] + b*0.1 + e*(B*P[t-1]/(1 + B*P[t-1]*h))*I[t-1]*0.1 - (1-exp(-delta))*I[t-1], sigma);
+    P[t] ~ normal((1 + r*0.1 - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*0.1)))*P[t - 1], sigma);
+    I[t] ~ normal((1 + b*0.1*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*0.1 - (1-exp(-delta*0.1)))*I[t - 1], sigma);
+  }
+}",
+"3_Extras/AutoregressiveModel/Autoregressive_ModFentonPerkins.stan")
+
+## Compile model ##
+model <- stan_model("3_Extras/AutoregressiveModel/Autoregressive_ModFentonPerkins.stan")
+
+## Fitting ##
+fit <- sampling(model, data = StanData, chains = 4, iter = 10000, cores = 4, seed = 1)
+
+## Model checks ##
+fit_summ <- print(fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+fit_Trace <- stan_trace(fit,parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
+fit_Overlay <- mcmc_dens_overlay(fit,parms); fit_Overlay
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 
 
 
