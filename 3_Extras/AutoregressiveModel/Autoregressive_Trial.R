@@ -1,11 +1,11 @@
-## Packages ##
+#### Required Packages ========================================================
 library(rstan)
 library(bayesplot)
 library(tidyverse)
 library(deSolve)
 library(GillespieSSA)
 
-#### Ex. Marty sent ===========================================================
+#### Online Example ===========================================================
 # Source: https://medewitt.github.io/resources/stan_ar_models.html 
 
 ## Data generation ##
@@ -54,9 +54,9 @@ fit_summ <- print(fit, pars = c("alpha", "beta", "sigma"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("alpha", "beta[1]", "beta[2]", "beta[3]", "sigma")
 Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Dens <- mcmc_dens(fit,parms); fit_Dens
+fit_Trace <- stan_trace(fit, parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
+fit_Dens <- mcmc_dens(fit, parms); fit_Dens
 
 # Inference
 print(fit, pars = "beta")
@@ -64,7 +64,7 @@ print(fit, pars = "beta")
 ## Okay, so while the model seems to think it knows what it's doing, these estimates actually aren't incredible.
 ## Recall that the true values are 0.2, 0.5, and 0.05.
 
-#### Stan user guide ==========================================================
+#### Stan User Guide ==========================================================
 # write("
 # data {
 #   int<lower=0> N;
@@ -173,9 +173,9 @@ fit_summ <- print(fit, pars = c("r", "K"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "K")
 Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Dens <- mcmc_dens(fit,parms); fit_Dens
+fit_Trace <- stan_trace(fit, parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
+fit_Dens <- mcmc_dens(fit, parms); fit_Dens
 
 posterior <- rstan::extract(fit)
 r_med <- median(posterior$r); K_med <- median(posterior$K)
@@ -345,9 +345,9 @@ fit_summ <- print(fit, pars = c("R", "K", "r", "k"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("R", "K", "r", "k")
 Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Dens <- mcmc_dens(fit,parms); fit_Dens
+fit_Trace <- stan_trace(fit, parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
+fit_Dens <- mcmc_dens(fit, parms); fit_Dens
 
 ## Let's do some plotting to compare data to estimates ##
 posterior <- rstan::extract(fit)
@@ -474,7 +474,7 @@ Comp_Plot
 
 ## Okay, so this also worked, but these populations don't interact. So, the bar is low. 
 
-#### Two Interacting Species: Antia et al. ====================================
+#### Antia et al. =============================================================
 ## Deterministic ##
 r = 0.2; k = 0.01; p = 1; o = 1000
 P <- c(); I <- c()
@@ -583,9 +583,9 @@ fit_summ <- print(fit, pars = c("r", "k", "p", "o"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "k", "p", "o")
 Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Overlay <- mcmc_dens_overlay(fit,parms); fit_Overlay
+fit_Trace <- stan_trace(fit, parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
+fit_Overlay <- mcmc_dens_overlay(fit, parms); fit_Overlay
 
 r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
 P <- c(); I <- c()
@@ -604,7 +604,7 @@ lines(1:nrow(Antia_Est), Antia_Est$P, col = "forestgreen", lty = 3)
 lines(1:nrow(Antia_Est), Antia_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 
-#### Mod. Fenton and Perkins ==================================================
+#### Mod. Fenton and Perkins (1) ==============================================
 ## Deterministic ##
 r = 2.5; B = 0.008; h = 0.06; b = 35; e = 0.2; delta = 0.2
 P <- c(); I <- c()
@@ -713,9 +713,9 @@ fit_summ <- print(fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
 Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Dens <- mcmc_dens(fit,parms); fit_Dens
+fit_Trace <- stan_trace(fit, parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
+fit_Dens <- mcmc_dens(fit, parms); fit_Dens
 
 ## Putting the parameter estimates into the deterministic model:
 r = 0.241; B = 0.001; h = 0.07; b = 4.344; e = 0.194; delta = 0.024
@@ -854,9 +854,9 @@ fit_summ <- print(fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
 Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit,parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit,parms); fit_Pairs
-fit_Overlay <- mcmc_dens_overlay(fit,parms); fit_Overlay
+fit_Trace <- stan_trace(fit, parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
+fit_Overlay <- mcmc_dens_overlay(fit, parms); fit_Overlay
 
 r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
@@ -878,5 +878,291 @@ lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lt
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 
+#### Mod. Fenton and Perkins (3) ==============================================
+## Deterministic ##
+r = 2.5; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.34
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
+     main = "Deterministic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Det[ , 2:3])))
+lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue")
 
+## Stochastic ##
+DiscreteModel_Dem <- function(P_Last, I_Last){
+  ts = 0.1
+  r = 2.5; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.34
+  
+  P_B = rpois(1, r*P_Last*ts) 
+  P_D = rbinom(1, P_Last, (1-exp((-B/(1 + B*h*P_Last))*I_Last*ts))) ## ASK MARTY ABOUT THIS LINE
+  I_B = rpois(1, (b + e*(B*P_Last/(1 + B*P_Last*h))*I_Last)*ts)
+  I_D = rbinom(1, I_Last, (1-exp(-delta*ts))) ## ASK MARTY ABOUT THIS LINE
+  
+  P_Next = P_Last + P_B - P_D
+  I_Next = I_Last + I_B - I_D
+  
+  P_Last <- P_Next
+  I_Last <- I_Next
+  
+  ## To prevent the populations from going negative
+  if (P_Last < 0){
+    P_Last <- 0
+  }
+  
+  return(c(P_Last, I_Last))
+}
+
+ts <- 0.1; t_stop <- 60/ts
+P_Last <- 80; I_Last <- 200
+ModFentonPerkins_Stoch <- data.frame()
+set.seed(3)
+for (j in 1:t_stop){
+  Output = DiscreteModel_Dem(P_Last, I_Last)
+  P_Last = Output[1]
+  I_Last = Output[2]
+  Addition <- c(P_Last, I_Last)
+  ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
+}
+ModFentonPerkins_Stoch <- data.frame(seq(0.1, 60, 0.1), ModFentonPerkins_Stoch); colnames(ModFentonPerkins_Stoch) <- c("Time","P", "I")
+plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
+     main = "Stochastic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+
+## Plotting the deterministic and stochastic implementations together:
+plot(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$I, col = "cornflowerblue")
+lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$P, col = "forestgreen", lty = 3)
+lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Deterministic", "Stochastic"), lty = c(1, 3))
+
+## Data wrangling for Stan ##
+x <- which(ModFentonPerkins_Stoch$P == 0)[1]
+ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch[1:x - 1, ]
+N <- length(ModFentonPerkins_Stoch$Time) - 1
+ts <- 1:N
+P_init <- c(ModFentonPerkins_Stoch$P[80])
+I_init <- c(ModFentonPerkins_Stoch$I[200])
+P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
+I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
+StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+
+## Write model ##
+write("
+data {
+  int<lower = 0> N;
+  real P[N];
+  real I[N];
+}
+parameters {
+  real<lower = 0> r; // Replication rate of parasite
+  real<lower = 0> B; // Recognition rate of parasite by host immune system
+  real<lower = 0> h; // Handling time of parasite by immune system
+  real<lower = 0> b; // Immigration rate of immune cells in absence of infection
+  real<lower = 0> e; // Activation/proliferation rate of host immune system
+  real<lower = 0> delta; // Natural mortality rate of host immune cells
+  real<lower=0> sigma; // Error
+}
+model {
+  r ~ normal(2.5, 1); // 2.5
+  B ~ normal(0, 1); // 0.012
+  h ~ normal(0, 1); // 0.075
+  b ~ normal(35, 1); // 35
+  e ~ normal(0, 1); // 0.3
+  delta ~ normal(0, 1); // 0.41
+  sigma ~ lognormal(-1, 1);
+  for (t in 2:N) {
+    // P[t] ~ normal(P[t-1] + r*P[t-1]*0.1 - (1-exp((-B/(1 + B*h*P[t-1]))*I[t-1]*0.1))*P[t-1], sigma);
+    // I[t] ~ normal(I[t-1] + b*0.1 + e*(B*P[t-1]/(1 + B*P[t-1]*h))*I[t-1]*0.1 - (1-exp(-delta))*I[t-1], sigma);
+    P[t] ~ normal((1 + r*0.1 - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*0.1)))*P[t - 1], sigma);
+    I[t] ~ normal((1 + b*0.1*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*0.1 - (1-exp(-delta*0.1)))*I[t - 1], sigma);
+  }
+}",
+"3_Extras/AutoregressiveModel/Autoregressive_ModFentonPerkins.stan")
+
+## Compile model ##
+model <- stan_model("3_Extras/AutoregressiveModel/Autoregressive_ModFentonPerkins.stan")
+
+## Fitting ##
+fit <- sampling(model, data = StanData, chains = 4, iter = 10000, cores = 4, seed = 1)
+
+## Model checks ##
+fit_summ <- print(fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+fit_Trace <- stan_trace(fit, parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
+fit_Overlay <- mcmc_dens_overlay(fit, parms); fit_Overlay
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+#### Mod. Fenton and Perkins (4) ==============================================
+## Deterministic ##
+r = 2.1; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.34
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 100/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Det <- data.frame(seq(0.1, 100, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
+     main = "Deterministic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Det[ , 2:3])))
+lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue")
+
+## Stochastic ##
+DiscreteModel_Dem <- function(P_Last, I_Last){
+  ts = 0.1
+  r = 2.1; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.34
+  
+  P_B = rpois(1, r*P_Last*ts) 
+  P_D = rbinom(1, P_Last, (1-exp((-B/(1 + B*h*P_Last))*I_Last*ts))) ## ASK MARTY ABOUT THIS LINE
+  I_B = rpois(1, (b + e*(B*P_Last/(1 + B*P_Last*h))*I_Last)*ts)
+  I_D = rbinom(1, I_Last, (1-exp(-delta*ts))) ## ASK MARTY ABOUT THIS LINE
+  
+  P_Next = P_Last + P_B - P_D
+  I_Next = I_Last + I_B - I_D
+  
+  P_Last <- P_Next
+  I_Last <- I_Next
+  
+  ## To prevent the populations from going negative
+  if (P_Last < 0){
+    P_Last <- 0
+  }
+  
+  return(c(P_Last, I_Last))
+}
+
+ts <- 0.1; t_stop <- 100/ts
+P_Last <- 80; I_Last <- 200
+ModFentonPerkins_Stoch <- data.frame()
+set.seed(3)
+for (j in 1:t_stop){
+  Output = DiscreteModel_Dem(P_Last, I_Last)
+  P_Last = Output[1]
+  I_Last = Output[2]
+  Addition <- c(P_Last, I_Last)
+  ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
+}
+ModFentonPerkins_Stoch <- data.frame(seq(0.1, 100, 0.1), ModFentonPerkins_Stoch); colnames(ModFentonPerkins_Stoch) <- c("Time","P", "I")
+plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
+     main = "Stochastic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+
+## Plotting the deterministic and stochastic implementations together:
+plot(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 400))
+lines(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$I, col = "cornflowerblue")
+lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$P, col = "forestgreen", lty = 3)
+lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Deterministic", "Stochastic"), lty = c(1, 3))
+
+## Data wrangling for Stan ##
+x <- which(ModFentonPerkins_Stoch$P == 0)[1]
+# ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch[1:x - 1, ]
+N <- length(ModFentonPerkins_Stoch$Time) - 1
+ts <- 1:N
+P_init <- c(ModFentonPerkins_Stoch$P[80])
+I_init <- c(ModFentonPerkins_Stoch$I[200])
+P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
+I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
+StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+
+## Write model ##
+write("
+data {
+  int<lower = 0> N;
+  real P[N];
+  real I[N];
+}
+parameters {
+  real<lower = 0> r; // Replication rate of parasite
+  real<lower = 0> B; // Recognition rate of parasite by host immune system
+  real<lower = 0> h; // Handling time of parasite by immune system
+  real<lower = 0> b; // Immigration rate of immune cells in absence of infection
+  real<lower = 0> e; // Activation/proliferation rate of host immune system
+  real<lower = 0> delta; // Natural mortality rate of host immune cells
+  real<lower=0> sigma; // Error
+}
+model {
+  r ~ normal(2.5, 1); // 2.5
+  B ~ normal(0, 1); // 0.012
+  h ~ normal(0, 1); // 0.075
+  b ~ normal(35, 1); // 35
+  e ~ normal(0, 1); // 0.3
+  delta ~ normal(0, 1); // 0.41
+  sigma ~ lognormal(-1, 1);
+  for (t in 2:N) {
+    // P[t] ~ normal(P[t-1] + r*P[t-1]*0.1 - (1-exp((-B/(1 + B*h*P[t-1]))*I[t-1]*0.1))*P[t-1], sigma);
+    // I[t] ~ normal(I[t-1] + b*0.1 + e*(B*P[t-1]/(1 + B*P[t-1]*h))*I[t-1]*0.1 - (1-exp(-delta))*I[t-1], sigma);
+    P[t] ~ normal((1 + r*0.1 - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*0.1)))*P[t - 1], sigma);
+    I[t] ~ normal((1 + b*0.1*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*0.1 - (1-exp(-delta*0.1)))*I[t - 1], sigma);
+  }
+}",
+"3_Extras/AutoregressiveModel/Autoregressive_ModFentonPerkins.stan")
+
+## Compile model ##
+model <- stan_model("3_Extras/AutoregressiveModel/Autoregressive_ModFentonPerkins.stan")
+
+## Fitting ##
+fit <- sampling(model, data = StanData, chains = 4, iter = 10000, cores = 4, seed = 1)
+
+## Model checks ##
+fit_summ <- print(fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
+fit_Trace <- stan_trace(fit, parms); fit_Trace
+fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
+fit_Overlay <- mcmc_dens_overlay(fit, parms); fit_Overlay
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 100/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 100, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 
