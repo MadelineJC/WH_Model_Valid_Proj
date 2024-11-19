@@ -20,17 +20,17 @@ library(MCMCvis)
 
 # Models, Forms, and Associated Dynamics
 
-+----------+---------------------+----------------------------+--------------------------+
-|          | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
-+==========+=====================+============================+==========================+
-| Type I   | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type II  | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
-|          |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
-+----------+---------------------+----------------------------+--------------------------+
-| Type III | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
-|          |                     | 2.  Damping oscillations   |                          |
-+----------+---------------------+----------------------------+--------------------------+
++--------------+---------------------+----------------------------+--------------------------+
+|              | Antia et al.        | Fenton and Perkins         | Mod. Fenton and Perkins  |
++==============+=====================+============================+==========================+
+| Type I       | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type II      | Stable, extirpation | 1.  Stable limit cycle     | 1.  Stable limit cycle   |
+|              |                     | 2.  Divergent oscillations | 2.  Damping oscillations |
++--------------+---------------------+----------------------------+--------------------------+
+| Type III     | NA                  | 1.  Stable limit cycle     | 1.  Damping oscillations |
+|              |                     | 2.  Damping oscillations   |                          |
++--------------+---------------------+----------------------------+--------------------------+
 
 ## Antia et al. (1994)
 
@@ -40,15 +40,23 @@ $\frac{dP}{dt} = rP - kPI$, if $P < D$, where $D = 10^9$. If $P < D$, $P \righta
 
 $\frac{dI}{dt} = \rho I(\frac{P}{P + \phi})$
 
-| Symbol | Parameter                                                                              | Value        |
-|--------|----------------------------------------------------------------------------------------|--------------|
-| $P$    | Parasite abundance                                                                     | $1**$        |
-| $I$    | Host immune cell abundance                                                             | $1**$        |
-| $r$    | Replication rate of parasite                                                           | $0.1 - 10.0$ |
-| $k$    | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
-| $\rho$ | Maximum replication rate of host's immune system                                       | $1$          |
-| $\phi$ | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
-| $D$    | Lethal within-host parasite abundance                                                  | $10^9$       |
++----------+----------------------------------------------------------------------------------------+--------------+
+| Symbol   | Parameter                                                                              | Value        |
++==========+========================================================================================+==============+
+| $P$      | Parasite abundance                                                                     | $1**$        |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $I$      | Host immune cell abundance                                                             | $1**$        |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $r$      | Replication rate of parasite                                                           | $0.1 - 10.0$ |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $k$      | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $\rho$   | Maximum replication rate of host's immune system                                       | $1$          |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $\phi$   | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $D$      | Lethal within-host parasite abundance                                                  | $10^9$       |
++----------+----------------------------------------------------------------------------------------+--------------+
 
 ## Fenton and Perkins (2010)
 
@@ -64,15 +72,23 @@ With a TII functional response, $f(P)=\frac{\beta P}{1+h \beta P}$
 
 With a TIII functional response, $f(P)=\frac{\beta P^2}{1+h \beta P^2}$
 
-| Symbol   | Parameter                                                              | Value        |
-|----------|------------------------------------------------------------------------|--------------|
-| $P$      | Parasite abundance                                                     | $1$          |
-| $I$      | Host immune cell abundance                                             | $1$          |
-| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
-| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
-| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
+| Symbol    | Parameter                                                              | Value        |
++===========+========================================================================+==============+
+| $P$       | Parasite abundance                                                     | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $I$       | Host immune cell abundance                                             | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++-----------+------------------------------------------------------------------------+--------------+
+| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++-----------+------------------------------------------------------------------------+--------------+
+| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
++-----------+------------------------------------------------------------------------+--------------+
+| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
 
 ## Modified Fenton and Perkins (2010)
 
@@ -80,16 +96,25 @@ $\frac{dP}{dt}=rP-If(P)$
 
 $\frac{dI}{dt}=b + ef(P)I - \delta I$
 
-| Symbol   | Parameter                                                              | Value        |
-|----------|------------------------------------------------------------------------|--------------|
-| $P$      | Parasite abundance                                                     | $1$          |
-| $I$      | Host immune cell abundance                                             | $1$          |
-| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
-| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
-| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
-| $b$      | Immigration of immune cells in absence of infection                    | $35$         |
++-----------+------------------------------------------------------------------------+--------------+
+| Symbol    | Parameter                                                              | Value        |
++===========+========================================================================+==============+
+| $P$       | Parasite abundance                                                     | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $I$       | Host immune cell abundance                                             | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++-----------+------------------------------------------------------------------------+--------------+
+| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++-----------+------------------------------------------------------------------------+--------------+
+| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
++-----------+------------------------------------------------------------------------+--------------+
+| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $b$       | Immigration of immune cells in absence of infection                    | $35$         |
++-----------+------------------------------------------------------------------------+--------------+
 
 # GLOBAL FRAMEWORK
 
@@ -405,7 +430,7 @@ lines(Antia_Stoch_List[[2]]$Time, Antia_Stoch_List[[2]]$I, col = "cornflowerblue
 plot(Antia_Stoch_List[[3]]$Time, Antia_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Antia et al. (1994) Model (3)", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
 lines(Antia_Stoch_List[[3]]$Time, Antia_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(Antia_Stoch_List[[4]]$Time, Antia_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Antia et al. (1994) Model (5)", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+plot(Antia_Stoch_List[[4]]$Time, Antia_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Antia et al. (1994) Model (4)", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
 lines(Antia_Stoch_List[[4]]$Time, Antia_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
 
 plot(Antia_Stoch_List[[5]]$Time, Antia_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Antia et al. (1994) Model (5)", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
@@ -464,7 +489,7 @@ lines(ModFentonPerkins_1_Stoch_List[[2]]$Time, ModFentonPerkins_1_Stoch_List[[2]
 plot(ModFentonPerkins_1_Stoch_List[[3]]$Time, ModFentonPerkins_1_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_1_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
 lines(ModFentonPerkins_1_Stoch_List[[3]]$Time, ModFentonPerkins_1_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_1_Stoch_List[[4]]$Time, ModFentonPerkins_1_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_1_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+plot(ModFentonPerkins_1_Stoch_List[[4]]$Time, ModFentonPerkins_1_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (4)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_1_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
 lines(ModFentonPerkins_1_Stoch_List[[4]]$Time, ModFentonPerkins_1_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
 
 plot(ModFentonPerkins_1_Stoch_List[[5]]$Time, ModFentonPerkins_1_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_1_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
@@ -523,7 +548,7 @@ lines(ModFentonPerkins_2_SLC_Stoch_List[[2]]$Time, ModFentonPerkins_2_SLC_Stoch_
 plot(ModFentonPerkins_2_SLC_Stoch_List[[3]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
 lines(ModFentonPerkins_2_SLC_Stoch_List[[3]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_2_SLC_Stoch_List[[4]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+plot(ModFentonPerkins_2_SLC_Stoch_List[[4]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (4)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
 lines(ModFentonPerkins_2_SLC_Stoch_List[[4]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
 
 plot(ModFentonPerkins_2_SLC_Stoch_List[[5]]$Time, ModFentonPerkins_2_SLC_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_SLC_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
@@ -580,7 +605,7 @@ lines(ModFentonPerkins_2_DO_Stoch_List[[2]]$Time, ModFentonPerkins_2_DO_Stoch_Li
 plot(ModFentonPerkins_2_DO_Stoch_List[[3]]$Time, ModFentonPerkins_2_DO_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
 lines(ModFentonPerkins_2_DO_Stoch_List[[3]]$Time, ModFentonPerkins_2_DO_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_2_DO_Stoch_List[[4]]$Time, ModFentonPerkins_2_DO_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+plot(ModFentonPerkins_2_DO_Stoch_List[[4]]$Time, ModFentonPerkins_2_DO_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (4)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
 lines(ModFentonPerkins_2_DO_Stoch_List[[4]]$Time, ModFentonPerkins_2_DO_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
 
 plot(ModFentonPerkins_2_DO_Stoch_List[[5]]$Time, ModFentonPerkins_2_DO_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DO_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
@@ -637,7 +662,7 @@ lines(ModFentonPerkins_3_Stoch_List[[2]]$Time, ModFentonPerkins_3_Stoch_List[[2]
 plot(ModFentonPerkins_3_Stoch_List[[3]]$Time, ModFentonPerkins_3_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_3_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
 lines(ModFentonPerkins_3_Stoch_List[[3]]$Time, ModFentonPerkins_3_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
 
-plot(ModFentonPerkins_3_Stoch_List[[4]]$Time, ModFentonPerkins_3_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_3_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+plot(ModFentonPerkins_3_Stoch_List[[4]]$Time, ModFentonPerkins_3_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (4)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_3_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
 lines(ModFentonPerkins_3_Stoch_List[[4]]$Time, ModFentonPerkins_3_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
 
 plot(ModFentonPerkins_3_Stoch_List[[5]]$Time, ModFentonPerkins_3_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_3_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
@@ -6744,6 +6769,9 @@ lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerbl
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+AR_DivO_B <- as.numeric(quantile(extract(fit, pars = "B")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DivO_h <- as.numeric(quantile(extract(fit, pars = "h")[[1]], probs = c(0.025, 0.5, 0.975)))
 ```
 
 ## Stable Limit Cycle
@@ -6891,6 +6919,9 @@ lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerbl
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+AR_SLC_B <- as.numeric(quantile(extract(fit, pars = "B")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_SLC_h <- as.numeric(quantile(extract(fit, pars = "h")[[1]], probs = c(0.025, 0.5, 0.975)))
 ```
 
 ## Damping Oscillations
@@ -7038,4 +7069,146 @@ lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerbl
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+AR_DO_B <- as.numeric(quantile(extract(fit, pars = "B")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DO_h <- as.numeric(quantile(extract(fit, pars = "h")[[1]], probs = c(0.025, 0.5, 0.975)))
+```
+
+# 95% CIs 
+
+```{r}
+Model <- c("MFP_1", "MFP_2_DO", "MFP_2_SLC", "MFP_3")
+
+## B
+MFP_1.1_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.2_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.3_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.4_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.5_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_3.1_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.2_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.3_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.4_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.5_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+df.b <- data.frame(MFP_1.1_B, MFP_1.2_B, MFP_1.3_B, MFP_1.4_B, MFP_1.5_B,
+                   MFP_2.1_DO_B, MFP_2.2_DO_B, MFP_2.3_DO_B, MFP_2.4_DO_B, MFP_2.5_DO_B, 
+                   MFP_2.1_SLC_B, MFP_2.2_SLC_B, MFP_2.3_SLC_B,MFP_2.4_SLC_B, MFP_2.5_SLC_B, 
+                   MFP_3.1_B, MFP_3.2_B, MFP_3.3_B, MFP_3.4_B, MFP_3.5_B)
+df.b <- as.matrix(df.b); df.b <- t(df.b); df.b <- as.data.frame(df.b); colnames(df.b) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.b)); df.b <- cbind(Model, df.b); df.b <- as.data.frame(df.b)
+
+colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+
+ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+  labs(y = "Mean Estimate of B") +
+  ylim(0, 0.05) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(legend.position = "none") 
+
+## h
+MFP_1.1_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.2_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.3_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.4_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.5_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_3.1_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.2_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.3_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.4_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.5_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+df.h <- data.frame(MFP_1.1_h, MFP_1.2_h, MFP_1.3_h, MFP_1.4_h, MFP_1.5_h,
+                   MFP_2.1_DO_h, MFP_2.2_DO_h, MFP_2.3_DO_h, MFP_2.4_DO_h, MFP_2.5_DO_h, 
+                   MFP_2.1_SLC_h, MFP_2.2_SLC_h, MFP_2.3_SLC_h,MFP_2.4_SLC_h, MFP_2.5_SLC_h, 
+                   MFP_3.1_h, MFP_3.2_h, MFP_3.3_h, MFP_3.4_h, MFP_3.5_h)
+df.h <- as.matrix(df.h); df.h <- t(df.h); df.h <- as.data.frame(df.h); colnames(df.h) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.h)); df.h <- cbind(Model, df.h); df.h <- as.data.frame(df.h)
+
+colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+
+ggplot(df.h, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+  labs(y = "Mean Estimate of h") +
+  ylim(0, 1) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(legend.position = "none") 
+
+## Autoregressive Model
+colours <- c("red3", "orchid", "purple4")
+
+df.b <- data.frame(AR_DivO_B, AR_SLC_B, AR_DO_B)
+df.b <- as.matrix(df.b); df.b <- t(df.b); df.b <- as.data.frame(df.b); colnames(df.b) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.b)); df.b <- cbind(Model, df.b); df.b <- as.data.frame(df.b)
+
+ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) + 
+  geom_point() +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+  labs(y = "Mean Estimate of B") +
+  ylim(0, 0.025) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(legend.position = "none") 
+
+df.h <- data.frame(AR_DivO_h, AR_SLC_h, AR_DO_h)
+df.h <- as.matrix(df.h); df.h <- t(df.h); df.h <- as.data.frame(df.h); colnames(df.h) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.h)); df.h <- cbind(Model, df.h); df.h <- as.data.frame(df.h)
+
+ggplot(df.h, aes(x = Model, y = Mean, colour = colours)) + 
+  geom_point() +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+  labs(y = "Mean Estimate of h") +
+  ylim(0, 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(legend.position = "none") 
 ```
