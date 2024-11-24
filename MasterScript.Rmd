@@ -6667,40 +6667,66 @@ DiscreteModel_Dem <- function(P_Last, I_Last){
   return(c(P_Last, I_Last))
 }
 
+seeds <- c(2, 3, 10, 11, 14)
 ts <- 0.1; t_stop <- 60/ts
 P_Last <- 80; I_Last <- 200
-ModFentonPerkins_Stoch <- data.frame()
-set.seed(3)
-for (j in 1:t_stop){
-  Output = DiscreteModel_Dem(P_Last, I_Last)
-  P_Last = Output[1]
-  I_Last = Output[2]
-  Addition <- c(P_Last, I_Last)
-  ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
-}
-ModFentonPerkins_Stoch <- data.frame(seq(0.1, 60, 0.1), ModFentonPerkins_Stoch); colnames(ModFentonPerkins_Stoch) <- c("Time","P", "I")
-plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
-     main = "Stochastic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+ModFentonPerkins_Stoch_List <- list()
 
-## Plotting the deterministic and stochastic implementations together:
-plot(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
-     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
-lines(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$I, col = "cornflowerblue")
-lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$P, col = "forestgreen", lty = 3)
-lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$I, col = "cornflowerblue", lty = 3)
-legend("topleft", legend = c("Deterministic", "Stochastic"), lty = c(1, 3))
+for (i in 1:length(seeds)){
+  set.seed(seeds[i])
+  P_Last <- 80; I_Last <- 200
+  ModFentonPerkins_Stoch <- data.frame()
+  for (j in 1:t_stop){
+    Output = DiscreteModel_Dem(P_Last, I_Last)
+    P_Last = Output[1]
+    I_Last = Output[2]
+    Addition <- c(P_Last, I_Last)
+    ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
+  }
+  ModFentonPerkins_Stoch <- cbind(seq(0.1, 60, 0.1), ModFentonPerkins_Stoch)
+  colnames(ModFentonPerkins_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    ModFentonPerkins_Stoch_List[[i]] <- ModFentonPerkins_Stoch
+  } else {
+    ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_Stoch_List[[i]] <- ModFentonPerkins_Stoch
+  }
+}
+
+par(mfrow = c(2, 3))
+plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (1)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (2)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (3)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (4)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (5)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
 
 ## Data wrangling for Stan ##
-x <- which(ModFentonPerkins_Stoch$P == 0)[1]
-# ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch[1:x - 1, ]
-N <- length(ModFentonPerkins_Stoch$Time) - 1
-ts <- 1:N
-P_init <- c(ModFentonPerkins_Stoch$P[80])
-I_init <- c(ModFentonPerkins_Stoch$I[200])
-P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
-I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
-StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+StanDataList <- list()
+for (i in 1:5){
+  ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_Stoch$Time) - 1
+  ts <- 1:N
+  P_init <- c(ModFentonPerkins_Stoch$P[1])
+  I_init <- c(ModFentonPerkins_Stoch$I[1])
+  P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
+  I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
+  StanDataList[[i]] <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+}
 
 ## Write model ##
 write("
@@ -6739,16 +6765,21 @@ model {
 model <- stan_model("1_Models/Autoregressive_ModFentonPerkins.stan")
 
 ## Fitting ##
-fit <- sampling(model, data = StanData, chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DivOsc.1.AR.Fit <- sampling(model, data = StanDataList[[1]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DivOsc.2.AR.Fit <- sampling(model, data = StanDataList[[2]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DivOsc.3.AR.Fit <- sampling(model, data = StanDataList[[3]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DivOsc.4.AR.Fit <- sampling(model, data = StanDataList[[4]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DivOsc.5.AR.Fit <- sampling(model, data = StanDataList[[5]], chains = 4, iter = 10000, cores = 4, seed = 1)
 
 ## Model checks ##
-fit_summ <- print(fit, pars = c("r", "B", "h", "b", "e", "delta"),
+# 1
+Fit1Summ <- print(MFP.II.DivOsc.1.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
-Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit, parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
-fit_Overlay <- mcmc_dens_overlay(fit, parms); fit_Overlay
+Output <- rstan::extract(MFP.II.DivOsc.1.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DivOsc.1.AR.Fit, parms)
+mcmc_pairs(MFP.II.DivOsc.1.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DivOsc.1.AR.Fit, parms)
 
 r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
@@ -6763,13 +6794,130 @@ for (t in 2:t_stop){
 }
 ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
 
-plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
+plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
      xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
-lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 
+# 2
+Fit2Summ <- print(MFP.II.DivOsc.2.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.DivOsc.2.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DivOsc.2.AR.Fit, parms)
+mcmc_pairs(MFP.II.DivOsc.2.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DivOsc.2.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 3
+Fit3Summ <- print(MFP.II.DivOsc.3.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.DivOsc.3.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DivOsc.3.AR.Fit, parms)
+mcmc_pairs(MFP.II.DivOsc.3.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DivOsc.3.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 4
+Fit4Summ <- print(MFP.II.DivOsc.4.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.DivOsc.4.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DivOsc.4.AR.Fit, parms)
+mcmc_pairs(MFP.II.DivOsc.4.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DivOsc.4.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 5
+Fit5Summ <- print(MFP.II.DivOsc.5.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.DivOsc.5.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DivOsc.5.AR.Fit, parms)
+mcmc_pairs(MFP.II.DivOsc.5.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DivOsc.5.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+## Looking at Overlaps
 AR_DivO_B <- as.numeric(quantile(extract(fit, pars = "B")[[1]], probs = c(0.025, 0.5, 0.975)))
 AR_DivO_h <- as.numeric(quantile(extract(fit, pars = "h")[[1]], probs = c(0.025, 0.5, 0.975)))
 ```
@@ -6817,40 +6965,66 @@ DiscreteModel_Dem <- function(P_Last, I_Last){
   return(c(P_Last, I_Last))
 }
 
+seeds <- c(3, 7, 9, 10, 11)
 ts <- 0.1; t_stop <- 60/ts
 P_Last <- 80; I_Last <- 200
-ModFentonPerkins_Stoch <- data.frame()
-set.seed(3)
-for (j in 1:t_stop){
-  Output = DiscreteModel_Dem(P_Last, I_Last)
-  P_Last = Output[1]
-  I_Last = Output[2]
-  Addition <- c(P_Last, I_Last)
-  ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
-}
-ModFentonPerkins_Stoch <- data.frame(seq(0.1, 60, 0.1), ModFentonPerkins_Stoch); colnames(ModFentonPerkins_Stoch) <- c("Time","P", "I")
-plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
-     main = "Stochastic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+ModFentonPerkins_Stoch_List <- list()
 
-## Plotting the deterministic and stochastic implementations together:
-plot(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
-     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
-lines(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$I, col = "cornflowerblue")
-lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$P, col = "forestgreen", lty = 3)
-lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$I, col = "cornflowerblue", lty = 3)
-legend("topleft", legend = c("Deterministic", "Stochastic"), lty = c(1, 3))
+for (i in 1:length(seeds)){
+  set.seed(seeds[i])
+  P_Last <- 80; I_Last <- 200
+  ModFentonPerkins_Stoch <- data.frame()
+  for (j in 1:t_stop){
+    Output = DiscreteModel_Dem(P_Last, I_Last)
+    P_Last = Output[1]
+    I_Last = Output[2]
+    Addition <- c(P_Last, I_Last)
+    ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
+  }
+  ModFentonPerkins_Stoch <- cbind(seq(0.1, 60, 0.1), ModFentonPerkins_Stoch)
+  colnames(ModFentonPerkins_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    ModFentonPerkins_Stoch_List[[i]] <- ModFentonPerkins_Stoch
+  } else {
+    ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_Stoch_List[[i]] <- ModFentonPerkins_Stoch
+  }
+}
+
+par(mfrow = c(2, 3))
+plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (1)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (2)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (3)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (4)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (5)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
 
 ## Data wrangling for Stan ##
-x <- which(ModFentonPerkins_Stoch$P == 0)[1]
-ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch[1:x - 1, ]
-N <- length(ModFentonPerkins_Stoch$Time) - 1
-ts <- 1:N
-P_init <- c(ModFentonPerkins_Stoch$P[80])
-I_init <- c(ModFentonPerkins_Stoch$I[200])
-P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
-I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
-StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+StanDataList <- list()
+for (i in 1:5){
+  ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_Stoch$Time) - 1
+  ts <- 1:N
+  P_init <- c(ModFentonPerkins_Stoch$P[1])
+  I_init <- c(ModFentonPerkins_Stoch$I[1])
+  P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
+  I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
+  StanDataList[[i]] <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+}
 
 ## Write model ##
 write("
@@ -6889,16 +7063,21 @@ model {
 model <- stan_model("1_Models/Autoregressive_ModFentonPerkins.stan")
 
 ## Fitting ##
-fit <- sampling(model, data = StanData, chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.SLC.1.AR.Fit <- sampling(model, data = StanDataList[[1]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.SLC.2.AR.Fit <- sampling(model, data = StanDataList[[2]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.SLC.3.AR.Fit <- sampling(model, data = StanDataList[[3]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.SLC.4.AR.Fit <- sampling(model, data = StanDataList[[4]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.SLC.5.AR.Fit <- sampling(model, data = StanDataList[[5]], chains = 4, iter = 10000, cores = 4, seed = 1)
 
 ## Model checks ##
-fit_summ <- print(fit, pars = c("r", "B", "h", "b", "e", "delta"),
+# 1
+Fit1Summ <- print(MFP.II.SLC.1.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
-Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit, parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
-fit_Overlay <- mcmc_dens_overlay(fit, parms); fit_Overlay
+Output <- rstan::extract(MFP.II.SLC.1.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.SLC.1.AR.Fit, parms)
+mcmc_pairs(MFP.II.SLC.1.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.SLC.1.AR.Fit, parms)
 
 r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
@@ -6913,9 +7092,125 @@ for (t in 2:t_stop){
 }
 ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
 
-plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
+plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
      xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
-lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 2
+Fit2Summ <- print(MFP.II.SLC.2.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.SLC.2.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.SLC.2.AR.Fit, parms)
+mcmc_pairs(MFP.II.SLC.2.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.SLC.2.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 3
+Fit3Summ <- print(MFP.II.SLC.3.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.SLC.3.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.SLC.3.AR.Fit, parms)
+mcmc_pairs(MFP.II.SLC.3.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.SLC.3.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 4
+Fit4Summ <- print(MFP.II.SLC.4.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.SLC.4.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.SLC.4.AR.Fit, parms)
+mcmc_pairs(MFP.II.SLC.4.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.SLC.4.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 5
+Fit5Summ <- print(MFP.II.SLC.5.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.SLC.5.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.SLC.5.AR.Fit, parms)
+mcmc_pairs(MFP.II.SLC.5.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.SLC.5.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
@@ -6967,40 +7262,66 @@ DiscreteModel_Dem <- function(P_Last, I_Last){
   return(c(P_Last, I_Last))
 }
 
-ts <- 0.1; t_stop <- 100/ts
+seeds <- c(3, 4, 5, 6, 7)
+ts <- 0.1; t_stop <- 60/ts
 P_Last <- 80; I_Last <- 200
-ModFentonPerkins_Stoch <- data.frame()
-set.seed(3)
-for (j in 1:t_stop){
-  Output = DiscreteModel_Dem(P_Last, I_Last)
-  P_Last = Output[1]
-  I_Last = Output[2]
-  Addition <- c(P_Last, I_Last)
-  ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
-}
-ModFentonPerkins_Stoch <- data.frame(seq(0.1, 100, 0.1), ModFentonPerkins_Stoch); colnames(ModFentonPerkins_Stoch) <- c("Time","P", "I")
-plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
-     main = "Stochastic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+ModFentonPerkins_Stoch_List <- list()
 
-## Plotting the deterministic and stochastic implementations together:
-plot(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
-     xlab = "Time", ylab = "Abundance", ylim = c(0, 400))
-lines(1:nrow(ModFentonPerkins_Det), ModFentonPerkins_Det$I, col = "cornflowerblue")
-lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$P, col = "forestgreen", lty = 3)
-lines(1:nrow(ModFentonPerkins_Stoch), ModFentonPerkins_Stoch$I, col = "cornflowerblue", lty = 3)
-legend("topleft", legend = c("Deterministic", "Stochastic"), lty = c(1, 3))
+for (i in 1:length(seeds)){
+  set.seed(seeds[i])
+  P_Last <- 80; I_Last <- 200
+  ModFentonPerkins_Stoch <- data.frame()
+  for (j in 1:t_stop){
+    Output = DiscreteModel_Dem(P_Last, I_Last)
+    P_Last = Output[1]
+    I_Last = Output[2]
+    Addition <- c(P_Last, I_Last)
+    ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
+  }
+  ModFentonPerkins_Stoch <- cbind(seq(0.1, 60, 0.1), ModFentonPerkins_Stoch)
+  colnames(ModFentonPerkins_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    ModFentonPerkins_Stoch_List[[i]] <- ModFentonPerkins_Stoch
+  } else {
+    ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_Stoch_List[[i]] <- ModFentonPerkins_Stoch
+  }
+}
+
+par(mfrow = c(2, 3))
+plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (1)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (2)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (3)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (4)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
+
+plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
+     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (5)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
+lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
 
 ## Data wrangling for Stan ##
-x <- which(ModFentonPerkins_Stoch$P == 0)[1]
-# ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch[1:x - 1, ]
-N <- length(ModFentonPerkins_Stoch$Time) - 1
-ts <- 1:N
-P_init <- c(ModFentonPerkins_Stoch$P[80])
-I_init <- c(ModFentonPerkins_Stoch$I[200])
-P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
-I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
-StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+StanDataList <- list()
+for (i in 1:5){
+  ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_Stoch$Time) - 1
+  ts <- 1:N
+  P_init <- c(ModFentonPerkins_Stoch$P[1])
+  I_init <- c(ModFentonPerkins_Stoch$I[1])
+  P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
+  I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
+  StanDataList[[i]] <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+}
 
 ## Write model ##
 write("
@@ -7039,33 +7360,154 @@ model {
 model <- stan_model("1_Models/Autoregressive_ModFentonPerkins.stan")
 
 ## Fitting ##
-fit <- sampling(model, data = StanData, chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DampOsc.1.AR.Fit <- sampling(model, data = StanDataList[[1]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DampOsc.2.AR.Fit <- sampling(model, data = StanDataList[[2]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DampOsc.3.AR.Fit <- sampling(model, data = StanDataList[[3]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DampOsc.4.AR.Fit <- sampling(model, data = StanDataList[[4]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.II.DampOsc.5.AR.Fit <- sampling(model, data = StanDataList[[5]], chains = 4, iter = 10000, cores = 4, seed = 1)
 
 ## Model checks ##
-fit_summ <- print(fit, pars = c("r", "B", "h", "b", "e", "delta"),
+# 1
+Fit1Summ <- print(MFP.II.DampOsc.1.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
-Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit, parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
-fit_Overlay <- mcmc_dens_overlay(fit, parms); fit_Overlay
+Output <- rstan::extract(MFP.II.DampOsc.1.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DampOsc.1.AR.Fit, parms)
+mcmc_pairs(MFP.II.DampOsc.1.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DampOsc.1.AR.Fit, parms)
 
 r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
 P <- c(); I <- c()
 P[1] = 80; I[1] = 200
-ts = 0.1; t_stop = 100/ts
+ts = 0.1; t_stop = 60/ts
 for (t in 2:t_stop){
   # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
   # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
   P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Est <- data.frame(seq(0.1, 100, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
 
-plot(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$P, type = "l", col = "forestgreen",
+plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
      xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
-lines(ModFentonPerkins_Stoch$Time, ModFentonPerkins_Stoch$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 2
+Fit2Summ <- print(MFP.II.DampOsc.2.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.DampOsc.2.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DampOsc.2.AR.Fit, parms)
+mcmc_pairs(MFP.II.DampOsc.2.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DampOsc.2.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 3
+Fit3Summ <- print(MFP.II.DampOsc.3.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.DampOsc.3.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DampOsc.3.AR.Fit, parms)
+mcmc_pairs(MFP.II.DampOsc.3.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DampOsc.3.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 4
+Fit4Summ <- print(MFP.II.DampOsc.4.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.DampOsc.4.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DampOsc.4.AR.Fit, parms)
+mcmc_pairs(MFP.II.DampOsc.4.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DampOsc.4.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
+lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 5
+Fit5Summ <- print(MFP.II.DampOsc.5.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "B", "h", "b", "e", "delta")
+Output <- rstan::extract(MFP.II.DampOsc.5.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.II.DampOsc.5.AR.Fit, parms)
+mcmc_pairs(MFP.II.DampOsc.5.AR.Fit, parms)
+mcmc_dens_overlay(MFP.II.DampOsc.5.AR.Fit, parms)
+
+r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
+b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
+  # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+ModFentonPerkins_Est <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+
+plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 500))
+lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
@@ -7080,29 +7522,29 @@ AR_DO_h <- as.numeric(quantile(extract(fit, pars = "h")[[1]], probs = c(0.025, 0
 Model <- c("MFP_1", "MFP_2_DO", "MFP_2_SLC", "MFP_3")
 
 ## B
-MFP_1.1_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.2_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.3_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.4_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.5_B <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.1_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.2_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.3_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.4_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.5_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-MFP_2.1_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.2_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.3_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.4_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.5_DO_B <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.1_DO_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DO_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DO_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DO_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DO_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-MFP_2.1_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.2_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.3_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.4_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.5_SLC_B <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.1_SLC_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_SLC_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_SLC_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_SLC_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_SLC_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-MFP_3.1_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.2_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.3_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.4_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.5_B <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.1_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.2_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.3_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.4_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.5_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
 df.b <- data.frame(MFP_1.1_B, MFP_1.2_B, MFP_1.3_B, MFP_1.4_B, MFP_1.5_B,
                    MFP_2.1_DO_B, MFP_2.2_DO_B, MFP_2.3_DO_B, MFP_2.4_DO_B, MFP_2.5_DO_B, 
@@ -7127,29 +7569,29 @@ ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) + geom_point() +
   theme(legend.position = "none") 
 
 ## h
-MFP_1.1_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.2_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.3_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.4_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.5_h <- as.numeric(quantile(extract(ModFentonPerkins_1_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.1_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.2_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.3_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.4_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.5_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-MFP_2.1_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.2_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.3_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.4_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.5_DO_h <- as.numeric(quantile(extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.1_DO_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DO_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DO_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DO_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DO_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-MFP_2.1_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.2_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.3_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.4_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.5_SLC_h <- as.numeric(quantile(extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.1_SLC_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_SLC_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_SLC_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_SLC_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_SLC_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-MFP_3.1_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.2_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.3_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.4_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.5_h <- as.numeric(quantile(extract(ModFentonPerkins_3_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.1_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.2_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.3_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.4_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.5_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
 df.h <- data.frame(MFP_1.1_h, MFP_1.2_h, MFP_1.3_h, MFP_1.4_h, MFP_1.5_h,
                    MFP_2.1_DO_h, MFP_2.2_DO_h, MFP_2.3_DO_h, MFP_2.4_DO_h, MFP_2.5_DO_h, 
