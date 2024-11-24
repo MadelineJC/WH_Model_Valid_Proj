@@ -6916,10 +6916,6 @@ lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I,
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
-
-## Looking at Overlaps
-AR_DivO_B <- as.numeric(quantile(extract(fit, pars = "B")[[1]], probs = c(0.025, 0.5, 0.975)))
-AR_DivO_h <- as.numeric(quantile(extract(fit, pars = "h")[[1]], probs = c(0.025, 0.5, 0.975)))
 ```
 
 ## Stable Limit Cycle
@@ -7214,9 +7210,6 @@ lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I,
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
-
-AR_SLC_B <- as.numeric(quantile(extract(fit, pars = "B")[[1]], probs = c(0.025, 0.5, 0.975)))
-AR_SLC_h <- as.numeric(quantile(extract(fit, pars = "h")[[1]], probs = c(0.025, 0.5, 0.975)))
 ```
 
 ## Damping Oscillations
@@ -7511,15 +7504,59 @@ lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I,
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$P, col = "forestgreen", lty = 3)
 lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
-
-AR_DO_B <- as.numeric(quantile(extract(fit, pars = "B")[[1]], probs = c(0.025, 0.5, 0.975)))
-AR_DO_h <- as.numeric(quantile(extract(fit, pars = "h")[[1]], probs = c(0.025, 0.5, 0.975)))
 ```
 
 # 95% CIs 
 
 ```{r}
 Model <- c("MFP_1", "MFP_2_DO", "MFP_2_SLC", "MFP_3")
+
+## r
+MFP_1.1_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.2_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.3_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.4_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.5_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_3.1_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.2_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.3_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.4_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.5_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+df.r <- data.frame(MFP_1.1_r, MFP_1.2_r, MFP_1.3_r, MFP_1.4_r, MFP_1.5_r,
+                   MFP_2.1_DO_r, MFP_2.2_DO_r, MFP_2.3_DO_r, MFP_2.4_DO_r, MFP_2.5_DO_r, 
+                   MFP_2.1_SLC_r, MFP_2.2_SLC_r, MFP_2.3_SLC_r,MFP_2.4_SLC_r, MFP_2.5_SLC_r, 
+                   MFP_3.1_r, MFP_3.2_r, MFP_3.3_r, MFP_3.4_r, MFP_3.5_r)
+df.r <- as.matrix(df.r); df.r <- t(df.r); df.r <- as.data.frame(df.r); colnames(df.r) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.r)); df.r <- cbind(Model, df.r); df.r <- as.data.frame(df.r)
+
+colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+
+ggplot(df.r, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+  labs(y = "Mean Estimate of r") +
+  ylim(0, 6) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(legend.position = "none") 
 
 ## B
 MFP_1.1_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
@@ -7546,18 +7583,18 @@ MFP_3.3_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars
 MFP_3.4_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.5_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-df.b <- data.frame(MFP_1.1_B, MFP_1.2_B, MFP_1.3_B, MFP_1.4_B, MFP_1.5_B,
+df.B <- data.frame(MFP_1.1_B, MFP_1.2_B, MFP_1.3_B, MFP_1.4_B, MFP_1.5_B,
                    MFP_2.1_DO_B, MFP_2.2_DO_B, MFP_2.3_DO_B, MFP_2.4_DO_B, MFP_2.5_DO_B, 
                    MFP_2.1_SLC_B, MFP_2.2_SLC_B, MFP_2.3_SLC_B,MFP_2.4_SLC_B, MFP_2.5_SLC_B, 
                    MFP_3.1_B, MFP_3.2_B, MFP_3.3_B, MFP_3.4_B, MFP_3.5_B)
-df.b <- as.matrix(df.b); df.b <- t(df.b); df.b <- as.data.frame(df.b); colnames(df.b) <- c("Lower", "Mean", "Upper")
-Model <- c(rownames(df.b)); df.b <- cbind(Model, df.b); df.b <- as.data.frame(df.b)
+df.B <- as.matrix(df.B); df.B <- t(df.B); df.B <- as.data.frame(df.B); colnames(df.B) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.B)); df.B <- cbind(Model, df.B); df.B <- as.data.frame(df.B)
 
 colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
 
-ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
+ggplot(df.B, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
   geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of B") +
+  labs(y = "Mean Estimate of β") +
   ylim(0, 0.05) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
@@ -7569,11 +7606,11 @@ ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) + geom_point() +
   theme(legend.position = "none") 
 
 ## h
-MFP_1.1_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.2_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.3_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.4_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.5_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.1_h <- c(0, 0, 0)
+MFP_1.2_h <- c(0, 0, 0)
+MFP_1.3_h <- c(0, 0, 0)
+MFP_1.4_h <- c(0, 0, 0)
+MFP_1.5_h <- c(0, 0, 0)
 
 MFP_2.1_DO_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_2.2_DO_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
@@ -7615,18 +7652,44 @@ ggplot(df.h, aes(x = Model, y = Mean, colour = colours)) + geom_point() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
   theme(legend.position = "none") 
 
-## Autoregressive Model
-colours <- c("red3", "orchid", "purple4")
+## b
+MFP_1.1_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.2_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.3_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.4_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.5_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-df.b <- data.frame(AR_DivO_B, AR_SLC_B, AR_DO_B)
+MFP_2.1_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_3.1_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.2_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.3_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.4_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.5_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+df.b <- data.frame(MFP_1.1_b, MFP_1.2_b, MFP_1.3_b, MFP_1.4_b, MFP_1.5_b,
+                   MFP_2.1_DO_b, MFP_2.2_DO_b, MFP_2.3_DO_b, MFP_2.4_DO_b, MFP_2.5_DO_b, 
+                   MFP_2.1_SLC_b, MFP_2.2_SLC_b, MFP_2.3_SLC_b,MFP_2.4_SLC_b, MFP_2.5_SLC_b, 
+                   MFP_3.1_b, MFP_3.2_b, MFP_3.3_b, MFP_3.4_b, MFP_3.5_b)
 df.b <- as.matrix(df.b); df.b <- t(df.b); df.b <- as.data.frame(df.b); colnames(df.b) <- c("Lower", "Mean", "Upper")
 Model <- c(rownames(df.b)); df.b <- cbind(Model, df.b); df.b <- as.data.frame(df.b)
 
-ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) + 
-  geom_point() +  
+colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+
+ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
   geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of B") +
-  ylim(0, 0.025) +
+  labs(y = "Mean Estimate of b") +
+  ylim(0, 250) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
     panel.grid.major = element_blank(),
@@ -7636,21 +7699,183 @@ ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
   theme(legend.position = "none") 
 
-df.h <- data.frame(AR_DivO_h, AR_SLC_h, AR_DO_h)
-df.h <- as.matrix(df.h); df.h <- t(df.h); df.h <- as.data.frame(df.h); colnames(df.h) <- c("Lower", "Mean", "Upper")
-Model <- c(rownames(df.h)); df.h <- cbind(Model, df.h); df.h <- as.data.frame(df.h)
+## e
+MFP_1.1_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.2_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.3_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.4_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.5_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-ggplot(df.h, aes(x = Model, y = Mean, colour = colours)) + 
-  geom_point() +  
+MFP_2.1_DO_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DO_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DO_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DO_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DO_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_SLC_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_SLC_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_SLC_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_SLC_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_SLC_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_3.1_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.2_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.3_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.4_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.5_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+df.e <- data.frame(MFP_1.1_e, MFP_1.2_e, MFP_1.3_e, MFP_1.4_e, MFP_1.5_e,
+                   MFP_2.1_DO_e, MFP_2.2_DO_e, MFP_2.3_DO_e, MFP_2.4_DO_e, MFP_2.5_DO_e, 
+                   MFP_2.1_SLC_e, MFP_2.2_SLC_e, MFP_2.3_SLC_e,MFP_2.4_SLC_e, MFP_2.5_SLC_e, 
+                   MFP_3.1_e, MFP_3.2_e, MFP_3.3_e, MFP_3.4_e, MFP_3.5_e)
+df.e <- as.matrix(df.e); df.e <- t(df.e); df.e <- as.data.frame(df.e); colnames(df.e) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.e)); df.e <- cbind(Model, df.e); df.e <- as.data.frame(df.e)
+
+colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+
+ggplot(df.e, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
   geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of h") +
-  ylim(0, 0.2) +
+  labs(y = "Mean Estimate of e") +
+  ylim(0, 1) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank(),
     panel.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(legend.position = "none") 
+
+## delta
+MFP_1.1_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.2_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.3_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.4_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_1.5_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_DO_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DO_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DO_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DO_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DO_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_2.1_SLC_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_SLC_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_SLC_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_SLC_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_SLC_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+MFP_3.1_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.2_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.3_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.4_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_3.5_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+df.delta <- data.frame(MFP_1.1_delta, MFP_1.2_delta, MFP_1.3_delta, MFP_1.4_delta, MFP_1.5_delta,
+                   MFP_2.1_DO_delta, MFP_2.2_DO_delta, MFP_2.3_DO_delta, MFP_2.4_DO_delta, MFP_2.5_DO_delta, 
+                   MFP_2.1_SLC_delta, MFP_2.2_SLC_delta, MFP_2.3_SLC_delta,MFP_2.4_SLC_delta, MFP_2.5_SLC_delta, 
+                   MFP_3.1_delta, MFP_3.2_delta, MFP_3.3_delta, MFP_3.4_delta, MFP_3.5_delta)
+df.delta <- as.matrix(df.delta); df.delta <- t(df.delta); df.delta <- as.data.frame(df.delta); colnames(df.delta) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.delta)); df.delta <- cbind(Model, df.delta); df.delta <- as.data.frame(df.delta)
+
+colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+
+ggplot(df.delta, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+  labs(y = "Mean Estimate of δ") +
+  ylim(0, 1) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(legend.position = "none") 
+
+## Autoregressive Model
+# DivOsc and SLC differ in delta 
+# SLC and DampOsc differ in r
+# DivOsc and DampOsc differ in delta and r
+
+# DivOsc, delta
+AR_DivOsc.1_delta <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DivOsc.2_delta <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DivOsc.3_delta <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DivOsc.4_delta <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DivOsc.5_delta <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+# DivOsc, r
+AR_DivOsc.1_r <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DivOsc.2_r <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DivOsc.3_r <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DivOsc.4_r <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DivOsc.5_r <- as.numeric(quantile(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+# SLC, delta
+AR_SLC.1_delta <- as.numeric(quantile(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_SLC.2_delta <- as.numeric(quantile(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_SLC.3_delta <- as.numeric(quantile(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_SLC.4_delta <- as.numeric(quantile(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_SLC.5_delta <- as.numeric(quantile(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+# SLC, r
+AR_SLC.1_r <- as.numeric(quantile(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_SLC.2_r <- as.numeric(quantile(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_SLC.3_r <- as.numeric(quantile(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_SLC.4_r <- as.numeric(quantile(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_SLC.5_r <- as.numeric(quantile(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+# DampOsc, delta
+AR_DampOsc.1_delta <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DampOsc.2_delta <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DampOsc.3_delta <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DampOsc.4_delta <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DampOsc.5_delta <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.5, 0.975)))
+# DampOsc, r
+AR_DampOsc.1_r <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DampOsc.2_r <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DampOsc.3_r <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DampOsc.4_r <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+AR_DampOsc.5_r <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
+
+# delta
+df.delta <- data.frame(AR_DivOsc.1_delta, AR_DivOsc.2_delta, AR_DivOsc.3_delta, AR_DivOsc.4_delta, AR_DivOsc.5_delta,
+                       AR_SLC.1_delta, AR_SLC.2_delta, AR_SLC.3_delta, AR_SLC.4_delta, AR_SLC.5_delta, 
+                       AR_DampOsc.1_delta, AR_DampOsc.2_delta, AR_DampOsc.3_delta,AR_DampOsc.4_delta, AR_DampOsc.5_delta)
+df.delta <- as.matrix(df.delta); df.delta <- t(df.delta); df.delta <- as.data.frame(df.delta); colnames(df.delta) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.delta)); df.delta <- cbind(Model, df.delta); df.delta <- as.data.frame(df.delta)
+
+colours <- c(rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+
+ggplot(df.delta, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+  labs(y = "Mean Estimate of δ") +
+  ylim(0.25, 0.55) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(legend.position = "none") 
+
+# r
+df.r <- data.frame(AR_DivOsc.1_r, AR_DivOsc.2_r, AR_DivOsc.3_r, AR_DivOsc.4_r, AR_DivOsc.5_r,
+                       AR_SLC.1_r, AR_SLC.2_r, AR_SLC.3_r, AR_SLC.4_r, AR_SLC.5_r, 
+                       AR_DampOsc.1_r, AR_DampOsc.2_r, AR_DampOsc.3_r,AR_DampOsc.4_r, AR_DampOsc.5_r)
+df.r <- as.matrix(df.r); df.r <- t(df.r); df.r <- as.data.frame(df.r); colnames(df.r) <- c("Lower", "Mean", "Upper")
+Model <- c(rownames(df.r)); df.r <- cbind(Model, df.r); df.r <- as.data.frame(df.r)
+
+colours <- c(rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+
+ggplot(df.r, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+  labs(y = "Mean Estimate of r") +
+  ylim(1, 3.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
   theme(legend.position = "none") 
 ```
