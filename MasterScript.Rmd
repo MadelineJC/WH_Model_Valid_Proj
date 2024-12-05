@@ -6014,20 +6014,23 @@ print(LV_Long_Fit, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]"), pro
 
 ```{r}
 ## Deterministic ##
-r = 0.2; k = 0.01; p = 1; o = 1000
+r = 0.25; k = 0.01; p = 1; o = 1000
 P <- c(); I <- c()
 P[1] = 1; I[1] = 1
-ts = 1; t_stop = 55
+ts = 0.1; t_stop = 55/ts
 for (t in 2:t_stop){
   P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
 }
-Antia_Det <- data.frame(seq(1, t_stop, 1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(Antia_Det$Time, Antia_Det$P, type = "l", col = "forestgreen",
+     main = "Deterministic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(Antia_Det[ , 2:3])))
+lines(Antia_Det$Time, Antia_Det$I, col = "cornflowerblue")
 
 ## Stochastic ##
 DiscreteModel_Dem <- function(P_Last, I_Last){
-  ts = 1
-  r = 0.2; k = 0.01; p = 1; o = 1000
+  ts = 0.1
+  r = 0.25; k = 0.01; p = 1; o = 1000
   
   P_B = rpois(1, r*P_Last*ts) 
   P_D = rbinom(1, P_Last, (1-exp(-k*I_Last*ts))) 
@@ -6050,38 +6053,68 @@ DiscreteModel_Dem <- function(P_Last, I_Last){
   return(c(P_Last, I_Last))
 }
 
-ts <- 1; TT <- 55
+seeds <- c(6, 7, 8, 9, 10)
+ts <- 0.1; t_stop <- 55/ts
 P_Last <- 1; I_Last <- 1
-Antia_Stoch <- data.frame()
-set.seed(6)
-for (j in 1:TT){
-  Output = DiscreteModel_Dem(P_Last, I_Last)
-  P_Last = Output[1]
-  I_Last = Output[2]
-  Addition <- c(P_Last, I_Last)
-  Antia_Stoch <- data.frame(rbind(Antia_Stoch, Addition))
-}
-Antia_Stoch <- cbind(seq(1, TT, 1), Antia_Stoch)
-colnames(Antia_Stoch) <- c("Time", "P", "I")
+Antia_Stoch_List <- list()
 
-## Plotting the deterministic and stochastic implementations together:
-plot(1:55, Antia_Det$P, type = "l", col = "forestgreen",
-     xlab = "Time", ylab = "Abundance", ylim = c(0, 1000))
-lines(1:55, Antia_Det$I, col = "cornflowerblue")
-lines(1:55, Antia_Stoch$P, col = "forestgreen", lty = 3)
-lines(1:55, Antia_Stoch$I, col = "cornflowerblue", lty = 3)
-legend("topleft", legend = c("Deterministic", "Stochastic"), lty = c(1, 3))
+for (i in 1:length(seeds)){
+  set.seed(seeds[i])
+  P_Last <- 1; I_Last <- 1
+  Antia_Stoch <- data.frame()
+  for (j in 1:t_stop){
+    Output = DiscreteModel_Dem(P_Last, I_Last)
+    P_Last = Output[1]
+    I_Last = Output[2]
+    Addition <- c(P_Last, I_Last)
+    Antia_Stoch <- data.frame(rbind(Antia_Stoch, Addition))
+  }
+  Antia_Stoch <- cbind(seq(0.1, 55, 0.1), Antia_Stoch)
+  colnames(Antia_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(Antia_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    Antia_Stoch_List[[i]] <- Antia_Stoch
+  } else {
+    Antia_Stoch <- Antia_Stoch[1:FirstZero - 1, ]
+    Antia_Stoch_List[[i]] <- Antia_Stoch
+  }
+}
+
+## Plot deterministic and stochastic data together
+par(mfrow = c(1, 1))
+plot(Antia_Det$Time, Antia_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
+     main = "Discrete-Time Antia et al. (1994) Model", xlab = "Time", ylab = "Abundance", ylim = c(0, 2000))
+lines(Antia_Det$Time, Antia_Det$I, col = "cornflowerblue", lty = 1, lwd = 3)
+
+lines(Antia_Stoch_List[[1]]$Time, Antia_Stoch_List[[1]]$P, col = "forestgreen", lty = 3, lwd = 2)
+lines(Antia_Stoch_List[[1]]$Time, Antia_Stoch_List[[1]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+lines(Antia_Stoch_List[[2]]$Time, Antia_Stoch_List[[2]]$P, col = "forestgreen", lty = 3, lwd = 2)
+lines(Antia_Stoch_List[[2]]$Time, Antia_Stoch_List[[2]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+lines(Antia_Stoch_List[[3]]$Time, Antia_Stoch_List[[3]]$P, col = "forestgreen", lty = 3, lwd = 2)
+lines(Antia_Stoch_List[[3]]$Time, Antia_Stoch_List[[3]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+lines(Antia_Stoch_List[[4]]$Time, Antia_Stoch_List[[4]]$P, col = "forestgreen", lty = 3, lwd = 2)
+lines(Antia_Stoch_List[[4]]$Time, Antia_Stoch_List[[4]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+lines(Antia_Stoch_List[[5]]$Time, Antia_Stoch_List[[5]]$P, col = "forestgreen", lty = 3, lwd = 2)
+lines(Antia_Stoch_List[[5]]$Time, Antia_Stoch_List[[5]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+legend("topright", legend = c("Deterministic", "Stochastic"), lty = c(1, 3), lwd = 3)
 
 ## Data wrangling for Stan ##
-x <- which(Antia_Stoch$P == 0)[1]
-Antia_Stoch <- Antia_Stoch[1:x - 1, ]
-N <- length(Antia_Stoch$Time) - 1
-ts <- 1:N
-P_init <- c(Antia_Stoch$P[1])
-I_init <- c(Antia_Stoch$I[1])
-P <- as.vector(Antia_Stoch[2:(N + 1), 2:2])
-I <- as.vector(Antia_Stoch[2:(N + 1), 3:3])
-StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+StanDataList <- list()
+for (i in 1:5){
+  Antia_Stoch <- Antia_Stoch_List[[i]]
+  N <- length(Antia_Stoch$Time) - 1
+  ts <- 1:N
+  P_init <- c(Antia_Stoch$P[1])
+  I_init <- c(Antia_Stoch$I[1])
+  P <- as.vector(Antia_Stoch[2:(N + 1), 2:2])
+  I <- as.vector(Antia_Stoch[2:(N + 1), 3:3])
+  StanDataList[[i]] <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+}
 
 ## Write model ##
 write("
@@ -6101,7 +6134,7 @@ model {
   r ~ normal(0, 1); // 0.2
   k ~ normal(0, 1); // 0.01
   p ~ normal(1, 1); // 1
-  o ~ normal(1000, 1); // 1000
+  o ~ normal(1000, 10); // 1000
   sigma ~ normal(-1, 1);
   for (t in 2:N) {
     P[t] ~ normal(P[t-1] + r*P[t-1] - (1 - exp(-k*I[t-1]))*P[t - 1], sigma);
@@ -6114,32 +6147,141 @@ model {
 model <- stan_model("1_Models/Autoregressive_Antia.stan")
 
 ## Fitting ##
-fit <- sampling(model, data = StanData, chains = 4, iter = 10000, cores = 4, seed = 1)
+A.1.AR.Fit <- sampling(model, data = StanDataList[[1]], chains = 4, iter = 10000, cores = 4, seed = 1)
+A.2.AR.Fit <- sampling(model, data = StanDataList[[2]], chains = 4, iter = 10000, cores = 4, seed = 1)
+A.3.AR.Fit <- sampling(model, data = StanDataList[[3]], chains = 4, iter = 10000, cores = 4, seed = 1)
+A.4.AR.Fit <- sampling(model, data = StanDataList[[4]], chains = 4, iter = 10000, cores = 4, seed = 1)
+A.5.AR.Fit <- sampling(model, data = StanDataList[[5]], chains = 4, iter = 10000, cores = 4, seed = 1)
 
 ## Model checks ##
-fit_summ <- print(fit, pars = c("r", "k", "p", "o"),
+# 1
+Fit1Summ <- print(A.1.AR.Fit, pars = c("r", "k", "p", "o"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "k", "p", "o")
-Output <- rstan::extract(fit, permuted = TRUE, include = TRUE)
-fit_Trace <- stan_trace(fit, parms); fit_Trace
-fit_Pairs <- mcmc_pairs(fit, parms); fit_Pairs
-fit_Overlay <- mcmc_dens_overlay(fit, parms); fit_Overlay
+Output <- rstan::extract(A.1.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(A.1.AR.Fit, parms)
+mcmc_pairs(A.1.AR.Fit, parms)
+mcmc_dens_overlay(A.1.AR.Fit, parms)
 
 r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
 P <- c(); I <- c()
 P[1] = 1; I[1] = 1
-ts = 1; t_stop = 55
+ts = 0.1; t_stop = 55/ts
 for (t in 2:t_stop){
   P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
 }
-Antia_Est <- data.frame(seq(1, t_stop, 1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+Antia_Est <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Est) <- c("Time", "P", "I")
 
-plot(1:nrow(Antia_Stoch), Antia_Stoch$P, type = "l", col = "forestgreen",
-     xlab = "Time", ylab = "Abundance", xlim = c(0, 55), ylim = c(0, 1000))
-lines(1:nrow(Antia_Stoch), Antia_Stoch$I, col = "cornflowerblue")
-lines(1:nrow(Antia_Est), Antia_Est$P, col = "forestgreen", lty = 3)
-lines(1:nrow(Antia_Est), Antia_Est$I, col = "cornflowerblue", lty = 3)
+plot(Antia_Stoch_List[[1]]$Time, Antia_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 1800))
+lines(Antia_Stoch_List[[1]]$Time, Antia_Stoch_List[[1]]$I, col = "cornflowerblue")
+lines(Antia_Est$Time, Antia_Est$P, col = "forestgreen", lty = 3)
+lines(Antia_Est$Time, Antia_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 2
+Fit2Summ <- print(A.2.AR.Fit, pars = c("r", "k", "p", "o"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "k", "p", "o")
+Output <- rstan::extract(A.2.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(A.2.AR.Fit, parms)
+mcmc_pairs(A.2.AR.Fit, parms)
+mcmc_dens_overlay(A.2.AR.Fit, parms)
+
+r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+Antia_Est <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Est) <- c("Time", "P", "I")
+
+plot(Antia_Stoch_List[[2]]$Time, Antia_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 1500))
+lines(Antia_Stoch_List[[2]]$Time, Antia_Stoch_List[[2]]$I, col = "cornflowerblue")
+lines(Antia_Est$Time, Antia_Est$P, col = "forestgreen", lty = 3)
+lines(Antia_Est$Time, Antia_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 3
+Fit3Summ <- print(A.3.AR.Fit, pars = c("r", "k", "p", "o"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "k", "p", "o")
+Output <- rstan::extract(A.3.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(A.3.AR.Fit, parms)
+mcmc_pairs(A.3.AR.Fit, parms)
+mcmc_dens_overlay(A.3.AR.Fit, parms)
+
+r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+Antia_Est <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Est) <- c("Time", "P", "I")
+
+plot(Antia_Stoch_List[[3]]$Time, Antia_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 1500))
+lines(Antia_Stoch_List[[3]]$Time, Antia_Stoch_List[[3]]$I, col = "cornflowerblue")
+lines(Antia_Est$Time, Antia_Est$P, col = "forestgreen", lty = 3)
+lines(Antia_Est$Time, Antia_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 4
+Fit4Summ <- print(A.4.AR.Fit, pars = c("r", "k", "p", "o"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "k", "p", "o")
+Output <- rstan::extract(A.4.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(A.4.AR.Fit, parms)
+mcmc_pairs(A.4.AR.Fit, parms)
+mcmc_dens_overlay(A.4.AR.Fit, parms)
+
+r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+Antia_Est <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Est) <- c("Time", "P", "I")
+
+plot(Antia_Stoch_List[[4]]$Time, Antia_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 1500))
+lines(Antia_Stoch_List[[4]]$Time, Antia_Stoch_List[[4]]$I, col = "cornflowerblue")
+lines(Antia_Est$Time, Antia_Est$P, col = "forestgreen", lty = 3)
+lines(Antia_Est$Time, Antia_Est$I, col = "cornflowerblue", lty = 3)
+legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
+
+# 5
+Fit5Summ <- print(A.5.AR.Fit, pars = c("r", "k", "p", "o"),
+                  probs = c(0.1, 0.5, 0.9), digits = 3)
+parms <- c("r", "k", "p", "o")
+Output <- rstan::extract(A.5.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(A.5.AR.Fit, parms)
+mcmc_pairs(A.5.AR.Fit, parms)
+mcmc_dens_overlay(A.5.AR.Fit, parms)
+
+r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+Antia_Est <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Est) <- c("Time", "P", "I")
+
+plot(Antia_Stoch_List[[5]]$Time, Antia_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
+     xlab = "Time", ylab = "Abundance", ylim = c(0, 1500))
+lines(Antia_Stoch_List[[5]]$Time, Antia_Stoch_List[[5]]$I, col = "cornflowerblue")
+lines(Antia_Est$Time, Antia_Est$P, col = "forestgreen", lty = 3)
+lines(Antia_Est$Time, Antia_Est$I, col = "cornflowerblue", lty = 3)
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 ```
 
@@ -6213,31 +6355,10 @@ for (i in 1:length(seeds)){
   }
 }
 
-par(mfrow = c(2, 3))
-plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (1)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (2)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (3)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (4)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (5)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
-
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
-     main = " ", xlab = "Time", ylab = "Abundance", ylim = c(0, 4000))
+     main = "Discrete-Time Modified Fenton and Perkins (2010), Type I FR Model", xlab = "Time", ylab = "Abundance", ylim = c(0, 4000))
 lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue", lty = 1, lwd = 3)
 
 lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, col = "forestgreen", lty = 3, lwd = 2)
@@ -6254,6 +6375,8 @@ lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I,
 
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, col = "forestgreen", lty = 3, lwd = 2)
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+legend("topright", legend = c("Deterministic", "Stochastic"), lty = c(1, 3), lwd = 3)
 
 ## Data wrangling for Stan ##
 StanDataList <- list()
@@ -6514,31 +6637,10 @@ for (i in 1:length(seeds)){
   }
 }
 
-par(mfrow = c(2, 3))
-plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (1)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (2)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (3)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (4)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DivOsc (5)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
-
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
-     main = " ", xlab = "Time", ylab = "Abundance", ylim = c(0, 600))
+     main = "Discrete-Time Modified Fenton and Perkins (2010), Type II FR Model", xlab = "Time", ylab = "Abundance", ylim = c(0, 600))
 lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue", lty = 1, lwd = 3)
 
 lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, col = "forestgreen", lty = 3, lwd = 2)
@@ -6555,6 +6657,8 @@ lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I,
 
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, col = "forestgreen", lty = 3, lwd = 2)
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+legend("topright", legend = c("Deterministic", "Stochastic"), lty = c(1, 3), lwd = 3)
 
 ## Data wrangling for Stan ##
 StanDataList <- list()
@@ -6829,31 +6933,10 @@ for (i in 1:length(seeds)){
   }
 }
 
-par(mfrow = c(2, 3))
-plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (1)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (2)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (3)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (4)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, SLC (5)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
-
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
-     main = " ", xlab = "Time", ylab = "Abundance", ylim = c(0, 600))
+     main = "Discrete-Time Modified Fenton and Perkins (2010), Type II FR Model", xlab = "Time", ylab = "Abundance", ylim = c(0, 600))
 lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue", lty = 1, lwd = 3)
 
 lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, col = "forestgreen", lty = 3, lwd = 2)
@@ -6870,6 +6953,8 @@ lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I,
 
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, col = "forestgreen", lty = 3, lwd = 2)
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+legend("topright", legend = c("Deterministic", "Stochastic"), lty = c(1, 3), lwd = 3)
 
 ## Data wrangling for Stan ##
 StanDataList <- list()
@@ -7081,14 +7166,14 @@ legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 r = 2.1; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.34
 P <- c(); I <- c()
 P[1] = 80; I[1] = 200
-ts = 0.1; t_stop = 100/ts
+ts = 0.1; t_stop = 60/ts
 for (t in 2:t_stop){
   # P[t] = P[t - 1] + r*P[t - 1]*ts - (((B*P[t - 1])/(1 + B*P[t - 1]*h))*I[t - 1]*ts)
   # I[t] = I[t - 1] + b*ts + (e*I[t - 1]*((B*P[t - 1])/(1 + B*P[t - 1]*h))*ts) - delta*I[t - 1]*ts
   P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Det <- data.frame(seq(0.1, 100, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
      main = "Deterministic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Det[ , 2:3])))
 lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue")
@@ -7144,31 +7229,10 @@ for (i in 1:length(seeds)){
   }
 }
 
-par(mfrow = c(2, 3))
-plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (1)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (2)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (3)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (4)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (5)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
-
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
-     main = " ", xlab = "Time", ylab = "Abundance", ylim = c(0, 600))
+     main = "Discrete-Time Modified Fenton and Perkins (2010), Type II FR Model", xlab = "Time", ylab = "Abundance", ylim = c(0, 350))
 lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue", lty = 1, lwd = 3)
 
 lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, col = "forestgreen", lty = 3, lwd = 2)
@@ -7185,6 +7249,8 @@ lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I,
 
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, col = "forestgreen", lty = 3, lwd = 2)
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+legend("topright", legend = c("Deterministic", "Stochastic"), lty = c(1, 3), lwd = 3)
 
 ## Data wrangling for Stan ##
 StanDataList <- list()
@@ -7395,15 +7461,17 @@ legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 ## Deterministic ##
 r = 3.0; B = 0.0015; h = 0.2; b = 35; e = 0.2; delta = 0.5
 P <- c(); I <- c()
-P[1] = 80; I[1] = 200
-ts = 0.1; t_stop = 100/ts
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
 for (t in 2:t_stop){
-  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]^2
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Det <- data.frame(seq(0.1, 100, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
-     main = "Deterministic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Det[ , 2:3])))
+     main = "Deterministic", xlab = "Time", ylab = "Abundance", ylim = c(0, 200)
+     #, ylim = c(0, max(ModFentonPerkins_Det[ , 2:3]))
+     )
 lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue")
 
 ## Stochastic ##
@@ -7412,7 +7480,7 @@ DiscreteModel_Dem <- function(P_Last, I_Last){
   r = 3.0; B = 0.0015; h = 0.2; b = 35; e = 0.2; delta = 0.5
   
   P_B = rpois(1, r*P_Last*ts) 
-  P_D = rbinom(1, P_Last^2, (1-exp((-B/(1 + B*h*P_Last^2))*I_Last*ts))) 
+  P_D = rbinom(1, P_Last, (1-exp((-B*P_Last/(1 + B*h*P_Last^2))*I_Last*ts))) 
   I_B = rpois(1, (b + e*(B*P_Last^2/(1 + B*P_Last^2*h))*I_Last)*ts)
   I_D = rbinom(1, I_Last, (1-exp(-delta*ts))) 
   
@@ -7430,14 +7498,14 @@ DiscreteModel_Dem <- function(P_Last, I_Last){
   return(c(P_Last, I_Last))
 }
 
-seeds <- c(3, 4, 5, 6, 7)
+seeds <- c(1, 3, 5, 7, 9)
 ts <- 0.1; t_stop <- 60/ts
-P_Last <- 80; I_Last <- 200
+P_Last <- 1; I_Last <- 1
 ModFentonPerkins_Stoch_List <- list()
 
 for (i in 1:length(seeds)){
   set.seed(seeds[i])
-  P_Last <- 80; I_Last <- 200
+  P_Last <- 1; I_Last <- 1
   ModFentonPerkins_Stoch <- data.frame()
   for (j in 1:t_stop){
     Output = DiscreteModel_Dem(P_Last, I_Last)
@@ -7457,31 +7525,10 @@ for (i in 1:length(seeds)){
   }
 }
 
-par(mfrow = c(2, 3))
-plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (1)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (2)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[2]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (3)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[3]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (4)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I, col = "cornflowerblue")
-
-plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, type = "l", col = "forestgreen",
-     main = "Stoch. of Discrete Mod. Fenton and Perkins (2010) Model, Type II, DampOsc (5)", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Stoch[ , 2:3])))
-lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue")
-
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
-     main = " ", xlab = "Time", ylab = "Abundance", ylim = c(0, 600))
+     main = "Discrete-Time Modified Fenton and Perkins (2010), Type III FR Model", xlab = "Time", ylab = "Abundance", ylim = c(0, 200))
 lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue", lty = 1, lwd = 3)
 
 lines(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, col = "forestgreen", lty = 3, lwd = 2)
@@ -7498,6 +7545,8 @@ lines(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[4]]$I,
 
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$P, col = "forestgreen", lty = 3, lwd = 2)
 lines(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[5]]$I, col = "cornflowerblue", lty = 3, lwd = 2)
+
+legend("topright", legend = c("Deterministic", "Stochastic"), lty = c(1, 3), lwd = 3)
 
 ## Data wrangling for Stan ##
 StanDataList <- list()
