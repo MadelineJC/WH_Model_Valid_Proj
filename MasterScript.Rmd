@@ -6294,12 +6294,12 @@ legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 r = 1.5; B = 0.001; b = 200; e = 0.9; delta = 0.2
 P <- c(); I <- c()
 P[1] = 10; I[1] = 10
-ts = 0.1; t_stop = 120/ts
+ts = 0.1; t_stop = 80/ts
 for (t in 2:t_stop){
   P[t] = (1 + r*ts - (1-exp(-B*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1])*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Det <- data.frame(seq(0.1, 120, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+ModFentonPerkins_Det <- data.frame(seq(0.1, 80, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen",
      main = "Deterministic", xlab = "Time", ylab = "Abundance", ylim = c(0, max(ModFentonPerkins_Det[ , 2:3])))
 lines(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$I, col = "cornflowerblue")
@@ -6329,7 +6329,7 @@ DiscreteModel_Dem <- function(P_Last, I_Last){
 }
 
 seeds <- c(3, 30, 41, 42, 46)
-ts <- 0.1; t_stop <- 120/ts
+ts <- 0.1; t_stop <- 80/ts
 P_Last <- 10; I_Last <- 10
 ModFentonPerkins_Stoch_List <- list()
 
@@ -6344,7 +6344,7 @@ for (i in 1:length(seeds)){
     Addition <- c(P_Last, I_Last)
     ModFentonPerkins_Stoch <- data.frame(rbind(ModFentonPerkins_Stoch, Addition))
   }
-  ModFentonPerkins_Stoch <- cbind(seq(0.1, 120, 0.1), ModFentonPerkins_Stoch)
+  ModFentonPerkins_Stoch <- cbind(seq(0.1, 80, 0.1), ModFentonPerkins_Stoch)
   colnames(ModFentonPerkins_Stoch) <- c("Time", "P", "I")
   FirstZero <- which(ModFentonPerkins_Stoch$P == 0)[1]
   if (is.na(FirstZero)){
@@ -6444,12 +6444,12 @@ r = mean(Output[["r"]]); B = mean(Output[["B"]])
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
 P <- c(); I <- c()
 P[1] = 10; I[1] = 10
-ts = 0.1; t_stop = 120/ts
+ts = 0.1; t_stop = 80/ts
 for (t in 2:t_stop){
   P[t] = (1 + r*ts - (1-exp((-B)*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1])*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Est <- data.frame(seq(0.1, 120, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+ModFentonPerkins_Est <- data.frame(seq(0.1, 80, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
 
 plot(ModFentonPerkins_Stoch_List[[1]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
      xlab = "Time", ylab = "Abundance", ylim = c(0, 4000))
@@ -6471,12 +6471,12 @@ r = mean(Output[["r"]]); B = mean(Output[["B"]])
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
 P <- c(); I <- c()
 P[1] = 10; I[1] = 10
-ts = 0.1; t_stop = 120/ts
+ts = 0.1; t_stop = 80/ts
 for (t in 2:t_stop){
   P[t] = (1 + r*ts - (1-exp((-B)*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1])*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Est <- data.frame(seq(0.1, 120, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+ModFentonPerkins_Est <- data.frame(seq(0.1, 80, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
 
 plot(ModFentonPerkins_Stoch_List[[2]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
      xlab = "Time", ylab = "Abundance", ylim = c(0, 4000))
@@ -6498,12 +6498,12 @@ r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]])
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
 P <- c(); I <- c()
 P[1] = 10; I[1] = 10
-ts = 0.1; t_stop = 120/ts
+ts = 0.1; t_stop = 80/ts
 for (t in 2:t_stop){
   P[t] = (1 + r*ts - (1-exp((-B)*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1])*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Est <- data.frame(seq(0.1, 120, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+ModFentonPerkins_Est <- data.frame(seq(0.1, 80, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
 
 plot(ModFentonPerkins_Stoch_List[[3]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
      xlab = "Time", ylab = "Abundance", ylim = c(0, 4000))
@@ -6525,12 +6525,12 @@ r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]])
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
 P <- c(); I <- c()
 P[1] = 10; I[1] = 10
-ts = 0.1; t_stop = 120/ts
+ts = 0.1; t_stop = 80/ts
 for (t in 2:t_stop){
   P[t] = (1 + r*ts - (1-exp((-B)*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1])*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Est <- data.frame(seq(0.1, 120, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+ModFentonPerkins_Est <- data.frame(seq(0.1, 80, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
 
 plot(ModFentonPerkins_Stoch_List[[4]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
      xlab = "Time", ylab = "Abundance", ylim = c(0, 4000))
@@ -6552,12 +6552,12 @@ r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]])
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
 P <- c(); I <- c()
 P[1] = 10; I[1] = 10
-ts = 0.1; t_stop = 120/ts
+ts = 0.1; t_stop = 80/ts
 for (t in 2:t_stop){
   P[t] = (1 + r*ts - (1-exp((-B)*I[t - 1]*ts)))*P[t - 1]
   I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1])*ts - (1-exp(-delta*ts)))*I[t - 1]
 }
-ModFentonPerkins_Est <- data.frame(seq(0.1, 120, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
+ModFentonPerkins_Est <- data.frame(seq(0.1, 80, 0.1), P, I); colnames(ModFentonPerkins_Est) <- c("Time", "P", "I")
 
 plot(ModFentonPerkins_Stoch_List[[5]]$Time, ModFentonPerkins_Stoch_List[[1]]$P, type = "l", col = "forestgreen",
      xlab = "Time", ylab = "Abundance", ylim = c(0, 4000))
@@ -7578,15 +7578,15 @@ parameters {
   real<lower=0> sigma; // Error
 }
 model {
-  r ~ normal(2.5, 1); // 2.5
-  B ~ normal(0, 1); // 0.012
-  h ~ normal(0, 1); // 0.075
+  r ~ normal(3, 1); // 3.0
+  B ~ normal(0, 1); // 0.0015
+  h ~ normal(0, 1); // 0.2
   b ~ normal(35, 1); // 35
-  e ~ normal(0, 1); // 0.3
-  delta ~ normal(0, 1); // 0.41
+  e ~ normal(0, 1); // 0.2
+  delta ~ normal(0, 1); // 0.5
   sigma ~ lognormal(-1, 1);
   for (t in 2:N) {
-    P[t] ~ normal((1 + r*0.1 - (1-exp((-B/(1 + B*h*P[t - 1]^2))*I[t - 1]*0.1)))*P[t - 1]^2, sigma);
+    P[t] ~ normal((1 + r*0.1 - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*0.1)))*P[t - 1], sigma);
     I[t] ~ normal((1 + b*0.1*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*0.1 - (1-exp(-delta*0.1)))*I[t - 1], sigma);
   }
 }",
@@ -7596,21 +7596,21 @@ model {
 model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_3.stan")
 
 ## Fitting ##
-MFP.II.DampOsc.1.AR.Fit <- sampling(model, data = StanDataList[[1]], chains = 4, iter = 10000, cores = 4, seed = 1)
-MFP.II.DampOsc.2.AR.Fit <- sampling(model, data = StanDataList[[2]], chains = 4, iter = 10000, cores = 4, seed = 1)
-MFP.II.DampOsc.3.AR.Fit <- sampling(model, data = StanDataList[[3]], chains = 4, iter = 10000, cores = 4, seed = 1)
-MFP.II.DampOsc.4.AR.Fit <- sampling(model, data = StanDataList[[4]], chains = 4, iter = 10000, cores = 4, seed = 1)
-MFP.II.DampOsc.5.AR.Fit <- sampling(model, data = StanDataList[[5]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.III.1.AR.Fit <- sampling(model, data = StanDataList[[1]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.III.2.AR.Fit <- sampling(model, data = StanDataList[[2]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.III.3.AR.Fit <- sampling(model, data = StanDataList[[3]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.III.4.AR.Fit <- sampling(model, data = StanDataList[[4]], chains = 4, iter = 10000, cores = 4, seed = 1)
+MFP.III.5.AR.Fit <- sampling(model, data = StanDataList[[5]], chains = 4, iter = 10000, cores = 4, seed = 1)
 
 ## Model checks ##
 # 1
-Fit1Summ <- print(MFP.II.DampOsc.1.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+Fit1Summ <- print(MFP.III.1.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
-Output <- rstan::extract(MFP.II.DampOsc.1.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(MFP.II.DampOsc.1.AR.Fit, parms)
-mcmc_pairs(MFP.II.DampOsc.1.AR.Fit, parms)
-mcmc_dens_overlay(MFP.II.DampOsc.1.AR.Fit, parms)
+Output <- rstan::extract(MFP.III.1.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.III.1.AR.Fit, parms)
+mcmc_pairs(MFP.III.1.AR.Fit, parms)
+mcmc_dens_overlay(MFP.III.1.AR.Fit, parms)
 
 r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
@@ -7633,13 +7633,13 @@ lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue",
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 
 # 2
-Fit2Summ <- print(MFP.II.DampOsc.2.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+Fit2Summ <- print(MFP.III.2.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
-Output <- rstan::extract(MFP.II.DampOsc.2.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(MFP.II.DampOsc.2.AR.Fit, parms)
-mcmc_pairs(MFP.II.DampOsc.2.AR.Fit, parms)
-mcmc_dens_overlay(MFP.II.DampOsc.2.AR.Fit, parms)
+Output <- rstan::extract(MFP.III.2.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.III.2.AR.Fit, parms)
+mcmc_pairs(MFP.III.2.AR.Fit, parms)
+mcmc_dens_overlay(MFP.III.2.AR.Fit, parms)
 
 r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
@@ -7662,13 +7662,13 @@ lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue",
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 
 # 3
-Fit3Summ <- print(MFP.II.DampOsc.3.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+Fit3Summ <- print(MFP.III.3.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
-Output <- rstan::extract(MFP.II.DampOsc.3.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(MFP.II.DampOsc.3.AR.Fit, parms)
-mcmc_pairs(MFP.II.DampOsc.3.AR.Fit, parms)
-mcmc_dens_overlay(MFP.II.DampOsc.3.AR.Fit, parms)
+Output <- rstan::extract(MFP.III.3.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.III.3.AR.Fit, parms)
+mcmc_pairs(MFP.III.3.AR.Fit, parms)
+mcmc_dens_overlay(MFP.III.3.AR.Fit, parms)
 
 r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
@@ -7691,13 +7691,13 @@ lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue",
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 
 # 4
-Fit4Summ <- print(MFP.II.DampOsc.4.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+Fit4Summ <- print(MFP.III.4.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
-Output <- rstan::extract(MFP.II.DampOsc.4.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(MFP.II.DampOsc.4.AR.Fit, parms)
-mcmc_pairs(MFP.II.DampOsc.4.AR.Fit, parms)
-mcmc_dens_overlay(MFP.II.DampOsc.4.AR.Fit, parms)
+Output <- rstan::extract(MFP.III.4.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.III.4.AR.Fit, parms)
+mcmc_pairs(MFP.III.4.AR.Fit, parms)
+mcmc_dens_overlay(MFP.III.4.AR.Fit, parms)
 
 r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
@@ -7720,13 +7720,13 @@ lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue",
 legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 
 # 5
-Fit5Summ <- print(MFP.II.DampOsc.5.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
+Fit5Summ <- print(MFP.III.5.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "B", "h", "b", "e", "delta")
-Output <- rstan::extract(MFP.II.DampOsc.5.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(MFP.II.DampOsc.5.AR.Fit, parms)
-mcmc_pairs(MFP.II.DampOsc.5.AR.Fit, parms)
-mcmc_dens_overlay(MFP.II.DampOsc.5.AR.Fit, parms)
+Output <- rstan::extract(MFP.III.5.AR.Fit, permuted = TRUE, include = TRUE)
+stan_trace(MFP.III.5.AR.Fit, parms)
+mcmc_pairs(MFP.III.5.AR.Fit, parms)
+mcmc_dens_overlay(MFP.III.5.AR.Fit, parms)
 
 r = mean(Output[["r"]]); B = mean(Output[["B"]]); h = mean(Output[["h"]]) 
 b = mean(Output[["b"]]); e = mean(Output[["e"]]); delta = mean(Output[["delta"]])
