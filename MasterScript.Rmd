@@ -309,6 +309,29 @@ lines(Mod_FP_1_Det$Time, Mod_FP_1_Det$I, col = "cornflowerblue", lwd = 2)
 
 ### Hollings Type II Functional Response
 
+#### Divergent Oscillations
+
+```{r}
+Mod_FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+r <- 2.5; B <- 0.012; h <- 0.075; e <- 0.3; delta <- 0.48; b <- 35
+parms <- c(r, B, h, e, delta, b)
+P0 <- 80; I0 <- 200
+N0 <- c(P0, I0)
+TT <- seq(0, 50, 0.1)
+results <- lsoda(N0, TT, Mod_FP_T2, parms)
+Mod_FP_2_DivOsc_Det <- data.frame(results); colnames(Mod_FP_2_DivOsc_Det) <- c("Times", "P", "I")
+write.csv(Mod_FP_2_DivOsc_Det, "0_Data/0_Deterministic/Mod_FP_2_DivOsc_Det.csv")
+
+plot(Mod_FP_2_DivOsc_Det$Times, Mod_FP_2_DivOsc_Det$P, type = "l", ylim = c(0, max(Mod_FP_2_DivOsc_Det$I)), main = "Deterministic Simulation of Modified Fenton and Perkins (2010) Model", sub = "Hollings Type II Functional Response, Stable Limit Cycle", xlab = "Time", ylab = "Population Abundance", col = "forestgreen", lwd = 2)
+lines(Mod_FP_2_DivOsc_Det$Times, Mod_FP_2_DivOsc_Det$I, col = "cornflowerblue", lwd = 2)
+```
+
 #### Stable Limit Cycle
 
 ```{r}
@@ -497,6 +520,63 @@ lines(ModFentonPerkins_1_Stoch_List[[5]]$Time, ModFentonPerkins_1_Stoch_List[[5]
 ```
 
 ### Hollings Type II Functional Response
+
+#### Divergent Oscillations
+
+```{r}
+x0 <- c(P = 80, I = 200) 
+a <- c("P*r",
+       "I*(B*P/1 + B*P*h)", 
+       "b + I*e*(B*P/1 + B*P*h)",
+       "I*delta")
+nu <- matrix(c(+1,-1,0,0,
+               0,0,+1,-1), nrow = 2, byrow = TRUE)
+r = 2.5; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = 0.48
+parms1 <- c(r = r, B = B, h = h, b = b, e = e, delta = delta)
+tf = 25
+method <- "OTL"
+simName <- "ModFentonPerkins"
+
+Seeds <- c(1, 2, 3, 4, 5); ModFentonPerkins_2_DivOsc_Stoch_List <- list()
+for (i in Seeds){
+  set.seed(i)
+  ModFentonPerkins_2_DivOsc_Stoch <- suppressWarnings(ssa(x0, a, nu, parms1, tf, method, simName,
+                                    verbose = FALSE, 
+                                    consoleInterval = 1, 
+                                    censusInterval = 1, 
+                                    maxWallTime = 30, 
+                                    ignoreNegativeState = TRUE)) 
+  ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch$data; ModFentonPerkins_2_DivOsc_Stoch <- as.data.frame(ModFentonPerkins_2_DivOsc_Stoch)
+  colnames(ModFentonPerkins_2_DivOsc_Stoch) <- c("Time", "P", "I")
+  FirstZero <- which(ModFentonPerkins_2_DivOsc_Stoch$P == 0)[1]
+  if (is.na(FirstZero)){
+    ModFentonPerkins_2_DivOsc_Stoch_List[[i]] <- ModFentonPerkins_2_DivOsc_Stoch
+  } else {
+    ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch[1:FirstZero - 1, ]
+    ModFentonPerkins_2_DivOsc_Stoch_List[[i]] <- ModFentonPerkins_2_DivOsc_Stoch
+  }
+}
+write.csv(ModFentonPerkins_2_DivOsc_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_1.csv")
+write.csv(ModFentonPerkins_2_DivOsc_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_2.csv")
+write.csv(ModFentonPerkins_2_DivOsc_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_3.csv")
+write.csv(ModFentonPerkins_2_DivOsc_Stoch_List[[4]], "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_4.csv")
+write.csv(ModFentonPerkins_2_DivOsc_Stoch_List[[5]], "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_5.csv")
+
+plot(ModFentonPerkins_2_DivOsc_Stoch_List[[1]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[1]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (1)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DivOsc_Stoch_List[[1]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DivOsc_Stoch_List[[1]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[1]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_2_DivOsc_Stoch_List[[2]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[2]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (2)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DivOsc_Stoch_List[[2]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DivOsc_Stoch_List[[2]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[2]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_2_DivOsc_Stoch_List[[3]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[3]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (3)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DivOsc_Stoch_List[[3]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DivOsc_Stoch_List[[3]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[3]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_2_DivOsc_Stoch_List[[4]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[4]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (4)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DivOsc_Stoch_List[[4]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DivOsc_Stoch_List[[4]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[4]]$I, col = "cornflowerblue", lwd = 2)
+
+plot(ModFentonPerkins_2_DivOsc_Stoch_List[[5]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[5]]$P, type = "l", main = "Stochastic Simulation of Mod. Fenton and Perkins (2010) Model (5)", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(ModFentonPerkins_2_DivOsc_Stoch_List[[5]]$I)), col = "forestgreen", lwd = 2)
+lines(ModFentonPerkins_2_DivOsc_Stoch_List[[5]]$Time, ModFentonPerkins_2_DivOsc_Stoch_List[[5]]$I, col = "cornflowerblue", lwd = 2)
+```
 
 #### Stable Limit Cycle
 
