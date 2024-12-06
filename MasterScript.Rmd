@@ -1004,6 +1004,383 @@ saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_1_FitObj_5.rds")
 
 ### Hollings Type II Functional Response
 
+#### Divergent Oscillations
+
+##### Estimating All Parameters
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real B = theta[2];
+    real h = theta[3];
+    real b = theta[4];
+    real e1 = theta[5];
+    real delta = theta[6];
+
+    real dP_dt = P*r - I*(B*P/(1 + B*h*P));
+    real dI_dt = b + I*(e1*(B*P/(1 + B*h*P)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[6];   // {r, B, h, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2, 3}] ~ uniform(0, 1); // B, h
+  theta[{4}] ~ uniform(0, 1000); // b
+  theta[{5, 6}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_2_AllParms.stan")
+```
+
+Let's arrange our data to feed into the model:
+
+```{r}
+ModFentonPerkins_2_DivOsc_StanData_List <- list()
+for (i in Seeds){
+  ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+  ts <- 1:N
+  y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+  y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+  y <- cbind(y[ , 1], y[ , 2]); 
+  ModFentonPerkins_2_DivOsc_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  ModFentonPerkins_2_DivOsc_StanData_List[[i]] <- ModFentonPerkins_2_DivOsc_StanData
+}
+saveRDS(ModFentonPerkins_2_DivOsc_StanData_List, "0_Data/2_Stan/ModFentonPerkins_2_DivOsc_StanData_List.rds")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_AllParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_5.rds")
+```
+
+##### Estimating Five Parameters
+
+###### Exclude Recognition Rate
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real h = theta[2];
+    real b = theta[3];
+    real e1 = theta[4];
+    real delta = theta[5];
+
+    real dP_dt = P*r - I*(0.012*P/(1 + 0.012*h*P));
+    real dI_dt = b + I*(e1*(0.012*P/(1 + 0.012*h*P)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, h, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1); // h
+  theta[{3}] ~ uniform(0, 1000); // b
+  theta[{4, 5}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_2_DivOsc_FiveParms.stan")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_DivOsc_FiveParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_5.rds")
+```
+
+###### Exclude Handling Time
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real B = theta[2];
+    real b = theta[3];
+    real e1 = theta[4];
+    real delta = theta[5];
+
+    real dP_dt = P*r - I*(0.012*P/(1 + B*0.075*P));
+    real dI_dt = b + I*(e1*(0.012*P/(1 + B*0.075*P)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[5];   // {r, B, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1); // B
+  theta[{3}] ~ uniform(0, 1000); // b
+  theta[{4, 5}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_2_SLC_FiveParms-ExHT.stan")
+```
+
+```{r}
+model <- stan_model("1_Models/FP_2_DivOsc_FiveParms-ExHT.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_5.rds")
+```
+
+##### Estimating Four Parameters
+
+Writing the model as a .stan file.
+
+```{r}
+write("
+functions {
+  real[] dz_dt(real t,       // time
+               real[] z,     // system state {prey, predator}
+               real[] theta, // parameters
+               real[] x_r,   // unused data
+               int[] x_i) {
+    real P = z[1];
+    real I = z[2];
+
+    real r = theta[1];  
+    real b = theta[2];
+    real e1 = theta[3];
+    real delta = theta[4];
+
+    real dP_dt = P*r - I*(0.012*P/(1 + 0.012*0.075*P));
+    real dI_dt = b + I*(e1*(0.012*P/(1 + 0.012*0.075*P)) - delta);
+
+    return { dP_dt, dI_dt };
+  }
+}
+data {
+  int<lower = 0> N;          // number of measurement times
+  real ts[N];                // measurement times > 0
+  real y_init[2];            // initial measured populations
+  real<lower = 0> y[N, 2];   // measured populations
+}
+parameters {
+  real<lower = 0> theta[4];   // {r, b, e1, delta}
+  real<lower = 0> z_init[2];  // initial population
+  real<lower = 0> sigma[2];   // measurement errors
+}
+transformed parameters {
+  real z[N, 2]
+    = integrate_ode_bdf(dz_dt, z_init, 0, ts, theta,
+                         rep_array(0.0, 0), rep_array(0, 0));
+}
+model {
+  theta[{1}] ~ uniform(0, 10); // r
+  theta[{2}] ~ uniform(0, 1000); // b
+  theta[{3, 4}] ~ uniform(0, 1); // e1, delta
+  sigma ~ lognormal(-1, 1);
+  z_init ~ lognormal(log(10), 1);
+  for (k in 1:2) {
+    y_init[k] ~ lognormal(log(z_init[k]), sigma[k]);
+    y[ , k] ~ lognormal(log(z[, k]), sigma[k]);
+  }
+}
+generated quantities {
+  real y_init_rep[2];
+  real y_rep[N, 2];
+  for (k in 1:2) {
+    y_init_rep[k] = lognormal_rng(log(z_init[k]), sigma[k]);
+    for (n in 1:N)
+      y_rep[n, k] = lognormal_rng(log(z[n, k]), sigma[k]);
+  }
+}      
+", file = "1_Models/FP_2_DivOsc_FourParms.stan")
+```
+
+Next, we'll compile the .stan file:
+
+```{r}
+model <- stan_model("1_Models/FP_2_DivOsc_FourParms.stan")
+```
+
+```{r}
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[1]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_1.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[2]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_2.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[3]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_3.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[4]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_4.rds")
+
+fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
+saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_5.rds")
+```
+
+
 #### Stable Limit Cycle
 
 ##### Estimating All Parameters
@@ -2314,6 +2691,178 @@ mcmc_dens(ModFentonPerkins_1_FitObj5, pars)
 
 ### Hollings Type II Functional Response
 
+#### Divergent Oscillations
+
+```{r}
+#### All Parms ####
+ModFentonPerkins_2_DivOsc_FitObj1 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_1.rds")
+ModFentonPerkins_2_DivOsc_FitObj2 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_2.rds")
+ModFentonPerkins_2_DivOsc_FitObj3 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_3.rds")
+ModFentonPerkins_2_DivOsc_FitObj4 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_4.rds")
+ModFentonPerkins_2_DivOsc_FitObj5 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_5.rds")
+
+print(ModFentonPerkins_2_DivOsc_FitObj1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj1, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj1, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj1, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj2, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj2, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj2, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj3, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj3, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj3, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj4, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj4, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj4, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj5, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj5, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj5, pars)
+
+#### Five Parms ####
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms_1 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_1.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms_2 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_2.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms_3 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_3.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms_4 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_4.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms_5 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms_5.rds")
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_1, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_1, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_1, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_2, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_2, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_2, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_3, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_3, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_3, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_4, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_4, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_4, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_5, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_5, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_5, pars)
+
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_1 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_1.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_2 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_2.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_3 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_3.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_4 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_4.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_5 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FiveParms-ExHT_5.rds")
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_1, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_1, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_1, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_2, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_2, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_2, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_3, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_3, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_3, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_4, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_4, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_4, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_5, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_5, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_5, pars)
+
+#### Four Parms ####
+ModFentonPerkins_2_DivOsc_FitObj_FourParms_1 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_1.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FourParms_2 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_2.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FourParms_3 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_3.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FourParms_4 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_4.rds")
+ModFentonPerkins_2_DivOsc_FitObj_FourParms_5 <- readRDS("2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_5.rds")
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FourParms_1, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FourParms_1, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FourParms_1, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FourParms_1, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FourParms_2, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FourParms_2, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FourParms_2, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FourParms_2, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FourParms_3, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FourParms_3, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FourParms_3, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FourParms_3, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FourParms_4, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FourParms_4, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FourParms_4, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FourParms_4, pars)
+
+print(ModFentonPerkins_2_DivOsc_FitObj_FourParms_5, pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+pars <- c("theta[1]", "theta[2]", "theta[3]", "theta[4]")
+stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FourParms_5, pars)
+mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FourParms_5, pars)
+mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FourParms_5, pars)
+```
+
+
 #### Stable Limit Cycle
 
 ```{r}
@@ -3270,6 +3819,887 @@ lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
 ```
 
 ### Hollings Type II Functional Response
+
+#### Divergent Oscillations
+
+##### Estimating All Parameters
+
+```{r}
+#### Time Series 1 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj1, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[1]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 2 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[2]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 3 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj3, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[3]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 4 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj4, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[4]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 5 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[5]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+```
+
+##### Estimating Five Parameters
+
+###### Excluding Recognition Rate
+
+```{r}
+#### Time Series 1 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_1, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[1]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 2 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_2, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[2]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 3 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_3, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[3]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 4 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_4, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[4]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 5 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_5, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[5]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+```
+
+###### Excluding Handling Time
+
+```{r}
+#### Time Series 1 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_1, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[1]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 2 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_2, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[2]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 3 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_3, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[3]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 4 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_4, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[4]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 5 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_5, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[5]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+```
+
+##### Estimating Four Parameters
+
+```{r}
+#### Time Series 1 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_1, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[1]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 2 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_2, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[2]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 3 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_3, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[3]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 4 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_4, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[4]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+
+#### Time Series 5 ####
+output <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_5, permuted = TRUE, include = TRUE)
+y_rep <- output$y_rep
+z_df <- data.frame(y_rep)
+z_means = z_df %>% summarise(across(.cols = everything(),
+                                    .fns = mean))
+# Parse df by P and I
+ncol(z_means); x <- ncol(z_means)/2
+z_means_P <- z_means[-c(x + 1:ncol(z_means))]
+ncol(z_means_P) 
+z_means_I <- z_means[-c(1:x)]  
+ncol(z_means_I)
+# Invert dfs
+z_means_P <- t(z_means_P)
+z_means_I <- t(z_means_I)
+# Re-name columns 
+colnames(z_means_P) <- c("post_means_P")
+colnames(z_means_I) <- c("post_means_I")
+
+## "Real data" ##
+ModFentonPerkins_2_DivOsc_Stoch <- ModFentonPerkins_2_DivOsc_Stoch_List[[5]]
+N <- length(ModFentonPerkins_2_DivOsc_Stoch$Time) - 1
+ts <- 1:N
+y_init <- c(ModFentonPerkins_2_DivOsc_Stoch$P[1], ModFentonPerkins_2_DivOsc_Stoch$I[1])
+y <- as.matrix(ModFentonPerkins_2_DivOsc_Stoch[2:(N + 1), 2:3])
+head(y) # Recall that y is the data we gave the model (our stochastic data)
+y_df <- data.frame(y)
+colnames(y_df) <- c("P","I")
+
+# Merge dfs
+df <- cbind(z_means_P,z_means_I,y_df)
+# Add time steps
+ts <- seq(nrow(df))
+ts <- data.frame(ts)
+# Final df
+df <- cbind(df,ts)
+
+plot(df$ts, df$P, type = "l", xlab = "Time", ylab = "Population Abundance", ylim = c(0, max(df$post_means_I)), col = "forestgreen", lwd = 2)
+lines(df$ts, df$I, col = "cornflowerblue", lwd = 2)
+lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
+lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
+# legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
+```
+
 
 #### Stable Limit Cycle
 
