@@ -18,7 +18,7 @@ model {
   o ~ normal(1000, 10); // 1000
   sigma ~ normal(-1, 1);
   for (t in 2:N) {
-    P[t] ~ normal(P[t-1] + r*P[t-1] - (1 - exp(-k*I[t-1]))*P[t - 1], sigma);
-    I[t] ~ normal(I[t-1] + p*I[t-1]*(P[t-1]/(P[t-1] + o)), sigma);
+    P[t] ~ normal((1 + r*0.1 - (1-exp(-k*I[t - 1]*0.1)))*P[t - 1], sigma);
+    I[t] ~ normal((1 + p*(P[t - 1]/(P[t - 1] + o))*0.1)*I[t - 1], sigma);
   }
 }

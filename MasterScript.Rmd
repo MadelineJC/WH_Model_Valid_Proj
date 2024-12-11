@@ -16,6 +16,7 @@ library(bayesplot)
 library(brms)
 library(reshape2)
 library(MCMCvis)
+library(cowplot); library(grid); library(gridExtra)
 ```
 
 # Models, Forms, and Associated Dynamics
@@ -7471,8 +7472,8 @@ model {
   o ~ normal(1000, 10); // 1000
   sigma ~ normal(-1, 1);
   for (t in 2:N) {
-    P[t] ~ normal(P[t-1] + r*P[t-1] - (1 - exp(-k*I[t-1]))*P[t - 1], sigma);
-    I[t] ~ normal(I[t-1] + p*I[t-1]*(P[t-1]/(P[t-1] + o)), sigma);
+    P[t] ~ normal((1 + r*0.1 - (1-exp(-k*I[t - 1]*0.1)))*P[t - 1], sigma);
+    I[t] ~ normal((1 + p*(P[t - 1]/(P[t - 1] + o))*0.1)*I[t - 1], sigma);
   }
 }",
 "1_Models/Autoregressive_Antia.stan")
@@ -7493,9 +7494,9 @@ Fit1Summ <- print(A.1.AR.Fit, pars = c("r", "k", "p", "o"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "k", "p", "o")
 Output <- rstan::extract(A.1.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(A.1.AR.Fit, parms)
-mcmc_pairs(A.1.AR.Fit, parms)
-mcmc_dens_overlay(A.1.AR.Fit, parms)
+# stan_trace(A.1.AR.Fit, parms)
+# mcmc_pairs(A.1.AR.Fit, parms)
+# mcmc_dens_overlay(A.1.AR.Fit, parms)
 
 r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
 P <- c(); I <- c()
@@ -7519,9 +7520,9 @@ Fit2Summ <- print(A.2.AR.Fit, pars = c("r", "k", "p", "o"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "k", "p", "o")
 Output <- rstan::extract(A.2.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(A.2.AR.Fit, parms)
-mcmc_pairs(A.2.AR.Fit, parms)
-mcmc_dens_overlay(A.2.AR.Fit, parms)
+# stan_trace(A.2.AR.Fit, parms)
+# mcmc_pairs(A.2.AR.Fit, parms)
+# mcmc_dens_overlay(A.2.AR.Fit, parms)
 
 r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
 P <- c(); I <- c()
@@ -7545,9 +7546,9 @@ Fit3Summ <- print(A.3.AR.Fit, pars = c("r", "k", "p", "o"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "k", "p", "o")
 Output <- rstan::extract(A.3.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(A.3.AR.Fit, parms)
-mcmc_pairs(A.3.AR.Fit, parms)
-mcmc_dens_overlay(A.3.AR.Fit, parms)
+# stan_trace(A.3.AR.Fit, parms)
+# mcmc_pairs(A.3.AR.Fit, parms)
+# mcmc_dens_overlay(A.3.AR.Fit, parms)
 
 r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
 P <- c(); I <- c()
@@ -7571,9 +7572,9 @@ Fit4Summ <- print(A.4.AR.Fit, pars = c("r", "k", "p", "o"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "k", "p", "o")
 Output <- rstan::extract(A.4.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(A.4.AR.Fit, parms)
-mcmc_pairs(A.4.AR.Fit, parms)
-mcmc_dens_overlay(A.4.AR.Fit, parms)
+# stan_trace(A.4.AR.Fit, parms)
+# mcmc_pairs(A.4.AR.Fit, parms)
+# mcmc_dens_overlay(A.4.AR.Fit, parms)
 
 r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
 P <- c(); I <- c()
@@ -7597,9 +7598,9 @@ Fit5Summ <- print(A.5.AR.Fit, pars = c("r", "k", "p", "o"),
                   probs = c(0.1, 0.5, 0.9), digits = 3)
 parms <- c("r", "k", "p", "o")
 Output <- rstan::extract(A.5.AR.Fit, permuted = TRUE, include = TRUE)
-stan_trace(A.5.AR.Fit, parms)
-mcmc_pairs(A.5.AR.Fit, parms)
-mcmc_dens_overlay(A.5.AR.Fit, parms)
+# stan_trace(A.5.AR.Fit, parms)
+# mcmc_pairs(A.5.AR.Fit, parms)
+# mcmc_dens_overlay(A.5.AR.Fit, parms)
 
 r = mean(Output[["r"]]); k = mean(Output[["k"]]); p = mean(Output[["p"]]); o = mean(Output[["o"]])
 P <- c(); I <- c()
@@ -9087,9 +9088,1033 @@ lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue",
 
 # Posterior Distributions of Parameter Estimates
 
+## Antia et al. (1994)
+
 ```{r}
+colours = c("orchid", "forestgreen", "orange", "red3", "lightblue")
+
+# Antia, Global
+A.Global.1 <- rstan::extract(Antia_FitObj1, permuted = TRUE, include = TRUE)
+A.Global.2 <- rstan::extract(Antia_FitObj2, permuted = TRUE, include = TRUE)
+A.Global.3 <- rstan::extract(Antia_FitObj3, permuted = TRUE, include = TRUE)
+A.Global.4 <- rstan::extract(Antia_FitObj4, permuted = TRUE, include = TRUE)
+A.Global.5 <- rstan::extract(Antia_FitObj5, permuted = TRUE, include = TRUE)
+
+A.G.r.df <- data.frame(TimeSeries = c(rep("1", length(A.Global.1$r)), rep("2", length(A.Global.2$r)), rep("3", length(A.Global.3$r)), rep("4", length(A.Global.4$r)), rep("5", length(A.Global.5$r))), Estimate = c(A.Global.1$r, A.Global.2$r, A.Global.3$r, A.Global.4$r, A.Global.5$r))
+A.G.r <- ggplot(data = A.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.25) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+A.G.k.df <- data.frame(TimeSeries = c(rep("1", length(A.Global.1$k)), rep("2", length(A.Global.2$k)), rep("3", length(A.Global.3$k)), rep("4", length(A.Global.4$k)), rep("5", length(A.Global.5$k))), Estimate = c(A.Global.1$k, A.Global.2$k, A.Global.3$k, A.Global.4$k, A.Global.5$k))
+A.G.k <- ggplot(data = A.G.k.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(k), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.01) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+A.G.p.df <- data.frame(TimeSeries = c(rep("1", length(A.Global.1$p)), rep("2", length(A.Global.2$p)), rep("3", length(A.Global.3$p)), rep("4", length(A.Global.4$p)), rep("5", length(A.Global.5$p))), Estimate = c(A.Global.1$p, A.Global.2$p, A.Global.3$p, A.Global.4$p, A.Global.5$p))
+A.G.p <- ggplot(data = A.G.p.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(rho), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 1) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+A.G.o.df <- data.frame(TimeSeries = c(rep("1", length(A.Global.1$o)), rep("2", length(A.Global.2$o)), rep("3", length(A.Global.3$o)), rep("4", length(A.Global.4$o)), rep("5", length(A.Global.5$o))), Estimate = c(A.Global.1$o, A.Global.2$o, A.Global.3$o, A.Global.4$o, A.Global.5$o))
+A.G.o <- ggplot(data = A.G.o.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(phi), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 1000) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+A.Global <- plot_grid(A.G.r, A.G.k, A.G.p, A.G.o, nrow = 2)
+title <- textGrob("Antia et al. (1994), Global Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(A.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Antia, Autoregressive
+A.AR.1 <- rstan::extract(A.1.AR.Fit, permuted = TRUE, include = TRUE)
+A.AR.2 <- rstan::extract(A.2.AR.Fit, permuted = TRUE, include = TRUE)
+A.AR.3 <- rstan::extract(A.3.AR.Fit, permuted = TRUE, include = TRUE)
+A.AR.4 <- rstan::extract(A.4.AR.Fit, permuted = TRUE, include = TRUE)
+A.AR.5 <- rstan::extract(A.5.AR.Fit, permuted = TRUE, include = TRUE)
+
+A.AR.r.df <- data.frame(TimeSeries = c(rep("1", length(A.AR.1$r)), rep("2", length(A.AR.2$r)), rep("3", length(A.AR.3$r)), rep("4", length(A.AR.4$r)), rep("5", length(A.AR.5$r))), Estimate = c(A.AR.1$r, A.AR.2$r, A.AR.3$r, A.AR.4$r, A.AR.5$r))
+A.AR.r <- ggplot(data = A.AR.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.25) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+A.AR.k.df <- data.frame(TimeSeries = c(rep("1", length(A.AR.1$k)), rep("2", length(A.AR.2$k)), rep("3", length(A.AR.3$k)), rep("4", length(A.AR.4$k)), rep("5", length(A.AR.5$k))), Estimate = c(A.AR.1$k, A.AR.2$k, A.AR.3$k, A.AR.4$k, A.AR.5$k))
+A.AR.k <- ggplot(data = A.AR.k.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(k), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.01) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+A.AR.p.df <- data.frame(TimeSeries = c(rep("1", length(A.AR.1$p)), rep("2", length(A.AR.2$p)), rep("3", length(A.AR.3$p)), rep("4", length(A.AR.4$p)), rep("5", length(A.AR.5$p))), Estimate = c(A.AR.1$p, A.AR.2$p, A.AR.3$p, A.AR.4$p, A.AR.5$p))
+A.AR.p <- ggplot(data = A.AR.p.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(rho), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 1) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+A.AR.o.df <- data.frame(TimeSeries = c(rep("1", length(A.AR.1$o)), rep("2", length(A.AR.2$o)), rep("3", length(A.AR.3$o)), rep("4", length(A.AR.4$o)), rep("5", length(A.AR.5$o))), Estimate = c(A.AR.1$o, A.AR.2$o, A.AR.3$o, A.AR.4$o, A.AR.5$o))
+A.AR.o <- ggplot(data = A.AR.o.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(phi), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 1000) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+A.AR <- plot_grid(A.AR.r, A.AR.k, A.AR.p, A.AR.o, nrow = 2)
+title <- textGrob("Antia et al. (1994), Autoregressive Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(A.AR, top = title, left = y.lab, bottom = x.lab))
+```
+
+## MFP (2010), Type I FR
+
+```{r}
+# Global
+MFP.1.Global.1 <- rstan::extract(ModFentonPerkins_1_FitObj1, permuted = TRUE, include = TRUE)
+MFP.1.Global.2 <- rstan::extract(ModFentonPerkins_1_FitObj2, permuted = TRUE, include = TRUE)
+MFP.1.Global.3 <- rstan::extract(ModFentonPerkins_1_FitObj3, permuted = TRUE, include = TRUE)
+MFP.1.Global.4 <- rstan::extract(ModFentonPerkins_1_FitObj4, permuted = TRUE, include = TRUE)
+MFP.1.Global.5 <- rstan::extract(ModFentonPerkins_1_FitObj5, permuted = TRUE, include = TRUE)
+
+MFP.1.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.Global.1$theta[ ,1])), rep("2", length(MFP.1.Global.2$theta[ ,1])), rep("3", length(MFP.1.Global.3$theta[ ,1])), rep("4", length(MFP.1.Global.4$theta[ ,1])), rep("5", length(MFP.1.Global.5$theta[ ,1]))), Estimate = c(MFP.1.Global.1$theta[ ,1], MFP.1.Global.2$theta[ ,1], MFP.1.Global.3$theta[ ,1], MFP.1.Global.4$theta[ ,1], MFP.1.Global.5$theta[ ,1]))
+MFP.1.G.r <- ggplot(data = MFP.1.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 1.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.1.G.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.Global.1$theta[ ,2])), rep("2", length(MFP.1.Global.2$theta[ ,2])), rep("3", length(MFP.1.Global.3$theta[ ,2])), rep("4", length(MFP.1.Global.4$theta[ ,2])), rep("5", length(MFP.1.Global.5$theta[ ,2]))), Estimate = c(MFP.1.Global.1$theta[ ,2], MFP.1.Global.2$theta[ ,2], MFP.1.Global.3$theta[ ,2], MFP.1.Global.4$theta[ ,2], MFP.1.Global.5$theta[ ,2]))
+MFP.1.G.B <- ggplot(data = MFP.1.G.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.001) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.1.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.Global.1$theta[ ,3])), rep("2", length(MFP.1.Global.2$theta[ ,3])), rep("3", length(MFP.1.Global.3$theta[ ,3])), rep("4", length(MFP.1.Global.4$theta[ ,3])), rep("5", length(MFP.1.Global.5$theta[ ,3]))), Estimate = c(MFP.1.Global.1$theta[ ,3], MFP.1.Global.2$theta[ ,3], MFP.1.Global.3$theta[ ,3], MFP.1.Global.4$theta[ ,3], MFP.1.Global.5$theta[ ,3]))
+MFP.1.G.b <- ggplot(data = MFP.1.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 200) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.1.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.Global.1$theta[ ,4])), rep("2", length(MFP.1.Global.2$theta[ ,4])), rep("3", length(MFP.1.Global.3$theta[ ,4])), rep("4", length(MFP.1.Global.4$theta[ ,4])), rep("5", length(MFP.1.Global.5$theta[ ,4]))), Estimate = c(MFP.1.Global.1$theta[ ,4], MFP.1.Global.2$theta[ ,4], MFP.1.Global.3$theta[ ,4], MFP.1.Global.4$theta[ ,4], MFP.1.Global.5$theta[ ,4]))
+MFP.1.G.e <- ggplot(data = MFP.1.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.9) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.1.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.Global.1$theta[ ,5])), rep("2", length(MFP.1.Global.2$theta[ ,5])), rep("3", length(MFP.1.Global.3$theta[ ,5])), rep("4", length(MFP.1.Global.4$theta[ ,5])), rep("5", length(MFP.1.Global.5$theta[ ,5]))), Estimate = c(MFP.1.Global.1$theta[ ,5], MFP.1.Global.2$theta[ ,5], MFP.1.Global.3$theta[ ,5], MFP.1.Global.4$theta[ ,5], MFP.1.Global.5$theta[ ,5]))
+MFP.1.G.d <- ggplot(data = MFP.1.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.1.Global <- plot_grid(MFP.1.G.r, MFP.1.G.B, MFP.1.G.b, MFP.1.G.e, MFP.1.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type I FR, Global Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.1.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Autoregressive
+MFP.1.AR.1 <- rstan::extract(MFP.I.1.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.1.AR.2 <- rstan::extract(MFP.I.2.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.1.AR.3 <- rstan::extract(MFP.I.3.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.1.AR.4 <- rstan::extract(MFP.I.4.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.1.AR.5 <- rstan::extract(MFP.I.5.AR.Fit, permuted = TRUE, include = TRUE)
+
+MFP.1.AR.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.AR.1$r)), rep("2", length(MFP.1.AR.2$r)), rep("3", length(MFP.1.AR.3$r)), rep("4", length(MFP.1.AR.4$r)), rep("5", length(MFP.1.AR.5$r))), Estimate = c(MFP.1.AR.1$r, MFP.1.AR.2$r, MFP.1.AR.3$r, MFP.1.AR.4$r, MFP.1.AR.5$r))
+MFP.1.AR.r <- ggplot(data = MFP.1.AR.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 1.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.1.AR.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.AR.1$B)), rep("2", length(MFP.1.AR.2$B)), rep("3", length(MFP.1.AR.3$B)), rep("4", length(MFP.1.AR.4$B)), rep("5", length(MFP.1.AR.5$B))), Estimate = c(MFP.1.AR.1$B, MFP.1.AR.2$B, MFP.1.AR.3$B, MFP.1.AR.4$B, MFP.1.AR.5$B))
+MFP.1.AR.B <- ggplot(data = MFP.1.AR.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.001) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.1.AR.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.AR.1$b)), rep("2", length(MFP.1.AR.2$b)), rep("3", length(MFP.1.AR.3$b)), rep("4", length(MFP.1.AR.4$b)), rep("5", length(MFP.1.AR.5$b))), Estimate = c(MFP.1.AR.1$b, MFP.1.AR.2$b, MFP.1.AR.3$b, MFP.1.AR.4$b, MFP.1.AR.5$b))
+MFP.1.AR.b <- ggplot(data = MFP.1.AR.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 200) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.1.AR.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.AR.1$e)), rep("2", length(MFP.1.AR.2$e)), rep("3", length(MFP.1.AR.3$e)), rep("4", length(MFP.1.AR.4$e)), rep("5", length(MFP.1.AR.5$e))), Estimate = c(MFP.1.AR.1$e, MFP.1.AR.2$e, MFP.1.AR.3$e, MFP.1.AR.4$e, MFP.1.AR.5$e))
+MFP.1.AR.e <- ggplot(data = MFP.1.AR.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.9) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.1.AR.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.1.AR.1$delta)), rep("2", length(MFP.1.AR.2$delta)), rep("3", length(MFP.1.AR.3$delta)), rep("4", length(MFP.1.AR.4$delta)), rep("5", length(MFP.1.AR.5$delta))), Estimate = c(MFP.1.AR.1$delta, MFP.1.AR.2$delta, MFP.1.AR.3$delta, MFP.1.AR.4$delta, MFP.1.AR.5$delta))
+MFP.1.AR.d <- ggplot(data = MFP.1.AR.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.1.AR <- plot_grid(MFP.1.AR.r, MFP.1.AR.B, MFP.1.AR.b, MFP.1.AR.e, MFP.1.AR.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type I FR, Autoregressive Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.1.AR, top = title, left = y.lab, bottom = x.lab))
+```
+
+## MFP (2010), Type II FR (DivOsc)
+
+```{r}
+# Global
+MFP.2.DivOsc.Global.1 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj1, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.2 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.3 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj3, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.4 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj4, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.5 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, permuted = TRUE, include = TRUE)
+
+MFP.2.DivOsc.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,1])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,1])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,1])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,1])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,1]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,1], MFP.2.DivOsc.Global.2$theta[ ,1], MFP.2.DivOsc.Global.3$theta[ ,1], MFP.2.DivOsc.Global.4$theta[ ,1], MFP.2.DivOsc.Global.5$theta[ ,1]))
+MFP.2.DivOsc.G.r <- ggplot(data = MFP.2.DivOsc.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.DivOsc.G.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,2])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,2])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,2])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,2])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,2]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,2], MFP.2.DivOsc.Global.2$theta[ ,2], MFP.2.DivOsc.Global.3$theta[ ,2], MFP.2.DivOsc.Global.4$theta[ ,2], MFP.2.DivOsc.Global.5$theta[ ,2]))
+MFP.2.DivOsc.G.B <- ggplot(data = MFP.2.DivOsc.G.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.012) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,3])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,3])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,3])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,3])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,3]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,3], MFP.2.DivOsc.Global.2$theta[ ,3], MFP.2.DivOsc.Global.3$theta[ ,3], MFP.2.DivOsc.Global.4$theta[ ,3], MFP.2.DivOsc.Global.5$theta[ ,3]))
+MFP.2.DivOsc.G.h <- ggplot(data = MFP.2.DivOsc.G.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.075) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,4])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,4])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,4])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,4])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,4]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,4], MFP.2.DivOsc.Global.2$theta[ ,4], MFP.2.DivOsc.Global.3$theta[ ,4], MFP.2.DivOsc.Global.4$theta[ ,4], MFP.2.DivOsc.Global.5$theta[ ,4]))
+MFP.2.DivOsc.G.b <- ggplot(data = MFP.2.DivOsc.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,5])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,5])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,5])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,5])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,5]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,5], MFP.2.DivOsc.Global.2$theta[ ,5], MFP.2.DivOsc.Global.3$theta[ ,5], MFP.2.DivOsc.Global.4$theta[ ,5], MFP.2.DivOsc.Global.5$theta[ ,5]))
+MFP.2.DivOsc.G.e <- ggplot(data = MFP.2.DivOsc.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,6])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,6])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,6])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,6])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,6]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,6], MFP.2.DivOsc.Global.2$theta[ ,6], MFP.2.DivOsc.Global.3$theta[ ,6], MFP.2.DivOsc.Global.4$theta[ ,6], MFP.2.DivOsc.Global.5$theta[ ,6]))
+MFP.2.DivOsc.G.d <- ggplot(data = MFP.2.DivOsc.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.48) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DivOsc.Global <- plot_grid(MFP.2.DivOsc.G.r, MFP.2.DivOsc.G.B, MFP.2.DivOsc.G.h, MFP.2.DivOsc.G.b, MFP.2.DivOsc.G.e, MFP.2.DivOsc.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Divergent Oscillations), Global Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DivOsc.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Autoregressive
+MFP.2.DivOsc.AR.1 <- rstan::extract(MFP.II.DivOsc.1.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.AR.2 <- rstan::extract(MFP.II.DivOsc.2.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.AR.3 <- rstan::extract(MFP.II.DivOsc.3.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.AR.4 <- rstan::extract(MFP.II.DivOsc.4.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.AR.5 <- rstan::extract(MFP.II.DivOsc.5.AR.Fit, permuted = TRUE, include = TRUE)
+
+MFP.2.DivOsc.AR.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.AR.1$r)), rep("2", length(MFP.2.DivOsc.AR.2$r)), rep("3", length(MFP.2.DivOsc.AR.3$r)), rep("4", length(MFP.2.DivOsc.AR.4$r)), rep("5", length(MFP.2.DivOsc.AR.5$r))), Estimate = c(MFP.2.DivOsc.AR.1$r, MFP.2.DivOsc.AR.2$r, MFP.2.DivOsc.AR.3$r, MFP.2.DivOsc.AR.4$r, MFP.2.DivOsc.AR.5$r))
+MFP.2.DivOsc.AR.r <- ggplot(data = MFP.2.DivOsc.AR.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.DivOsc.AR.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.AR.1$B)), rep("2", length(MFP.2.DivOsc.AR.2$B)), rep("3", length(MFP.2.DivOsc.AR.3$B)), rep("4", length(MFP.2.DivOsc.AR.4$B)), rep("5", length(MFP.2.DivOsc.AR.5$B))), Estimate = c(MFP.2.DivOsc.AR.1$B, MFP.2.DivOsc.AR.2$B, MFP.2.DivOsc.AR.3$B, MFP.2.DivOsc.AR.4$B, MFP.2.DivOsc.AR.5$B))
+MFP.2.DivOsc.AR.B <- ggplot(data = MFP.2.DivOsc.AR.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.012) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.AR.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.AR.1$h)), rep("2", length(MFP.2.DivOsc.AR.2$h)), rep("3", length(MFP.2.DivOsc.AR.3$h)), rep("4", length(MFP.2.DivOsc.AR.4$h)), rep("5", length(MFP.2.DivOsc.AR.5$h))), Estimate = c(MFP.2.DivOsc.AR.1$h, MFP.2.DivOsc.AR.2$h, MFP.2.DivOsc.AR.3$h, MFP.2.DivOsc.AR.4$h, MFP.2.DivOsc.AR.5$h))
+MFP.2.DivOsc.AR.h <- ggplot(data = MFP.2.DivOsc.AR.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.075) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.AR.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.AR.1$b)), rep("2", length(MFP.2.DivOsc.AR.2$b)), rep("3", length(MFP.2.DivOsc.AR.3$b)), rep("4", length(MFP.2.DivOsc.AR.4$b)), rep("5", length(MFP.2.DivOsc.AR.5$b))), Estimate = c(MFP.2.DivOsc.AR.1$b, MFP.2.DivOsc.AR.2$b, MFP.2.DivOsc.AR.3$b, MFP.2.DivOsc.AR.4$b, MFP.2.DivOsc.AR.5$b))
+MFP.2.DivOsc.AR.b <- ggplot(data = MFP.2.DivOsc.AR.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.AR.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.AR.1$e)), rep("2", length(MFP.2.DivOsc.AR.2$e)), rep("3", length(MFP.2.DivOsc.AR.3$e)), rep("4", length(MFP.2.DivOsc.AR.4$e)), rep("5", length(MFP.2.DivOsc.AR.5$e))), Estimate = c(MFP.2.DivOsc.AR.1$e, MFP.2.DivOsc.AR.2$e, MFP.2.DivOsc.AR.3$e, MFP.2.DivOsc.AR.4$e, MFP.2.DivOsc.AR.5$e))
+MFP.2.DivOsc.AR.e <- ggplot(data = MFP.2.DivOsc.AR.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.AR.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.AR.1$d)), rep("2", length(MFP.2.DivOsc.AR.2$d)), rep("3", length(MFP.2.DivOsc.AR.3$d)), rep("4", length(MFP.2.DivOsc.AR.4$d)), rep("5", length(MFP.2.DivOsc.AR.5$d))), Estimate = c(MFP.2.DivOsc.AR.1$d, MFP.2.DivOsc.AR.2$d, MFP.2.DivOsc.AR.3$d, MFP.2.DivOsc.AR.4$d, MFP.2.DivOsc.AR.5$d))
+MFP.2.DivOsc.AR.d <- ggplot(data = MFP.2.DivOsc.AR.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.41) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DivOsc.AR <- plot_grid(MFP.2.DivOsc.AR.r, MFP.2.DivOsc.AR.B, MFP.2.DivOsc.AR.h, MFP.2.DivOsc.AR.b, MFP.2.DivOsc.AR.e, MFP.2.DivOsc.AR.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Divergent Oscillations), Autoregressive Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DivOsc.AR, top = title, left = y.lab, bottom = x.lab))
+```
+
+## MFP (2010), Type II FR (SLC)
+
+```{r}
+# Global
+MFP.2.SLC.Global.1 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj1, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.2 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj2, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.3 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj3, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.4 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj4, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.5 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj5, permuted = TRUE, include = TRUE)
+
+MFP.2.SLC.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,1])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,1])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,1])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,1])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,1]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,1], MFP.2.SLC.Global.2$theta[ ,1], MFP.2.SLC.Global.3$theta[ ,1], MFP.2.SLC.Global.4$theta[ ,1], MFP.2.SLC.Global.5$theta[ ,1]))
+MFP.2.SLC.G.r <- ggplot(data = MFP.2.SLC.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.SLC.G.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,2])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,2])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,2])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,2])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,2]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,2], MFP.2.SLC.Global.2$theta[ ,2], MFP.2.SLC.Global.3$theta[ ,2], MFP.2.SLC.Global.4$theta[ ,2], MFP.2.SLC.Global.5$theta[ ,2]))
+MFP.2.SLC.G.B <- ggplot(data = MFP.2.SLC.G.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.012) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,3])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,3])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,3])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,3])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,3]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,3], MFP.2.SLC.Global.2$theta[ ,3], MFP.2.SLC.Global.3$theta[ ,3], MFP.2.SLC.Global.4$theta[ ,3], MFP.2.SLC.Global.5$theta[ ,3]))
+MFP.2.SLC.G.h <- ggplot(data = MFP.2.SLC.G.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.075) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,4])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,4])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,4])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,4])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,4]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,4], MFP.2.SLC.Global.2$theta[ ,4], MFP.2.SLC.Global.3$theta[ ,4], MFP.2.SLC.Global.4$theta[ ,4], MFP.2.SLC.Global.5$theta[ ,4]))
+MFP.2.SLC.G.b <- ggplot(data = MFP.2.SLC.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,5])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,5])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,5])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,5])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,5]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,5], MFP.2.SLC.Global.2$theta[ ,5], MFP.2.SLC.Global.3$theta[ ,5], MFP.2.SLC.Global.4$theta[ ,5], MFP.2.SLC.Global.5$theta[ ,5]))
+MFP.2.SLC.G.e <- ggplot(data = MFP.2.SLC.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,6])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,6])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,6])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,6])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,6]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,6], MFP.2.SLC.Global.2$theta[ ,6], MFP.2.SLC.Global.3$theta[ ,6], MFP.2.SLC.Global.4$theta[ ,6], MFP.2.SLC.Global.5$theta[ ,6]))
+MFP.2.SLC.G.d <- ggplot(data = MFP.2.SLC.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.41) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.SLC.Global <- plot_grid(MFP.2.SLC.G.r, MFP.2.SLC.G.B, MFP.2.SLC.G.h, MFP.2.SLC.G.b, MFP.2.SLC.G.e, MFP.2.SLC.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Divergent Oscillations), Global Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.SLC.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Autoregressive
+MFP.2.SLC.AR.1 <- rstan::extract(MFP.II.SLC.1.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.SLC.AR.2 <- rstan::extract(MFP.II.SLC.2.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.SLC.AR.3 <- rstan::extract(MFP.II.SLC.3.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.SLC.AR.4 <- rstan::extract(MFP.II.SLC.4.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.SLC.AR.5 <- rstan::extract(MFP.II.SLC.5.AR.Fit, permuted = TRUE, include = TRUE)
+
+MFP.2.SLC.AR.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.AR.1$r)), rep("2", length(MFP.2.SLC.AR.2$r)), rep("3", length(MFP.2.SLC.AR.3$r)), rep("4", length(MFP.2.SLC.AR.4$r)), rep("5", length(MFP.2.SLC.AR.5$r))), Estimate = c(MFP.2.SLC.AR.1$r, MFP.2.SLC.AR.2$r, MFP.2.SLC.AR.3$r, MFP.2.SLC.AR.4$r, MFP.2.SLC.AR.5$r))
+MFP.2.SLC.AR.r <- ggplot(data = MFP.2.SLC.AR.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.SLC.AR.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.AR.1$B)), rep("2", length(MFP.2.SLC.AR.2$B)), rep("3", length(MFP.2.SLC.AR.3$B)), rep("4", length(MFP.2.SLC.AR.4$B)), rep("5", length(MFP.2.SLC.AR.5$B))), Estimate = c(MFP.2.SLC.AR.1$B, MFP.2.SLC.AR.2$B, MFP.2.SLC.AR.3$B, MFP.2.SLC.AR.4$B, MFP.2.SLC.AR.5$B))
+MFP.2.SLC.AR.B <- ggplot(data = MFP.2.SLC.AR.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.012) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.AR.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.AR.1$h)), rep("2", length(MFP.2.SLC.AR.2$h)), rep("3", length(MFP.2.SLC.AR.3$h)), rep("4", length(MFP.2.SLC.AR.4$h)), rep("5", length(MFP.2.SLC.AR.5$h))), Estimate = c(MFP.2.SLC.AR.1$h, MFP.2.SLC.AR.2$h, MFP.2.SLC.AR.3$h, MFP.2.SLC.AR.4$h, MFP.2.SLC.AR.5$h))
+MFP.2.SLC.AR.h <- ggplot(data = MFP.2.SLC.AR.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.075) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.AR.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.AR.1$b)), rep("2", length(MFP.2.SLC.AR.2$b)), rep("3", length(MFP.2.SLC.AR.3$b)), rep("4", length(MFP.2.SLC.AR.4$b)), rep("5", length(MFP.2.SLC.AR.5$b))), Estimate = c(MFP.2.SLC.AR.1$b, MFP.2.SLC.AR.2$b, MFP.2.SLC.AR.3$b, MFP.2.SLC.AR.4$b, MFP.2.SLC.AR.5$b))
+MFP.2.SLC.AR.b <- ggplot(data = MFP.2.SLC.AR.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.AR.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.AR.1$e)), rep("2", length(MFP.2.SLC.AR.2$e)), rep("3", length(MFP.2.SLC.AR.3$e)), rep("4", length(MFP.2.SLC.AR.4$e)), rep("5", length(MFP.2.SLC.AR.5$e))), Estimate = c(MFP.2.SLC.AR.1$e, MFP.2.SLC.AR.2$e, MFP.2.SLC.AR.3$e, MFP.2.SLC.AR.4$e, MFP.2.SLC.AR.5$e))
+MFP.2.SLC.AR.e <- ggplot(data = MFP.2.SLC.AR.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.AR.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.AR.1$d)), rep("2", length(MFP.2.SLC.AR.2$d)), rep("3", length(MFP.2.SLC.AR.3$d)), rep("4", length(MFP.2.SLC.AR.4$d)), rep("5", length(MFP.2.SLC.AR.5$d))), Estimate = c(MFP.2.SLC.AR.1$d, MFP.2.SLC.AR.2$d, MFP.2.SLC.AR.3$d, MFP.2.SLC.AR.4$d, MFP.2.SLC.AR.5$d))
+MFP.2.SLC.AR.d <- ggplot(data = MFP.2.SLC.AR.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.34) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.SLC.AR <- plot_grid(MFP.2.SLC.AR.r, MFP.2.SLC.AR.B, MFP.2.SLC.AR.h, MFP.2.SLC.AR.b, MFP.2.SLC.AR.e, MFP.2.SLC.AR.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Stable Limit Cycle), Autoregressive Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.SLC.AR, top = title, left = y.lab, bottom = x.lab))
+```
+
+## MFP (2010), Type II FR (DO)
+
+```{r}
+# Global
+MFP.2.DO.Global.1 <- rstan::extract(ModFentonPerkins_2_DO_FitObj1, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.2 <- rstan::extract(ModFentonPerkins_2_DO_FitObj2, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.3 <- rstan::extract(ModFentonPerkins_2_DO_FitObj3, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.4 <- rstan::extract(ModFentonPerkins_2_DO_FitObj4, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.5 <- rstan::extract(ModFentonPerkins_2_DO_FitObj5, permuted = TRUE, include = TRUE)
+
+MFP.2.DO.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,1])), rep("2", length(MFP.2.DO.Global.2$theta[ ,1])), rep("3", length(MFP.2.DO.Global.3$theta[ ,1])), rep("4", length(MFP.2.DO.Global.4$theta[ ,1])), rep("5", length(MFP.2.DO.Global.5$theta[ ,1]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,1], MFP.2.DO.Global.2$theta[ ,1], MFP.2.DO.Global.3$theta[ ,1], MFP.2.DO.Global.4$theta[ ,1], MFP.2.DO.Global.5$theta[ ,1]))
+MFP.2.DO.G.r <- ggplot(data = MFP.2.DO.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.DO.G.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,2])), rep("2", length(MFP.2.DO.Global.2$theta[ ,2])), rep("3", length(MFP.2.DO.Global.3$theta[ ,2])), rep("4", length(MFP.2.DO.Global.4$theta[ ,2])), rep("5", length(MFP.2.DO.Global.5$theta[ ,2]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,2], MFP.2.DO.Global.2$theta[ ,2], MFP.2.DO.Global.3$theta[ ,2], MFP.2.DO.Global.4$theta[ ,2], MFP.2.DO.Global.5$theta[ ,2]))
+MFP.2.DO.G.B <- ggplot(data = MFP.2.DO.G.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.008) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,3])), rep("2", length(MFP.2.DO.Global.2$theta[ ,3])), rep("3", length(MFP.2.DO.Global.3$theta[ ,3])), rep("4", length(MFP.2.DO.Global.4$theta[ ,3])), rep("5", length(MFP.2.DO.Global.5$theta[ ,3]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,3], MFP.2.DO.Global.2$theta[ ,3], MFP.2.DO.Global.3$theta[ ,3], MFP.2.DO.Global.4$theta[ ,3], MFP.2.DO.Global.5$theta[ ,3]))
+MFP.2.DO.G.h <- ggplot(data = MFP.2.DO.G.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.06) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,4])), rep("2", length(MFP.2.DO.Global.2$theta[ ,4])), rep("3", length(MFP.2.DO.Global.3$theta[ ,4])), rep("4", length(MFP.2.DO.Global.4$theta[ ,4])), rep("5", length(MFP.2.DO.Global.5$theta[ ,4]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,4], MFP.2.DO.Global.2$theta[ ,4], MFP.2.DO.Global.3$theta[ ,4], MFP.2.DO.Global.4$theta[ ,4], MFP.2.DO.Global.5$theta[ ,4]))
+MFP.2.DO.G.b <- ggplot(data = MFP.2.DO.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,5])), rep("2", length(MFP.2.DO.Global.2$theta[ ,5])), rep("3", length(MFP.2.DO.Global.3$theta[ ,5])), rep("4", length(MFP.2.DO.Global.4$theta[ ,5])), rep("5", length(MFP.2.DO.Global.5$theta[ ,5]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,5], MFP.2.DO.Global.2$theta[ ,5], MFP.2.DO.Global.3$theta[ ,5], MFP.2.DO.Global.4$theta[ ,5], MFP.2.DO.Global.5$theta[ ,5]))
+MFP.2.DO.G.e <- ggplot(data = MFP.2.DO.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,6])), rep("2", length(MFP.2.DO.Global.2$theta[ ,6])), rep("3", length(MFP.2.DO.Global.3$theta[ ,6])), rep("4", length(MFP.2.DO.Global.4$theta[ ,6])), rep("5", length(MFP.2.DO.Global.5$theta[ ,6]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,6], MFP.2.DO.Global.2$theta[ ,6], MFP.2.DO.Global.3$theta[ ,6], MFP.2.DO.Global.4$theta[ ,6], MFP.2.DO.Global.5$theta[ ,6]))
+MFP.2.DO.G.d <- ggplot(data = MFP.2.DO.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.34) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DO.Global <- plot_grid(MFP.2.DO.G.r, MFP.2.DO.G.B, MFP.2.DO.G.h, MFP.2.DO.G.b, MFP.2.DO.G.e, MFP.2.DO.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Damping Oscillations), Global Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DO.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Autoregressive
+MFP.2.DO.AR.1 <- rstan::extract(MFP.II.DampOsc.1.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.DO.AR.2 <- rstan::extract(MFP.II.DampOsc.2.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.DO.AR.3 <- rstan::extract(MFP.II.DampOsc.3.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.DO.AR.4 <- rstan::extract(MFP.II.DampOsc.4.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.2.DO.AR.5 <- rstan::extract(MFP.II.DampOsc.5.AR.Fit, permuted = TRUE, include = TRUE)
+
+MFP.2.DO.AR.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.AR.1$r)), rep("2", length(MFP.2.DO.AR.2$r)), rep("3", length(MFP.2.DO.AR.3$r)), rep("4", length(MFP.2.DO.AR.4$r)), rep("5", length(MFP.2.DO.AR.5$r))), Estimate = c(MFP.2.DO.AR.1$r, MFP.2.DO.AR.2$r, MFP.2.DO.AR.3$r, MFP.2.DO.AR.4$r, MFP.2.DO.AR.5$r))
+MFP.2.DO.AR.r <- ggplot(data = MFP.2.DO.AR.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.1) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.DO.AR.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.AR.1$B)), rep("2", length(MFP.2.DO.AR.2$B)), rep("3", length(MFP.2.DO.AR.3$B)), rep("4", length(MFP.2.DO.AR.4$B)), rep("5", length(MFP.2.DO.AR.5$B))), Estimate = c(MFP.2.DO.AR.1$B, MFP.2.DO.AR.2$B, MFP.2.DO.AR.3$B, MFP.2.DO.AR.4$B, MFP.2.DO.AR.5$B))
+MFP.2.DO.AR.B <- ggplot(data = MFP.2.DO.AR.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.012) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.AR.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.AR.1$h)), rep("2", length(MFP.2.DO.AR.2$h)), rep("3", length(MFP.2.DO.AR.3$h)), rep("4", length(MFP.2.DO.AR.4$h)), rep("5", length(MFP.2.DO.AR.5$h))), Estimate = c(MFP.2.DO.AR.1$h, MFP.2.DO.AR.2$h, MFP.2.DO.AR.3$h, MFP.2.DO.AR.4$h, MFP.2.DO.AR.5$h))
+MFP.2.DO.AR.h <- ggplot(data = MFP.2.DO.AR.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.075) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.AR.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.AR.1$b)), rep("2", length(MFP.2.DO.AR.2$b)), rep("3", length(MFP.2.DO.AR.3$b)), rep("4", length(MFP.2.DO.AR.4$b)), rep("5", length(MFP.2.DO.AR.5$b))), Estimate = c(MFP.2.DO.AR.1$b, MFP.2.DO.AR.2$b, MFP.2.DO.AR.3$b, MFP.2.DO.AR.4$b, MFP.2.DO.AR.5$b))
+MFP.2.DO.AR.b <- ggplot(data = MFP.2.DO.AR.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.AR.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.AR.1$e)), rep("2", length(MFP.2.DO.AR.2$e)), rep("3", length(MFP.2.DO.AR.3$e)), rep("4", length(MFP.2.DO.AR.4$e)), rep("5", length(MFP.2.DO.AR.5$e))), Estimate = c(MFP.2.DO.AR.1$e, MFP.2.DO.AR.2$e, MFP.2.DO.AR.3$e, MFP.2.DO.AR.4$e, MFP.2.DO.AR.5$e))
+MFP.2.DO.AR.e <- ggplot(data = MFP.2.DO.AR.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.AR.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.AR.1$d)), rep("2", length(MFP.2.DO.AR.2$d)), rep("3", length(MFP.2.DO.AR.3$d)), rep("4", length(MFP.2.DO.AR.4$d)), rep("5", length(MFP.2.DO.AR.5$d))), Estimate = c(MFP.2.DO.AR.1$d, MFP.2.DO.AR.2$d, MFP.2.DO.AR.3$d, MFP.2.DO.AR.4$d, MFP.2.DO.AR.5$d))
+MFP.2.DO.AR.d <- ggplot(data = MFP.2.DO.AR.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.34) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DO.AR <- plot_grid(MFP.2.DO.AR.r, MFP.2.DO.AR.B, MFP.2.DO.AR.h, MFP.2.DO.AR.b, MFP.2.DO.AR.e, MFP.2.DO.AR.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Damping Oscillations), Autoregressive Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DO.AR, top = title, left = y.lab, bottom = x.lab))
+```
 
 
+## MFP (2010), Type III FR
+
+```{r}
+# Global
+MFP.3.Global.1 <- rstan::extract(ModFentonPerkins_3_FitObj1, permuted = TRUE, include = TRUE)
+MFP.3.Global.2 <- rstan::extract(ModFentonPerkins_3_FitObj2, permuted = TRUE, include = TRUE)
+MFP.3.Global.3 <- rstan::extract(ModFentonPerkins_3_FitObj3, permuted = TRUE, include = TRUE)
+MFP.3.Global.4 <- rstan::extract(ModFentonPerkins_3_FitObj4, permuted = TRUE, include = TRUE)
+MFP.3.Global.5 <- rstan::extract(ModFentonPerkins_3_FitObj5, permuted = TRUE, include = TRUE)
+
+MFP.3.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.Global.1$theta[ ,1])), rep("2", length(MFP.3.Global.2$theta[ ,1])), rep("3", length(MFP.3.Global.3$theta[ ,1])), rep("4", length(MFP.3.Global.4$theta[ ,1])), rep("5", length(MFP.3.Global.5$theta[ ,1]))), Estimate = c(MFP.3.Global.1$theta[ ,1], MFP.3.Global.2$theta[ ,1], MFP.3.Global.3$theta[ ,1], MFP.3.Global.4$theta[ ,1], MFP.3.Global.5$theta[ ,1]))
+MFP.3.G.r <- ggplot(data = MFP.3.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.3.G.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.Global.1$theta[ ,2])), rep("2", length(MFP.3.Global.2$theta[ ,2])), rep("3", length(MFP.3.Global.3$theta[ ,2])), rep("4", length(MFP.3.Global.4$theta[ ,2])), rep("5", length(MFP.3.Global.5$theta[ ,2]))), Estimate = c(MFP.3.Global.1$theta[ ,2], MFP.3.Global.2$theta[ ,2], MFP.3.Global.3$theta[ ,2], MFP.3.Global.4$theta[ ,2], MFP.3.Global.5$theta[ ,2]))
+MFP.3.G.B <- ggplot(data = MFP.3.G.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.0015) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.3.G.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.Global.1$theta[ ,3])), rep("2", length(MFP.3.Global.2$theta[ ,3])), rep("3", length(MFP.3.Global.3$theta[ ,3])), rep("4", length(MFP.3.Global.4$theta[ ,3])), rep("5", length(MFP.3.Global.5$theta[ ,3]))), Estimate = c(MFP.3.Global.1$theta[ ,3], MFP.3.Global.2$theta[ ,3], MFP.3.Global.3$theta[ ,3], MFP.3.Global.4$theta[ ,3], MFP.3.Global.5$theta[ ,3]))
+MFP.3.G.h <- ggplot(data = MFP.3.G.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.3.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.Global.1$theta[ ,4])), rep("2", length(MFP.3.Global.2$theta[ ,4])), rep("3", length(MFP.3.Global.3$theta[ ,4])), rep("4", length(MFP.3.Global.4$theta[ ,4])), rep("5", length(MFP.3.Global.5$theta[ ,4]))), Estimate = c(MFP.3.Global.1$theta[ ,4], MFP.3.Global.2$theta[ ,4], MFP.3.Global.3$theta[ ,4], MFP.3.Global.4$theta[ ,4], MFP.3.Global.5$theta[ ,4]))
+MFP.3.G.b <- ggplot(data = MFP.3.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.3.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.Global.1$theta[ ,5])), rep("2", length(MFP.3.Global.2$theta[ ,5])), rep("3", length(MFP.3.Global.3$theta[ ,5])), rep("4", length(MFP.3.Global.4$theta[ ,5])), rep("5", length(MFP.3.Global.5$theta[ ,5]))), Estimate = c(MFP.3.Global.1$theta[ ,5], MFP.3.Global.2$theta[ ,5], MFP.3.Global.3$theta[ ,5], MFP.3.Global.4$theta[ ,5], MFP.3.Global.5$theta[ ,5]))
+MFP.3.G.e <- ggplot(data = MFP.3.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.3.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.Global.1$theta[ ,6])), rep("2", length(MFP.3.Global.2$theta[ ,6])), rep("3", length(MFP.3.Global.3$theta[ ,6])), rep("4", length(MFP.3.Global.4$theta[ ,6])), rep("5", length(MFP.3.Global.5$theta[ ,6]))), Estimate = c(MFP.3.Global.1$theta[ ,6], MFP.3.Global.2$theta[ ,6], MFP.3.Global.3$theta[ ,6], MFP.3.Global.4$theta[ ,6], MFP.3.Global.5$theta[ ,6]))
+MFP.3.G.d <- ggplot(data = MFP.3.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.3.Global <- plot_grid(MFP.3.G.r, MFP.3.G.B, MFP.3.G.h, MFP.3.G.b, MFP.3.G.e, MFP.3.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type III FR, Global Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.3.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Autoregressive
+MFP.3.AR.1 <- rstan::extract(MFP.III.1.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.3.AR.2 <- rstan::extract(MFP.III.2.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.3.AR.3 <- rstan::extract(MFP.III.3.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.3.AR.4 <- rstan::extract(MFP.III.4.AR.Fit, permuted = TRUE, include = TRUE)
+MFP.3.AR.5 <- rstan::extract(MFP.III.5.AR.Fit, permuted = TRUE, include = TRUE)
+
+MFP.3.AR.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.AR.1$r)), rep("2", length(MFP.3.AR.2$r)), rep("3", length(MFP.3.AR.3$r)), rep("4", length(MFP.3.AR.4$r)), rep("5", length(MFP.3.AR.5$r))), Estimate = c(MFP.3.AR.1$r, MFP.3.AR.2$r, MFP.3.AR.3$r, MFP.3.AR.4$r, MFP.3.AR.5$r))
+MFP.3.AR.r <- ggplot(data = MFP.3.AR.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.3.AR.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.AR.1$B)), rep("2", length(MFP.3.AR.2$B)), rep("3", length(MFP.3.AR.3$B)), rep("4", length(MFP.3.AR.4$B)), rep("5", length(MFP.3.AR.5$B))), Estimate = c(MFP.3.AR.1$B, MFP.3.AR.2$B, MFP.3.AR.3$B, MFP.3.AR.4$B, MFP.3.AR.5$B))
+MFP.3.AR.B <- ggplot(data = MFP.3.AR.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.0015) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.3.AR.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.AR.1$h)), rep("2", length(MFP.3.AR.2$h)), rep("3", length(MFP.3.AR.3$h)), rep("4", length(MFP.3.AR.4$h)), rep("5", length(MFP.3.AR.5$h))), Estimate = c(MFP.3.AR.1$h, MFP.3.AR.2$h, MFP.3.AR.3$h, MFP.3.AR.4$h, MFP.3.AR.5$h))
+MFP.3.AR.h <- ggplot(data = MFP.3.AR.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.3.AR.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.AR.1$b)), rep("2", length(MFP.3.AR.2$b)), rep("3", length(MFP.3.AR.3$b)), rep("4", length(MFP.3.AR.4$b)), rep("5", length(MFP.3.AR.5$b))), Estimate = c(MFP.3.AR.1$b, MFP.3.AR.2$b, MFP.3.AR.3$b, MFP.3.AR.4$b, MFP.3.AR.5$b))
+MFP.3.AR.b <- ggplot(data = MFP.3.AR.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.3.AR.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.AR.1$e)), rep("2", length(MFP.3.AR.2$e)), rep("3", length(MFP.3.AR.3$e)), rep("4", length(MFP.3.AR.4$e)), rep("5", length(MFP.3.AR.5$e))), Estimate = c(MFP.3.AR.1$e, MFP.3.AR.2$e, MFP.3.AR.3$e, MFP.3.AR.4$e, MFP.3.AR.5$e))
+MFP.3.AR.e <- ggplot(data = MFP.3.AR.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.3.AR.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.3.AR.1$d)), rep("2", length(MFP.3.AR.2$d)), rep("3", length(MFP.3.AR.3$d)), rep("4", length(MFP.3.AR.4$d)), rep("5", length(MFP.3.AR.5$d))), Estimate = c(MFP.3.AR.1$d, MFP.3.AR.2$d, MFP.3.AR.3$d, MFP.3.AR.4$d, MFP.3.AR.5$d))
+MFP.3.AR.d <- ggplot(data = MFP.3.AR.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.3.AR <- plot_grid(MFP.3.AR.r, MFP.3.AR.B, MFP.3.AR.h, MFP.3.AR.b, MFP.3.AR.e, MFP.3.AR.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type III FR, Autoregressive Model Parameter Estimates")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.3.AR, top = title, left = y.lab, bottom = x.lab))
 ```
 
 # 95% CIs 
