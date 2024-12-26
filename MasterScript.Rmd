@@ -41,23 +41,23 @@ $\frac{dP}{dt} = rP - kPI$, if $P < D$, where $D = 10^9$. If $P < D$, $P \righta
 
 $\frac{dI}{dt} = \rho I(\frac{P}{P + \phi})$
 
-+----------+----------------------------------------------------------------------------------------+--------------+
-| Symbol   | Parameter                                                                              | Value        |
-+==========+========================================================================================+==============+
-| $P$      | Parasite abundance                                                                     | $1**$        |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $I$      | Host immune cell abundance                                                             | $1**$        |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $r$      | Replication rate of parasite                                                           | $0.1 - 10.0$ |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $k$      | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $\rho$   | Maximum replication rate of host's immune system                                       | $1$          |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $\phi$   | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
-+----------+----------------------------------------------------------------------------------------+--------------+
-| $D$      | Lethal within-host parasite abundance                                                  | $10^9$       |
-+----------+----------------------------------------------------------------------------------------+--------------+
++---------+----------------------------------------------------------------------------------------+--------------+
+| Symbol  | Parameter                                                                              | Value        |
++=========+========================================================================================+==============+
+| $P$     | Parasite abundance                                                                     | $1**$        |
++---------+----------------------------------------------------------------------------------------+--------------+
+| $I$     | Host immune cell abundance                                                             | $1**$        |
++---------+----------------------------------------------------------------------------------------+--------------+
+| $r$     | Replication rate of parasite                                                           | $0.1 - 10.0$ |
++---------+----------------------------------------------------------------------------------------+--------------+
+| $k$     | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
++---------+----------------------------------------------------------------------------------------+--------------+
+| $\rho$  | Maximum replication rate of host's immune system                                       | $1$          |
++---------+----------------------------------------------------------------------------------------+--------------+
+| $\phi$  | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
++---------+----------------------------------------------------------------------------------------+--------------+
+| $D$     | Lethal within-host parasite abundance                                                  | $10^9$       |
++---------+----------------------------------------------------------------------------------------+--------------+
 
 ## Fenton and Perkins (2010)
 
@@ -73,23 +73,23 @@ With a TII functional response, $f(P)=\frac{\beta P}{1+h \beta P}$
 
 With a TIII functional response, $f(P)=\frac{\beta P^2}{1+h \beta P^2}$
 
-+-----------+------------------------------------------------------------------------+--------------+
-| Symbol    | Parameter                                                              | Value        |
-+===========+========================================================================+==============+
-| $P$       | Parasite abundance                                                     | $1$          |
-+-----------+------------------------------------------------------------------------+--------------+
-| $I$       | Host immune cell abundance                                             | $1$          |
-+-----------+------------------------------------------------------------------------+--------------+
-| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-+-----------+------------------------------------------------------------------------+--------------+
-| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-+-----------+------------------------------------------------------------------------+--------------+
-| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
-+-----------+------------------------------------------------------------------------+--------------+
-| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
-+-----------+------------------------------------------------------------------------+--------------+
-| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
-+-----------+------------------------------------------------------------------------+--------------+
++----------+------------------------------------------------------------------------+--------------+
+| Symbol   | Parameter                                                              | Value        |
++==========+========================================================================+==============+
+| $P$      | Parasite abundance                                                     | $1$          |
++----------+------------------------------------------------------------------------+--------------+
+| $I$      | Host immune cell abundance                                             | $1$          |
++----------+------------------------------------------------------------------------+--------------+
+| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++----------+------------------------------------------------------------------------+--------------+
+| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++----------+------------------------------------------------------------------------+--------------+
+| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
++----------+------------------------------------------------------------------------+--------------+
+| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
++----------+------------------------------------------------------------------------+--------------+
+| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
++----------+------------------------------------------------------------------------+--------------+
 
 ## Modified Fenton and Perkins (2010)
 
@@ -97,25 +97,25 @@ $\frac{dP}{dt}=rP-If(P)$
 
 $\frac{dI}{dt}=b + ef(P)I - \delta I$
 
-+-----------+------------------------------------------------------------------------+--------------+
-| Symbol    | Parameter                                                              | Value        |
-+===========+========================================================================+==============+
-| $P$       | Parasite abundance                                                     | $1$          |
-+-----------+------------------------------------------------------------------------+--------------+
-| $I$       | Host immune cell abundance                                             | $1$          |
-+-----------+------------------------------------------------------------------------+--------------+
-| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-+-----------+------------------------------------------------------------------------+--------------+
-| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-+-----------+------------------------------------------------------------------------+--------------+
-| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
-+-----------+------------------------------------------------------------------------+--------------+
-| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
-+-----------+------------------------------------------------------------------------+--------------+
-| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
-+-----------+------------------------------------------------------------------------+--------------+
-| $b$       | Immigration of immune cells in absence of infection                    | $35$         |
-+-----------+------------------------------------------------------------------------+--------------+
++----------+------------------------------------------------------------------------+--------------+
+| Symbol   | Parameter                                                              | Value        |
++==========+========================================================================+==============+
+| $P$      | Parasite abundance                                                     | $1$          |
++----------+------------------------------------------------------------------------+--------------+
+| $I$      | Host immune cell abundance                                             | $1$          |
++----------+------------------------------------------------------------------------+--------------+
+| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++----------+------------------------------------------------------------------------+--------------+
+| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++----------+------------------------------------------------------------------------+--------------+
+| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
++----------+------------------------------------------------------------------------+--------------+
+| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
++----------+------------------------------------------------------------------------+--------------+
+| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
++----------+------------------------------------------------------------------------+--------------+
+| $b$      | Immigration of immune cells in absence of infection                    | $35$         |
++----------+------------------------------------------------------------------------+--------------+
 
 # GLOBAL FRAMEWORK
 
@@ -1379,7 +1379,6 @@ saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_4.r
 
 fit <- sampling(model, data = ModFentonPerkins_2_DivOsc_StanData_List[[5]], chains = 4, iter = 2000, cores = 4, seed = 123)
 saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_5.rds")
-```3
 
 #### Stable Limit Cycle
 
@@ -1387,7 +1386,6 @@ saveRDS(fit, file = "2_FitObjects/ModFentonPerkins_2_DivOsc_FitObj_FourParms_5.r
 
 Writing the model as a .stan file.
 
-```{r}
 write("
 functions {
   real[] dz_dt(real t,       // time
@@ -2863,7 +2861,6 @@ stan_trace(ModFentonPerkins_2_DivOsc_FitObj_FourParms_5, pars)
 mcmc_pairs(ModFentonPerkins_2_DivOsc_FitObj_FourParms_5, pars)
 mcmc_dens(ModFentonPerkins_2_DivOsc_FitObj_FourParms_5, pars)
 ```
-
 
 #### Stable Limit Cycle
 
@@ -4701,7 +4698,6 @@ lines(df$ts, df$post_means_P, col = "forestgreen", lty = 2, lwd = 2)
 lines(df$ts, df$post_means_I, col = "cornflowerblue", lty = 2, lwd = 2)
 # legend("topleft", legend = c("Observed parasite abundance", "Observed immune cell abundane", "Estimated parasite abundance", "Estiamted immune cell abundance"), col = c("forestgreen", "cornflowerblue", "forestgreen", "cornflowerblue"), lty = c(1, 1, 2, 2), lwd = c(2, 2, 2, 2))
 ```
-
 
 #### Stable Limit Cycle
 
@@ -9932,7 +9928,6 @@ x.lab <- textGrob("Estimate")
 grid.arrange(arrangeGrob(MFP.2.DO.AR, top = title, left = y.lab, bottom = x.lab))
 ```
 
-
 ## MFP (2010), Type III FR
 
 ```{r}
@@ -10117,58 +10112,737 @@ x.lab <- textGrob("Estimate")
 grid.arrange(arrangeGrob(MFP.3.AR, top = title, left = y.lab, bottom = x.lab))
 ```
 
-# 95% CIs 
+## Fewer Parameter Estimates
+
+### MFP, Type II, DivOsc
 
 ```{r}
-Model <- c("MFP_1", "MFP_2_DO", "MFP_2_SLC", "MFP_3")
+# Five Parms, Give B
+MFP.2.DivOsc.Global.1 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_1, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.2 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_2, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.3 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_3, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.4 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_4, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.5 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms_5, permuted = TRUE, include = TRUE)
 
-## r
-MFP_1.1_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.2_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.3_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.4_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.5_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-
-MFP_2.1_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.2_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.3_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.4_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.5_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-
-MFP_2.1_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.2_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.3_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.4_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.5_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-
-MFP_3.1_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.2_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.3_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.4_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.5_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
-
-df.r <- data.frame(MFP_1.1_r, MFP_1.2_r, MFP_1.3_r, MFP_1.4_r, MFP_1.5_r,
-                   MFP_2.1_DO_r, MFP_2.2_DO_r, MFP_2.3_DO_r, MFP_2.4_DO_r, MFP_2.5_DO_r, 
-                   MFP_2.1_SLC_r, MFP_2.2_SLC_r, MFP_2.3_SLC_r,MFP_2.4_SLC_r, MFP_2.5_SLC_r, 
-                   MFP_3.1_r, MFP_3.2_r, MFP_3.3_r, MFP_3.4_r, MFP_3.5_r)
-df.r <- as.matrix(df.r); df.r <- t(df.r); df.r <- as.data.frame(df.r); colnames(df.r) <- c("Lower", "Mean", "Upper")
-Model <- c(rownames(df.r)); df.r <- cbind(Model, df.r); df.r <- as.data.frame(df.r)
-
-colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
-
-ggplot(df.r, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
-  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of r") +
-  ylim(0, 6) +
+MFP.2.DivOsc.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,1])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,1])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,1])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,1])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,1]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,1], MFP.2.DivOsc.Global.2$theta[ ,1], MFP.2.DivOsc.Global.3$theta[ ,1], MFP.2.DivOsc.Global.4$theta[ ,1], MFP.2.DivOsc.Global.5$theta[ ,1]))
+MFP.2.DivOsc.G.r <- ggplot(data = MFP.2.DivOsc.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank(),
-    panel.background = element_blank()) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
-  theme(legend.position = "none") 
+    panel.background = element_blank(),
+    legend.position = "none") 
 
+MFP.2.DivOsc.G.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,2])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,2])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,2])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,2])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,2]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,2], MFP.2.DivOsc.Global.2$theta[ ,2], MFP.2.DivOsc.Global.3$theta[ ,2], MFP.2.DivOsc.Global.4$theta[ ,2], MFP.2.DivOsc.Global.5$theta[ ,2]))
+MFP.2.DivOsc.G.h <- ggplot(data = MFP.2.DivOsc.G.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.075) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,3])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,3])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,3])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,3])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,3]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,3], MFP.2.DivOsc.Global.2$theta[ ,3], MFP.2.DivOsc.Global.3$theta[ ,3], MFP.2.DivOsc.Global.4$theta[ ,3], MFP.2.DivOsc.Global.5$theta[ ,3]))
+MFP.2.DivOsc.G.b <- ggplot(data = MFP.2.DivOsc.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,4])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,4])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,4])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,4])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,4]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,4], MFP.2.DivOsc.Global.2$theta[ ,4], MFP.2.DivOsc.Global.3$theta[ ,4], MFP.2.DivOsc.Global.4$theta[ ,4], MFP.2.DivOsc.Global.5$theta[ ,4]))
+MFP.2.DivOsc.G.e <- ggplot(data = MFP.2.DivOsc.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,5])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,5])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,5])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,5])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,5]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,5], MFP.2.DivOsc.Global.2$theta[ ,5], MFP.2.DivOsc.Global.3$theta[ ,5], MFP.2.DivOsc.Global.4$theta[ ,5], MFP.2.DivOsc.Global.5$theta[ ,5]))
+MFP.2.DivOsc.G.d <- ggplot(data = MFP.2.DivOsc.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.48) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DivOsc.Global <- plot_grid(MFP.2.DivOsc.G.r, MFP.2.DivOsc.G.h, MFP.2.DivOsc.G.b, MFP.2.DivOsc.G.e, MFP.2.DivOsc.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Divergent Oscillations), Global Model Parameter Estimates (Provide True Value of β)")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DivOsc.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Five Parms, Give h
+MFP.2.DivOsc.Global.1 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_1, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.2 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_2, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.3 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_3, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.4 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_4, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.5 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FiveParms.ExHT_5, permuted = TRUE, include = TRUE)
+
+MFP.2.DivOsc.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,1])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,1])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,1])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,1])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,1]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,1], MFP.2.DivOsc.Global.2$theta[ ,1], MFP.2.DivOsc.Global.3$theta[ ,1], MFP.2.DivOsc.Global.4$theta[ ,1], MFP.2.DivOsc.Global.5$theta[ ,1]))
+MFP.2.DivOsc.G.r <- ggplot(data = MFP.2.DivOsc.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.DivOsc.G.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,2])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,2])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,2])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,2])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,2]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,2], MFP.2.DivOsc.Global.2$theta[ ,2], MFP.2.DivOsc.Global.3$theta[ ,2], MFP.2.DivOsc.Global.4$theta[ ,2], MFP.2.DivOsc.Global.5$theta[ ,2]))
+MFP.2.DivOsc.G.B <- ggplot(data = MFP.2.DivOsc.G.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.012) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,3])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,3])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,3])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,3])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,3]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,3], MFP.2.DivOsc.Global.2$theta[ ,3], MFP.2.DivOsc.Global.3$theta[ ,3], MFP.2.DivOsc.Global.4$theta[ ,3], MFP.2.DivOsc.Global.5$theta[ ,3]))
+MFP.2.DivOsc.G.b <- ggplot(data = MFP.2.DivOsc.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,4])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,4])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,4])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,4])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,4]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,4], MFP.2.DivOsc.Global.2$theta[ ,4], MFP.2.DivOsc.Global.3$theta[ ,4], MFP.2.DivOsc.Global.4$theta[ ,4], MFP.2.DivOsc.Global.5$theta[ ,4]))
+MFP.2.DivOsc.G.e <- ggplot(data = MFP.2.DivOsc.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,5])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,5])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,5])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,5])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,5]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,5], MFP.2.DivOsc.Global.2$theta[ ,5], MFP.2.DivOsc.Global.3$theta[ ,5], MFP.2.DivOsc.Global.4$theta[ ,5], MFP.2.DivOsc.Global.5$theta[ ,5]))
+MFP.2.DivOsc.G.d <- ggplot(data = MFP.2.DivOsc.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.48) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DivOsc.Global <- plot_grid(MFP.2.DivOsc.G.r, MFP.2.DivOsc.G.B, MFP.2.DivOsc.G.b, MFP.2.DivOsc.G.e, MFP.2.DivOsc.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Divergent Oscillations), Global Model Parameter Estimates (Provide True Value of h)")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DivOsc.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Four Parms
+MFP.2.DivOsc.Global.1 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_1, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.2 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_2, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.3 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_3, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.4 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_4, permuted = TRUE, include = TRUE)
+MFP.2.DivOsc.Global.5 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj_FourParms_5, permuted = TRUE, include = TRUE)
+
+MFP.2.DivOsc.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,1])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,1])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,1])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,1])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,1]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,1], MFP.2.DivOsc.Global.2$theta[ ,1], MFP.2.DivOsc.Global.3$theta[ ,1], MFP.2.DivOsc.Global.4$theta[ ,1], MFP.2.DivOsc.Global.5$theta[ ,1]))
+MFP.2.DivOsc.G.r <- ggplot(data = MFP.2.DivOsc.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.DivOsc.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,2])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,2])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,2])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,2])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,2]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,2], MFP.2.DivOsc.Global.2$theta[ ,2], MFP.2.DivOsc.Global.3$theta[ ,2], MFP.2.DivOsc.Global.4$theta[ ,2], MFP.2.DivOsc.Global.5$theta[ ,2]))
+MFP.2.DivOsc.G.b <- ggplot(data = MFP.2.DivOsc.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,3])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,3])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,3])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,3])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,3]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,3], MFP.2.DivOsc.Global.2$theta[ ,3], MFP.2.DivOsc.Global.3$theta[ ,3], MFP.2.DivOsc.Global.4$theta[ ,3], MFP.2.DivOsc.Global.5$theta[ ,3]))
+MFP.2.DivOsc.G.e <- ggplot(data = MFP.2.DivOsc.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DivOsc.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DivOsc.Global.1$theta[ ,4])), rep("2", length(MFP.2.DivOsc.Global.2$theta[ ,4])), rep("3", length(MFP.2.DivOsc.Global.3$theta[ ,4])), rep("4", length(MFP.2.DivOsc.Global.4$theta[ ,4])), rep("5", length(MFP.2.DivOsc.Global.5$theta[ ,4]))), Estimate = c(MFP.2.DivOsc.Global.1$theta[ ,4], MFP.2.DivOsc.Global.2$theta[ ,4], MFP.2.DivOsc.Global.3$theta[ ,4], MFP.2.DivOsc.Global.4$theta[ ,4], MFP.2.DivOsc.Global.5$theta[ ,4]))
+MFP.2.DivOsc.G.d <- ggplot(data = MFP.2.DivOsc.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.48) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DivOsc.Global <- plot_grid(MFP.2.DivOsc.G.r, MFP.2.DivOsc.G.b, MFP.2.DivOsc.G.e, MFP.2.DivOsc.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Divergent Oscillations), Global Model Parameter Estimates (Provide True Values of β and h)")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DivOsc.Global, top = title, left = y.lab, bottom = x.lab))
+```
+
+### MFP, Type II, SLC
+
+```{r}
+# Five Parms, Give B
+MFP.2.SLC.Global.1 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.2 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.3 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_3, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.4 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_4, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.5 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, permuted = TRUE, include = TRUE)
+
+MFP.2.SLC.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,1])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,1])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,1])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,1])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,1]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,1], MFP.2.SLC.Global.2$theta[ ,1], MFP.2.SLC.Global.3$theta[ ,1], MFP.2.SLC.Global.4$theta[ ,1], MFP.2.SLC.Global.5$theta[ ,1]))
+MFP.2.SLC.G.r <- ggplot(data = MFP.2.SLC.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.SLC.G.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,2])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,2])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,2])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,2])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,2]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,2], MFP.2.SLC.Global.2$theta[ ,2], MFP.2.SLC.Global.3$theta[ ,2], MFP.2.SLC.Global.4$theta[ ,2], MFP.2.SLC.Global.5$theta[ ,2]))
+MFP.2.SLC.G.h <- ggplot(data = MFP.2.SLC.G.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.075) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,3])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,3])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,3])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,3])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,3]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,3], MFP.2.SLC.Global.2$theta[ ,3], MFP.2.SLC.Global.3$theta[ ,3], MFP.2.SLC.Global.4$theta[ ,3], MFP.2.SLC.Global.5$theta[ ,3]))
+MFP.2.SLC.G.b <- ggplot(data = MFP.2.SLC.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,4])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,4])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,4])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,4])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,4]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,4], MFP.2.SLC.Global.2$theta[ ,4], MFP.2.SLC.Global.3$theta[ ,4], MFP.2.SLC.Global.4$theta[ ,4], MFP.2.SLC.Global.5$theta[ ,4]))
+MFP.2.SLC.G.e <- ggplot(data = MFP.2.SLC.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,5])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,5])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,5])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,5])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,5]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,5], MFP.2.SLC.Global.2$theta[ ,5], MFP.2.SLC.Global.3$theta[ ,5], MFP.2.SLC.Global.4$theta[ ,5], MFP.2.SLC.Global.5$theta[ ,5]))
+MFP.2.SLC.G.d <- ggplot(data = MFP.2.SLC.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.41) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.SLC.Global <- plot_grid(MFP.2.SLC.G.r, MFP.2.SLC.G.h, MFP.2.SLC.G.b, MFP.2.SLC.G.e, MFP.2.SLC.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Stable Limit Cycle), Global Model Parameter Estimates (Provide True Value of β)")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.SLC.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Five Parms, Give h
+MFP.2.SLC.Global.1 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_1, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.2 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_2, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.3 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_3, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.4 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_4, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.5 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms.ExHT_5, permuted = TRUE, include = TRUE)
+
+MFP.2.SLC.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,1])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,1])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,1])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,1])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,1]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,1], MFP.2.SLC.Global.2$theta[ ,1], MFP.2.SLC.Global.3$theta[ ,1], MFP.2.SLC.Global.4$theta[ ,1], MFP.2.SLC.Global.5$theta[ ,1]))
+MFP.2.SLC.G.r <- ggplot(data = MFP.2.SLC.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.SLC.G.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,2])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,2])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,2])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,2])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,2]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,2], MFP.2.SLC.Global.2$theta[ ,2], MFP.2.SLC.Global.3$theta[ ,2], MFP.2.SLC.Global.4$theta[ ,2], MFP.2.SLC.Global.5$theta[ ,2]))
+MFP.2.SLC.G.B <- ggplot(data = MFP.2.SLC.G.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.012) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,3])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,3])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,3])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,3])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,3]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,3], MFP.2.SLC.Global.2$theta[ ,3], MFP.2.SLC.Global.3$theta[ ,3], MFP.2.SLC.Global.4$theta[ ,3], MFP.2.SLC.Global.5$theta[ ,3]))
+MFP.2.SLC.G.b <- ggplot(data = MFP.2.SLC.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,4])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,4])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,4])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,4])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,4]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,4], MFP.2.SLC.Global.2$theta[ ,4], MFP.2.SLC.Global.3$theta[ ,4], MFP.2.SLC.Global.4$theta[ ,4], MFP.2.SLC.Global.5$theta[ ,4]))
+MFP.2.SLC.G.e <- ggplot(data = MFP.2.SLC.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,5])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,5])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,5])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,5])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,5]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,5], MFP.2.SLC.Global.2$theta[ ,5], MFP.2.SLC.Global.3$theta[ ,5], MFP.2.SLC.Global.4$theta[ ,5], MFP.2.SLC.Global.5$theta[ ,5]))
+MFP.2.SLC.G.d <- ggplot(data = MFP.2.SLC.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.41) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.SLC.Global <- plot_grid(MFP.2.SLC.G.r, MFP.2.SLC.G.B, MFP.2.SLC.G.b, MFP.2.SLC.G.e, MFP.2.SLC.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Stable Limit Cycle), Global Model Parameter Estimates (Provide True Value of h)")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.SLC.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Four Parms
+MFP.2.SLC.Global.1 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_1, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.2 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_2, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.3 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_3, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.4 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_4, permuted = TRUE, include = TRUE)
+MFP.2.SLC.Global.5 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj_FourParms_5, permuted = TRUE, include = TRUE)
+
+MFP.2.SLC.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,1])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,1])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,1])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,1])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,1]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,1], MFP.2.SLC.Global.2$theta[ ,1], MFP.2.SLC.Global.3$theta[ ,1], MFP.2.SLC.Global.4$theta[ ,1], MFP.2.SLC.Global.5$theta[ ,1]))
+MFP.2.SLC.G.r <- ggplot(data = MFP.2.SLC.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.SLC.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,2])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,2])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,2])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,2])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,2]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,2], MFP.2.SLC.Global.2$theta[ ,2], MFP.2.SLC.Global.3$theta[ ,2], MFP.2.SLC.Global.4$theta[ ,2], MFP.2.SLC.Global.5$theta[ ,2]))
+MFP.2.SLC.G.b <- ggplot(data = MFP.2.SLC.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,3])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,3])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,3])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,3])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,3]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,3], MFP.2.SLC.Global.2$theta[ ,3], MFP.2.SLC.Global.3$theta[ ,3], MFP.2.SLC.Global.4$theta[ ,3], MFP.2.SLC.Global.5$theta[ ,3]))
+MFP.2.SLC.G.e <- ggplot(data = MFP.2.SLC.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.3) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.SLC.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.SLC.Global.1$theta[ ,4])), rep("2", length(MFP.2.SLC.Global.2$theta[ ,4])), rep("3", length(MFP.2.SLC.Global.3$theta[ ,4])), rep("4", length(MFP.2.SLC.Global.4$theta[ ,4])), rep("5", length(MFP.2.SLC.Global.5$theta[ ,4]))), Estimate = c(MFP.2.SLC.Global.1$theta[ ,4], MFP.2.SLC.Global.2$theta[ ,4], MFP.2.SLC.Global.3$theta[ ,4], MFP.2.SLC.Global.4$theta[ ,4], MFP.2.SLC.Global.5$theta[ ,4]))
+MFP.2.SLC.G.d <- ggplot(data = MFP.2.SLC.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.41) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.SLC.Global <- plot_grid(MFP.2.SLC.G.r, MFP.2.SLC.G.b, MFP.2.SLC.G.e, MFP.2.SLC.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Stable Limit Cycle), Global Model Parameter Estimates (Provide True Values of β and h)")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.SLC.Global, top = title, left = y.lab, bottom = x.lab))
+```
+
+### MFP, Type II, DO
+
+```{r}
+# Five Parms, Give B
+MFP.2.DO.Global.1 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_1, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.2 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_2, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.3 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_3, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.4 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_4, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.5 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms_5, permuted = TRUE, include = TRUE)
+
+MFP.2.DO.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,1])), rep("2", length(MFP.2.DO.Global.2$theta[ ,1])), rep("3", length(MFP.2.DO.Global.3$theta[ ,1])), rep("4", length(MFP.2.DO.Global.4$theta[ ,1])), rep("5", length(MFP.2.DO.Global.5$theta[ ,1]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,1], MFP.2.DO.Global.2$theta[ ,1], MFP.2.DO.Global.3$theta[ ,1], MFP.2.DO.Global.4$theta[ ,1], MFP.2.DO.Global.5$theta[ ,1]))
+MFP.2.DO.G.r <- ggplot(data = MFP.2.DO.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.DO.G.h.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,2])), rep("2", length(MFP.2.DO.Global.2$theta[ ,2])), rep("3", length(MFP.2.DO.Global.3$theta[ ,2])), rep("4", length(MFP.2.DO.Global.4$theta[ ,2])), rep("5", length(MFP.2.DO.Global.5$theta[ ,2]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,2], MFP.2.DO.Global.2$theta[ ,2], MFP.2.DO.Global.3$theta[ ,2], MFP.2.DO.Global.4$theta[ ,2], MFP.2.DO.Global.5$theta[ ,2]))
+MFP.2.DO.G.h <- ggplot(data = MFP.2.DO.G.h.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(h), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.06) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,3])), rep("2", length(MFP.2.DO.Global.2$theta[ ,3])), rep("3", length(MFP.2.DO.Global.3$theta[ ,3])), rep("4", length(MFP.2.DO.Global.4$theta[ ,3])), rep("5", length(MFP.2.DO.Global.5$theta[ ,3]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,3], MFP.2.DO.Global.2$theta[ ,3], MFP.2.DO.Global.3$theta[ ,3], MFP.2.DO.Global.4$theta[ ,3], MFP.2.DO.Global.5$theta[ ,3]))
+MFP.2.DO.G.b <- ggplot(data = MFP.2.DO.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,4])), rep("2", length(MFP.2.DO.Global.2$theta[ ,4])), rep("3", length(MFP.2.DO.Global.3$theta[ ,4])), rep("4", length(MFP.2.DO.Global.4$theta[ ,4])), rep("5", length(MFP.2.DO.Global.5$theta[ ,4]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,4], MFP.2.DO.Global.2$theta[ ,4], MFP.2.DO.Global.3$theta[ ,4], MFP.2.DO.Global.4$theta[ ,4], MFP.2.DO.Global.5$theta[ ,4]))
+MFP.2.DO.G.e <- ggplot(data = MFP.2.DO.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,5])), rep("2", length(MFP.2.DO.Global.2$theta[ ,5])), rep("3", length(MFP.2.DO.Global.3$theta[ ,5])), rep("4", length(MFP.2.DO.Global.4$theta[ ,5])), rep("5", length(MFP.2.DO.Global.5$theta[ ,5]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,5], MFP.2.DO.Global.2$theta[ ,5], MFP.2.DO.Global.3$theta[ ,5], MFP.2.DO.Global.4$theta[ ,5], MFP.2.DO.Global.5$theta[ ,5]))
+MFP.2.DO.G.d <- ggplot(data = MFP.2.DO.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DO.Global <- plot_grid(MFP.2.DO.G.r, MFP.2.DO.G.h, MFP.2.DO.G.b, MFP.2.DO.G.e, MFP.2.DO.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Damping Oscillations), Global Model Parameter Estimates (Provide True Value of β)")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DO.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Five Parms, Give h
+MFP.2.DO.Global.1 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_1, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.2 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_2, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.3 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_3, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.4 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_4, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.5 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FiveParms.ExHT_5, permuted = TRUE, include = TRUE)
+
+MFP.2.DO.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,1])), rep("2", length(MFP.2.DO.Global.2$theta[ ,1])), rep("3", length(MFP.2.DO.Global.3$theta[ ,1])), rep("4", length(MFP.2.DO.Global.4$theta[ ,1])), rep("5", length(MFP.2.DO.Global.5$theta[ ,1]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,1], MFP.2.DO.Global.2$theta[ ,1], MFP.2.DO.Global.3$theta[ ,1], MFP.2.DO.Global.4$theta[ ,1], MFP.2.DO.Global.5$theta[ ,1]))
+MFP.2.DO.G.r <- ggplot(data = MFP.2.DO.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.DO.G.B.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,2])), rep("2", length(MFP.2.DO.Global.2$theta[ ,2])), rep("3", length(MFP.2.DO.Global.3$theta[ ,2])), rep("4", length(MFP.2.DO.Global.4$theta[ ,2])), rep("5", length(MFP.2.DO.Global.5$theta[ ,2]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,2], MFP.2.DO.Global.2$theta[ ,2], MFP.2.DO.Global.3$theta[ ,2], MFP.2.DO.Global.4$theta[ ,2], MFP.2.DO.Global.5$theta[ ,2]))
+MFP.2.DO.G.B <- ggplot(data = MFP.2.DO.G.B.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(beta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.008) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,3])), rep("2", length(MFP.2.DO.Global.2$theta[ ,3])), rep("3", length(MFP.2.DO.Global.3$theta[ ,3])), rep("4", length(MFP.2.DO.Global.4$theta[ ,3])), rep("5", length(MFP.2.DO.Global.5$theta[ ,3]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,3], MFP.2.DO.Global.2$theta[ ,3], MFP.2.DO.Global.3$theta[ ,3], MFP.2.DO.Global.4$theta[ ,3], MFP.2.DO.Global.5$theta[ ,3]))
+MFP.2.DO.G.b <- ggplot(data = MFP.2.DO.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,4])), rep("2", length(MFP.2.DO.Global.2$theta[ ,4])), rep("3", length(MFP.2.DO.Global.3$theta[ ,4])), rep("4", length(MFP.2.DO.Global.4$theta[ ,4])), rep("5", length(MFP.2.DO.Global.5$theta[ ,4]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,4], MFP.2.DO.Global.2$theta[ ,4], MFP.2.DO.Global.3$theta[ ,4], MFP.2.DO.Global.4$theta[ ,4], MFP.2.DO.Global.5$theta[ ,4]))
+MFP.2.DO.G.e <- ggplot(data = MFP.2.DO.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,5])), rep("2", length(MFP.2.DO.Global.2$theta[ ,5])), rep("3", length(MFP.2.DO.Global.3$theta[ ,5])), rep("4", length(MFP.2.DO.Global.4$theta[ ,5])), rep("5", length(MFP.2.DO.Global.5$theta[ ,5]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,5], MFP.2.DO.Global.2$theta[ ,5], MFP.2.DO.Global.3$theta[ ,5], MFP.2.DO.Global.4$theta[ ,5], MFP.2.DO.Global.5$theta[ ,5]))
+MFP.2.DO.G.d <- ggplot(data = MFP.2.DO.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DO.Global <- plot_grid(MFP.2.DO.G.r, MFP.2.DO.G.B, MFP.2.DO.G.b, MFP.2.DO.G.e, MFP.2.DO.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Damping Oscillations), Global Model Parameter Estimates (Provide True Value of h)")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DO.Global, top = title, left = y.lab, bottom = x.lab))
+
+# Four Parms
+MFP.2.DO.Global.1 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_1, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.2 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_2, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.3 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_3, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.4 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_4, permuted = TRUE, include = TRUE)
+MFP.2.DO.Global.5 <- rstan::extract(ModFentonPerkins_2_DO_FitObj_FourParms_5, permuted = TRUE, include = TRUE)
+
+MFP.2.DO.G.r.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,1])), rep("2", length(MFP.2.DO.Global.2$theta[ ,1])), rep("3", length(MFP.2.DO.Global.3$theta[ ,1])), rep("4", length(MFP.2.DO.Global.4$theta[ ,1])), rep("5", length(MFP.2.DO.Global.5$theta[ ,1]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,1], MFP.2.DO.Global.2$theta[ ,1], MFP.2.DO.Global.3$theta[ ,1], MFP.2.DO.Global.4$theta[ ,1], MFP.2.DO.Global.5$theta[ ,1]))
+MFP.2.DO.G.r <- ggplot(data = MFP.2.DO.G.r.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(r), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 2.5) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none") 
+
+MFP.2.DO.G.b.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,2])), rep("2", length(MFP.2.DO.Global.2$theta[ ,2])), rep("3", length(MFP.2.DO.Global.3$theta[ ,2])), rep("4", length(MFP.2.DO.Global.4$theta[ ,2])), rep("5", length(MFP.2.DO.Global.5$theta[ ,2]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,2], MFP.2.DO.Global.2$theta[ ,2], MFP.2.DO.Global.3$theta[ ,2], MFP.2.DO.Global.4$theta[ ,2], MFP.2.DO.Global.5$theta[ ,2]))
+MFP.2.DO.G.b <- ggplot(data = MFP.2.DO.G.b.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(b), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 35) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.e.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,3])), rep("2", length(MFP.2.DO.Global.2$theta[ ,3])), rep("3", length(MFP.2.DO.Global.3$theta[ ,3])), rep("4", length(MFP.2.DO.Global.4$theta[ ,3])), rep("5", length(MFP.2.DO.Global.5$theta[ ,3]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,3], MFP.2.DO.Global.2$theta[ ,3], MFP.2.DO.Global.3$theta[ ,3], MFP.2.DO.Global.4$theta[ ,3], MFP.2.DO.Global.5$theta[ ,3]))
+MFP.2.DO.G.e <- ggplot(data = MFP.2.DO.G.e.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(e), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none")
+
+MFP.2.DO.G.d.df <- data.frame(TimeSeries = c(rep("1", length(MFP.2.DO.Global.1$theta[ ,4])), rep("2", length(MFP.2.DO.Global.2$theta[ ,4])), rep("3", length(MFP.2.DO.Global.3$theta[ ,4])), rep("4", length(MFP.2.DO.Global.4$theta[ ,4])), rep("5", length(MFP.2.DO.Global.5$theta[ ,4]))), Estimate = c(MFP.2.DO.Global.1$theta[ ,4], MFP.2.DO.Global.2$theta[ ,4], MFP.2.DO.Global.3$theta[ ,4], MFP.2.DO.Global.4$theta[ ,4], MFP.2.DO.Global.5$theta[ ,4]))
+MFP.2.DO.G.d <- ggplot(data = MFP.2.DO.G.d.df, aes(x = Estimate, group = TimeSeries, fill = TimeSeries), colour = colours) +
+  geom_density(alpha = 0.4) +
+  labs(title = expression(delta), x = "", y = "", fill = "") +
+  geom_vline(xintercept = 0.2) +
+  theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank())
+
+MFP.2.DO.Global <- plot_grid(MFP.2.DO.G.r, MFP.2.DO.G.b, MFP.2.DO.G.e, MFP.2.DO.G.d, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR (Damping Oscillations), Global Model Parameter Estimates (Provide True Values of β and h)")
+y.lab <- textGrob("Density", rot = 90)
+x.lab <- textGrob("Estimate")
+grid.arrange(arrangeGrob(MFP.2.DO.Global, top = title, left = y.lab, bottom = x.lab))
+```
+
+```{r}
+
+```
+
+# 95% CIs
+
+```{r}
+Model <- c("MFP_2_DO", "MFP_2_SLC", "MFP_2_DivOsc")
+
+# ## r
+# MFP_1.1_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_1.2_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_1.3_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_1.4_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_1.5_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# MFP_2.1_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.2_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.3_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.4_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.5_DO_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# MFP_2.1_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.2_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.3_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.4_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.5_SLC_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# MFP_2.1_DivOsc_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.2_DivOsc_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.3_DivOsc_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.4_DivOsc_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.5_DivOsc_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# MFP_3.1_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_3.2_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_3.3_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_3.4_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_3.5_r <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[1]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# df.r <- data.frame(MFP_1.1_r, MFP_1.2_r, MFP_1.3_r, MFP_1.4_r, MFP_1.5_r,
+#                    MFP_2.1_DO_r, MFP_2.2_DO_r, MFP_2.3_DO_r, MFP_2.4_DO_r, MFP_2.5_DO_r, 
+#                    MFP_2.1_SLC_r, MFP_2.2_SLC_r, MFP_2.3_SLC_r,MFP_2.4_SLC_r, MFP_2.5_SLC_r, 
+#                    MFP_2.1_DivOsc_r, MFP_2.2_DivOsc_r, MFP_2.3_DivOsc_r,MFP_2.4_DivOsc_r, MFP_2.5_SLC_r,
+#                    MFP_3.1_r, MFP_3.2_r, MFP_3.3_r, MFP_3.4_r, MFP_3.5_r)
+# df.r <- as.matrix(df.r); df.r <- t(df.r); df.r <- as.data.frame(df.r); colnames(df.r) <- c("Lower", "Mean", "Upper")
+# Model <- c(rownames(df.r)); df.r <- cbind(Model, df.r); df.r <- as.data.frame(df.r)
+# 
+# colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5), rep("lightblue3", 5))
+# 
+# ggplot(df.r, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
+#   geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+#   labs(y = "Mean Estimate of r") +
+#   ylim(0, 6) +
+#   theme_bw() +
+#   theme(axis.line = element_line(colour = "black"),
+#     panel.grid.major = element_blank(),
+#     panel.grid.minor = element_blank(),
+#     panel.border = element_blank(),
+#     panel.background = element_blank()) +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+#   theme(legend.position = "none") 
+# 
 ## B
 MFP_1.1_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_1.2_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
@@ -10188,32 +10862,48 @@ MFP_2.3_SLC_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitOb
 MFP_2.4_SLC_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_2.5_SLC_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
+MFP_2.1_DivOsc_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DivOsc_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DivOsc_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DivOsc_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DivOsc_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
 MFP_3.1_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.2_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.3_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.4_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.5_B <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[2]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-df.B <- data.frame(MFP_1.1_B, MFP_1.2_B, MFP_1.3_B, MFP_1.4_B, MFP_1.5_B,
+df.B <- data.frame(# MFP_1.1_B, MFP_1.2_B, MFP_1.3_B, MFP_1.4_B, MFP_1.5_B,
                    MFP_2.1_DO_B, MFP_2.2_DO_B, MFP_2.3_DO_B, MFP_2.4_DO_B, MFP_2.5_DO_B, 
                    MFP_2.1_SLC_B, MFP_2.2_SLC_B, MFP_2.3_SLC_B,MFP_2.4_SLC_B, MFP_2.5_SLC_B, 
-                   MFP_3.1_B, MFP_3.2_B, MFP_3.3_B, MFP_3.4_B, MFP_3.5_B)
+                   MFP_2.1_DivOsc_B, MFP_2.2_DivOsc_B, MFP_2.3_DivOsc_B,MFP_2.4_DivOsc_B, MFP_2.5_DivOsc_B)
+                   # , MFP_3.1_B, MFP_3.2_B, MFP_3.3_B, MFP_3.4_B, MFP_3.5_B)
 df.B <- as.matrix(df.B); df.B <- t(df.B); df.B <- as.data.frame(df.B); colnames(df.B) <- c("Lower", "Mean", "Upper")
 Model <- c(rownames(df.B)); df.B <- cbind(Model, df.B); df.B <- as.data.frame(df.B)
+TrueVal <- c(rep(0.008, 5), rep(0.012, 5), rep(0.012, 5))
+df.B <- as.data.frame(cbind(df.B, TrueVal))
+df.B$Model <- factor(df.B$Model, levels = Model)
 
-colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+colours <- c(rep("orange", 5), rep("orchid", 5), rep("lightblue3", 5))
+xlabs <- c("Damping Oscillations, TS 1", "Damping Oscillations, TS 2", "Damping Oscillations, TS 3", "Damping Oscillations, TS 4", "Damping Oscillations, TS 5",
+           "Stable Limit Cycle, TS 1", "Stable Limit Cycle, TS 2", "Stable Limit Cycle, TS 3", "Stable Limit Cycle, TS 4", "Stable Limit Cycle, TS 5",
+           "Divergent Oscillations, TS 1", "Divergent Oscillations, TS 2", "Divergent Oscillations, TS 3","Divergent Oscillations, TS 4", "Divergent Oscillations, TS 5")
 
-ggplot(df.B, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
-  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of β") +
-  ylim(0, 0.05) +
+Global.B <- ggplot(df.B, aes(x = Model, y = Mean)) + geom_point(colour = colours) +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), colour = colours) +
+  geom_point(aes(x = Model, y = TrueVal), shape = 4, colour = "black", alpha = 1) +
+  labs(x = "", y = "Model Estimates of β") +
+  ylim(0, 1) +
+  scale_x_discrete(labels = c("")) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank(),
     panel.background = element_blank()) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_text(colour = "black")) +
   theme(legend.position = "none") 
 
 ## h
@@ -10235,80 +10925,103 @@ MFP_2.3_SLC_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitOb
 MFP_2.4_SLC_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_2.5_SLC_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
+MFP_2.1_DivOsc_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DivOsc_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DivOsc_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DivOsc_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DivOsc_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
 MFP_3.1_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.2_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.3_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.4_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.5_h <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-df.h <- data.frame(MFP_1.1_h, MFP_1.2_h, MFP_1.3_h, MFP_1.4_h, MFP_1.5_h,
+df.h <- data.frame(# MFP_1.1_h, MFP_1.2_h, MFP_1.3_h, MFP_1.4_h, MFP_1.5_h,
                    MFP_2.1_DO_h, MFP_2.2_DO_h, MFP_2.3_DO_h, MFP_2.4_DO_h, MFP_2.5_DO_h, 
                    MFP_2.1_SLC_h, MFP_2.2_SLC_h, MFP_2.3_SLC_h,MFP_2.4_SLC_h, MFP_2.5_SLC_h, 
-                   MFP_3.1_h, MFP_3.2_h, MFP_3.3_h, MFP_3.4_h, MFP_3.5_h)
+                   MFP_2.1_DivOsc_h, MFP_2.2_DivOsc_h, MFP_2.3_DivOsc_h,MFP_2.4_DivOsc_h, MFP_2.5_DivOsc_h)
+                   # , MFP_3.1_h, MFP_3.2_h, MFP_3.3_h, MFP_3.4_h, MFP_3.5_h)
 df.h <- as.matrix(df.h); df.h <- t(df.h); df.h <- as.data.frame(df.h); colnames(df.h) <- c("Lower", "Mean", "Upper")
 Model <- c(rownames(df.h)); df.h <- cbind(Model, df.h); df.h <- as.data.frame(df.h)
+TrueVal <- c(rep(0.06, 5), rep(0.075, 5), rep(0.075, 5))
+df.h <- as.data.frame(cbind(df.h, TrueVal))
+df.h$Model <- factor(df.h$Model, levels = Model)
 
-colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+colours <- c(rep("orange", 5), rep("orchid", 5), rep("lightblue3", 5))
+xlabs <- c("Damping Oscillations, TS 1", "Damping Oscillations, TS 2", "Damping Oscillations, TS 3", "Damping Oscillations, TS 4", "Damping Oscillations, TS 5",
+           "Stable Limit Cycle, TS 1", "Stable Limit Cycle, TS 2", "Stable Limit Cycle, TS 3", "Stable Limit Cycle, TS 4", "Stable Limit Cycle, TS 5",
+           "Divergent Oscillations, TS 1", "Divergent Oscillations, TS 2", "Divergent Oscillations, TS 3","Divergent Oscillations, TS 4", "Divergent Oscillations, TS 5")
 
-ggplot(df.h, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
-  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of h") +
+Global.h <- ggplot(df.h, aes(x = Model, y = Mean)) + geom_point(colour = colours) +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), colour = colours) +
+  geom_point(aes(x = Model, y = TrueVal), shape = 4, colour = "black", alpha = 1) +
+  labs(x = "", y = "Model Estimates of h") +
   ylim(0, 1) +
+  scale_x_discrete(labels = c("")) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank(),
     panel.background = element_blank()) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_text(colour = "black")) +
   theme(legend.position = "none") 
 
-## b
-MFP_1.1_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.2_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.3_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.4_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_1.5_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
-
-MFP_2.1_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.2_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.3_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.4_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.5_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-
-MFP_2.1_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.2_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.3_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.4_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_2.5_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-
-MFP_3.1_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.2_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.3_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.4_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-MFP_3.5_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
-
-df.b <- data.frame(MFP_1.1_b, MFP_1.2_b, MFP_1.3_b, MFP_1.4_b, MFP_1.5_b,
-                   MFP_2.1_DO_b, MFP_2.2_DO_b, MFP_2.3_DO_b, MFP_2.4_DO_b, MFP_2.5_DO_b, 
-                   MFP_2.1_SLC_b, MFP_2.2_SLC_b, MFP_2.3_SLC_b,MFP_2.4_SLC_b, MFP_2.5_SLC_b, 
-                   MFP_3.1_b, MFP_3.2_b, MFP_3.3_b, MFP_3.4_b, MFP_3.5_b)
-df.b <- as.matrix(df.b); df.b <- t(df.b); df.b <- as.data.frame(df.b); colnames(df.b) <- c("Lower", "Mean", "Upper")
-Model <- c(rownames(df.b)); df.b <- cbind(Model, df.b); df.b <- as.data.frame(df.b)
-
-colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
-
-ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
-  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of b") +
-  ylim(0, 250) +
-  theme_bw() +
-  theme(axis.line = element_line(colour = "black"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_blank(),
-    panel.background = element_blank()) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
-  theme(legend.position = "none") 
+# ## b
+# MFP_1.1_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_1.2_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj2, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_1.3_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj3, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_1.4_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj4, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_1.5_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj5, pars = "theta[3]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# MFP_2.1_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.2_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.3_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.4_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.5_DO_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# MFP_2.1_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.2_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.3_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.4_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.5_SLC_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# MFP_2.1_DivOsc_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.2_DivOsc_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.3_DivOsc_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.4_DivOsc_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_2.5_DivOsc_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# MFP_3.1_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_3.2_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_3.3_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_3.4_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# MFP_3.5_b <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
+# 
+# df.b <- data.frame(MFP_1.1_b, MFP_1.2_b, MFP_1.3_b, MFP_1.4_b, MFP_1.5_b,
+#                    MFP_2.1_DO_b, MFP_2.2_DO_b, MFP_2.3_DO_b, MFP_2.4_DO_b, MFP_2.5_DO_b, 
+#                    MFP_2.1_SLC_b, MFP_2.2_SLC_b, MFP_2.3_SLC_b,MFP_2.4_SLC_b, MFP_2.5_SLC_b, 
+#                    MFP_2.1_DivOsc_b, MFP_2.2_DivOsc_b, MFP_2.3_DivOsc_b,MFP_2.4_DivOsc_b, MFP_2.5_DivOsc_b,
+#                    MFP_3.1_b, MFP_3.2_b, MFP_3.3_b, MFP_3.4_b, MFP_3.5_b)
+# df.b <- as.matrix(df.b); df.b <- t(df.b); df.b <- as.data.frame(df.b); colnames(df.b) <- c("Lower", "Mean", "Upper")
+# Model <- c(rownames(df.b)); df.b <- cbind(Model, df.b); df.b <- as.data.frame(df.b)
+# 
+# colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5), rep("lightblue3", 5))
+# 
+# ggplot(df.b, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
+#   geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
+#   labs(y = "Mean Estimate of b") +
+#   ylim(0, 250) +
+#   theme_bw() +
+#   theme(axis.line = element_line(colour = "black"),
+#     panel.grid.major = element_blank(),
+#     panel.grid.minor = element_blank(),
+#     panel.border = element_blank(),
+#     panel.background = element_blank()) +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+#   theme(legend.position = "none") 
 
 ## e
 MFP_1.1_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_1_FitObj1, pars = "theta[4]")[[1]], probs = c(0.025, 0.5, 0.975)))
@@ -10329,32 +11042,48 @@ MFP_2.3_SLC_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitOb
 MFP_2.4_SLC_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_2.5_SLC_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
+MFP_2.1_DivOsc_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj1, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DivOsc_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DivOsc_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj3, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DivOsc_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj4, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DivOsc_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
 MFP_3.1_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.2_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.3_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.4_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.5_e <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[5]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-df.e <- data.frame(MFP_1.1_e, MFP_1.2_e, MFP_1.3_e, MFP_1.4_e, MFP_1.5_e,
+df.e <- data.frame(# MFP_1.1_e, MFP_1.2_e, MFP_1.3_e, MFP_1.4_e, MFP_1.5_e,
                    MFP_2.1_DO_e, MFP_2.2_DO_e, MFP_2.3_DO_e, MFP_2.4_DO_e, MFP_2.5_DO_e, 
                    MFP_2.1_SLC_e, MFP_2.2_SLC_e, MFP_2.3_SLC_e,MFP_2.4_SLC_e, MFP_2.5_SLC_e, 
-                   MFP_3.1_e, MFP_3.2_e, MFP_3.3_e, MFP_3.4_e, MFP_3.5_e)
+                   MFP_2.1_DivOsc_e, MFP_2.2_DivOsc_e, MFP_2.3_DivOsc_e,MFP_2.4_DivOsc_e, MFP_2.5_DivOsc_e)
+                   # , MFP_3.1_e, MFP_3.2_e, MFP_3.3_e, MFP_3.4_e, MFP_3.5_e)
 df.e <- as.matrix(df.e); df.e <- t(df.e); df.e <- as.data.frame(df.e); colnames(df.e) <- c("Lower", "Mean", "Upper")
 Model <- c(rownames(df.e)); df.e <- cbind(Model, df.e); df.e <- as.data.frame(df.e)
+TrueVal <- c(rep(0.2, 5), rep(0.3, 5), rep(0.3, 5))
+df.e <- as.data.frame(cbind(df.e, TrueVal))
+df.e$Model <- factor(df.e$Model, levels = Model)
 
-colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+colours <- c(rep("orange", 5), rep("orchid", 5), rep("lightblue3", 5))
+xlabs <- c("Damping Oscillations, TS 1", "Damping Oscillations, TS 2", "Damping Oscillations, TS 3", "Damping Oscillations, TS 4", "Damping Oscillations, TS 5",
+           "Stable Limit Cycle, TS 1", "Stable Limit Cycle, TS 2", "Stable Limit Cycle, TS 3", "Stable Limit Cycle, TS 4", "Stable Limit Cycle, TS 5",
+           "Divergent Oscillations, TS 1", "Divergent Oscillations, TS 2", "Divergent Oscillations, TS 3","Divergent Oscillations, TS 4", "Divergent Oscillations, TS 5")
 
-ggplot(df.e, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
-  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of e") +
+Global.e <- ggplot(df.e, aes(x = Model, y = Mean)) + geom_point(colour = colours) +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), colour = colours) +
+  geom_point(aes(x = Model, y = TrueVal), shape = 4, colour = "black", alpha = 1) +
+  labs(x = "", y = "Model Estimates of e") +
   ylim(0, 1) +
+  scale_x_discrete(labels = c("")) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank(),
     panel.background = element_blank()) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_text(colour = "black")) +
   theme(legend.position = "none") 
 
 ## delta
@@ -10376,25 +11105,40 @@ MFP_2.3_SLC_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_F
 MFP_2.4_SLC_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj4, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_2.5_SLC_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
+MFP_2.1_DivOsc_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj1, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.2_DivOsc_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.3_DivOsc_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj3, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.4_DivOsc_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj4, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+MFP_2.5_DivOsc_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
+
 MFP_3.1_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj1, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.2_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj2, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.3_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj3, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.4_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj4, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
 MFP_3.5_delta <- as.numeric(quantile(rstan::extract(ModFentonPerkins_3_FitObj5, pars = "theta[6]")[[1]], probs = c(0.025, 0.5, 0.975)))
 
-df.delta <- data.frame(MFP_1.1_delta, MFP_1.2_delta, MFP_1.3_delta, MFP_1.4_delta, MFP_1.5_delta,
+df.delta <- data.frame(# MFP_1.1_delta, MFP_1.2_delta, MFP_1.3_delta, MFP_1.4_delta, MFP_1.5_delta,
                    MFP_2.1_DO_delta, MFP_2.2_DO_delta, MFP_2.3_DO_delta, MFP_2.4_DO_delta, MFP_2.5_DO_delta, 
                    MFP_2.1_SLC_delta, MFP_2.2_SLC_delta, MFP_2.3_SLC_delta,MFP_2.4_SLC_delta, MFP_2.5_SLC_delta, 
-                   MFP_3.1_delta, MFP_3.2_delta, MFP_3.3_delta, MFP_3.4_delta, MFP_3.5_delta)
+                   MFP_2.1_DivOsc_delta, MFP_2.2_DivOsc_delta, MFP_2.3_DivOsc_delta,MFP_2.4_DivOsc_delta, MFP_2.5_DivOsc_delta)
+                   # , MFP_3.1_delta, MFP_3.2_delta, MFP_3.3_delta, MFP_3.4_delta, MFP_3.5_delta)
 df.delta <- as.matrix(df.delta); df.delta <- t(df.delta); df.delta <- as.data.frame(df.delta); colnames(df.delta) <- c("Lower", "Mean", "Upper")
 Model <- c(rownames(df.delta)); df.delta <- cbind(Model, df.delta); df.delta <- as.data.frame(df.delta)
+TrueVal <- c(rep(0.2, 5), rep(0.41, 5), rep(0.48, 5))
+df.delta <- as.data.frame(cbind(df.delta, TrueVal))
+df.delta$Model <- factor(df.delta$Model, levels = Model)
 
-colours <- c(rep("red3", 5), rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+colours <- c(rep("orange", 5), rep("orchid", 5), rep("lightblue3", 5))
+xlabs <- c("Damping Oscillations, TS 1", "Damping Oscillations, TS 2", "Damping Oscillations, TS 3", "Damping Oscillations, TS 4", "Damping Oscillations, TS 5",
+           "Stable Limit Cycle, TS 1", "Stable Limit Cycle, TS 2", "Stable Limit Cycle, TS 3", "Stable Limit Cycle, TS 4", "Stable Limit Cycle, TS 5",
+           "Divergent Oscillations, TS 1", "Divergent Oscillations, TS 2", "Divergent Oscillations, TS 3","Divergent Oscillations, TS 4", "Divergent Oscillations, TS 5")
 
-ggplot(df.delta, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
-  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of δ") +
+Global.delta <- ggplot(df.delta, aes(x = Model, y = Mean)) + geom_point(colour = colours) +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), colour = colours) +
+  geom_point(aes(x = Model, y = TrueVal), shape = 4, colour = "black", alpha = 1) +
+  labs(x = "", y = "Model Estimates of δ") +
   ylim(0, 1) +
+  scale_x_discrete(labels = xlabs) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
     panel.grid.major = element_blank(),
@@ -10402,7 +11146,14 @@ ggplot(df.delta, aes(x = Model, y = Mean, colour = colours)) + geom_point() +
     panel.border = element_blank(),
     panel.background = element_blank()) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(axis.text.y = element_text(colour = "black")) +
   theme(legend.position = "none") 
+
+# Plotting them together
+Global.Plots <- plot_grid(Global.B, Global.h, Global.e, Global.delta, nrow = 4)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR | Global Model Fitting")
+x.lab <- textGrob("Generating Model and Corresponding Time Series")
+grid.arrange(arrangeGrob(Global.Plots, top = title, bottom = x.lab))
 
 ## Autoregressive Model
 # DivOsc and SLC differ in delta 
@@ -10447,46 +11198,70 @@ AR_DampOsc.4_r <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pa
 AR_DampOsc.5_r <- as.numeric(quantile(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.5, 0.975)))
 
 # delta
-df.delta <- data.frame(AR_DivOsc.1_delta, AR_DivOsc.2_delta, AR_DivOsc.3_delta, AR_DivOsc.4_delta, AR_DivOsc.5_delta,
+df.delta <- data.frame(AR_DampOsc.1_delta, AR_DampOsc.2_delta, AR_DampOsc.3_delta, AR_DampOsc.4_delta, AR_DampOsc.5_delta,
                        AR_SLC.1_delta, AR_SLC.2_delta, AR_SLC.3_delta, AR_SLC.4_delta, AR_SLC.5_delta, 
-                       AR_DampOsc.1_delta, AR_DampOsc.2_delta, AR_DampOsc.3_delta,AR_DampOsc.4_delta, AR_DampOsc.5_delta)
+                       AR_DivOsc.1_delta, AR_DivOsc.2_delta, AR_DivOsc.3_delta, AR_DivOsc.4_delta, AR_DivOsc.5_delta)
 df.delta <- as.matrix(df.delta); df.delta <- t(df.delta); df.delta <- as.data.frame(df.delta); colnames(df.delta) <- c("Lower", "Mean", "Upper")
 Model <- c(rownames(df.delta)); df.delta <- cbind(Model, df.delta); df.delta <- as.data.frame(df.delta)
+TrueVal <- c(rep(0.34, 5), rep(0.34, 5), rep(0.41, 5))
+df.delta <- as.data.frame(cbind(df.delta, TrueVal))
+df.delta$Model <- factor(df.delta$Model, levels = Model)
 
-colours <- c(rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+colours <- c(rep("orange", 5), rep("orchid", 5), rep("lightblue3", 5))
+xlabs <- c("Damping Oscillations, TS 1", "Damping Oscillations, TS 2", "Damping Oscillations, TS 3", "Damping Oscillations, TS 4", "Damping Oscillations, TS 5",
+           "Stable Limit Cycle, TS 1", "Stable Limit Cycle, TS 2", "Stable Limit Cycle, TS 3", "Stable Limit Cycle, TS 4", "Stable Limit Cycle, TS 5",
+           "Divergent Oscillations, TS 1", "Divergent Oscillations, TS 2", "Divergent Oscillations, TS 3","Divergent Oscillations, TS 4", "Divergent Oscillations, TS 5")
 
-ggplot(df.delta, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
-  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of δ") +
-  ylim(0.25, 0.55) +
+AR.delta <- ggplot(df.delta, aes(x = Model, y = Mean)) + geom_point(colour = colours) +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), colour = colours) +
+  geom_point(aes(x = Model, y = TrueVal), shape = 4, colour = "black", alpha = 1) +
+  labs(x = "", y = "Model Estimates of δ") +
+  ylim(0.25, 0.5) +
+  scale_x_discrete(labels = xlabs) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank()) +
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+  theme(axis.text.y = element_text(colour = "black")) +
   theme(legend.position = "none") 
 
 # r
-df.r <- data.frame(AR_DivOsc.1_r, AR_DivOsc.2_r, AR_DivOsc.3_r, AR_DivOsc.4_r, AR_DivOsc.5_r,
+df.r <- data.frame(AR_DampOsc.1_r, AR_DampOsc.2_r, AR_DampOsc.3_r, AR_DampOsc.4_r, AR_DampOsc.5_r,
                        AR_SLC.1_r, AR_SLC.2_r, AR_SLC.3_r, AR_SLC.4_r, AR_SLC.5_r, 
-                       AR_DampOsc.1_r, AR_DampOsc.2_r, AR_DampOsc.3_r,AR_DampOsc.4_r, AR_DampOsc.5_r)
+                       AR_DivOsc.1_r, AR_DivOsc.2_r, AR_DivOsc.3_r, AR_DivOsc.4_r, AR_DivOsc.5_r)
 df.r <- as.matrix(df.r); df.r <- t(df.r); df.r <- as.data.frame(df.r); colnames(df.r) <- c("Lower", "Mean", "Upper")
 Model <- c(rownames(df.r)); df.r <- cbind(Model, df.r); df.r <- as.data.frame(df.r)
+TrueVal <- c(rep(2.1, 5), rep(2.5, 5), rep(2.5, 5))
+df.r <- as.data.frame(cbind(df.r, TrueVal))
+df.r$Model <- factor(df.r$Model, levels = Model)
 
-colours <- c(rep("orange", 5), rep("forestgreen", 5), rep("orchid", 5))
+colours <- c(rep("orange", 5), rep("orchid", 5), rep("lightblue3", 5))
+xlabs <- c("Damping Oscillations, TS 1", "Damping Oscillations, TS 2", "Damping Oscillations, TS 3", "Damping Oscillations, TS 4", "Damping Oscillations, TS 5",
+           "Stable Limit Cycle, TS 1", "Stable Limit Cycle, TS 2", "Stable Limit Cycle, TS 3", "Stable Limit Cycle, TS 4", "Stable Limit Cycle, TS 5",
+           "Divergent Oscillations, TS 1", "Divergent Oscillations, TS 2", "Divergent Oscillations, TS 3","Divergent Oscillations, TS 4", "Divergent Oscillations, TS 5")
 
-ggplot(df.r, aes(x = Model, y = Mean, colour = colours)) + geom_point() +  
-  geom_errorbar(aes(ymin = Lower, ymax = Upper)) +
-  labs(y = "Mean Estimate of r") +
-  ylim(1, 3.5) +
+AR.r <- ggplot(df.r, aes(x = Model, y = Mean)) + geom_point(colour = colours) +  
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), colour = colours) +
+  geom_point(aes(x = Model, y = TrueVal), shape = 4, colour = "black", alpha = 1) +
+  labs(x = "", y = "Model Estimates of r") +
+  ylim(1.5, 3.5) +
+  scale_x_discrete(labels = xlabs) +
   theme_bw() +
   theme(axis.line = element_line(colour = "black"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank()) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, colour = "black")) +
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_text(colour = "black")) +
   theme(legend.position = "none") 
+
+# Plotting them together
+AR.Plots <- plot_grid(AR.r, AR.delta, nrow = 2)
+title <- textGrob("Modified Fenton and Perkins (2010), Type II FR | Autoregressive (AR-1) Model Fitting")
+x.lab <- textGrob("Generating Model and Corresponding Time Series")
+grid.arrange(arrangeGrob(AR.Plots, top = title, bottom = x.lab))
 ```
