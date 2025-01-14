@@ -439,6 +439,9 @@ for (i in Seeds){
     Antia_Stoch_List[[i]] <- Antia_Stoch
   }
 }
+
+saveRDS(Antia_Stoch_List, "0_Data/1_Stochastic/Antia_Stoch_Continuous.rds")
+
 write.csv(Antia_Stoch_List[[1]], "0_Data/1_Stochastic/Antia_Stoch_1.csv")
 write.csv(Antia_Stoch_List[[2]], "0_Data/1_Stochastic/Antia_Stoch_2.csv")
 write.csv(Antia_Stoch_List[[3]], "0_Data/1_Stochastic/Antia_Stoch_3.csv")
@@ -504,6 +507,9 @@ for (i in Seeds){
     ModFentonPerkins_1_Stoch_List[[i]] <- ModFentonPerkins_1_Stoch
   }
 }
+
+saveRDS(ModFentonPerkins_1_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Continuous.rds")
+
 write.csv(ModFentonPerkins_1_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_1.csv")
 write.csv(ModFentonPerkins_1_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_2.csv")
 write.csv(ModFentonPerkins_1_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_3.csv")
@@ -569,6 +575,9 @@ for (i in Seeds){
     ModFentonPerkins_2_DivOsc_Stoch_List[[i]] <- ModFentonPerkins_2_DivOsc_Stoch
   }
 }
+
+saveRDS(ModFentonPerkins_2_DivOsc_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_Continuous.rds")
+
 write.csv(ModFentonPerkins_2_DivOsc_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_1.csv")
 write.csv(ModFentonPerkins_2_DivOsc_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_2.csv")
 write.csv(ModFentonPerkins_2_DivOsc_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_3.csv")
@@ -632,6 +641,9 @@ for (i in Seeds){
     ModFentonPerkins_2_SLC_Stoch_List[[i]] <- ModFentonPerkins_2_SLC_Stoch
   }
 }
+
+saveRDS(ModFentonPerkins_2_SLC_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Continuous.rds")
+
 write.csv(ModFentonPerkins_2_SLC_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_1.csv")
 write.csv(ModFentonPerkins_2_SLC_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_2.csv")
 write.csv(ModFentonPerkins_2_SLC_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_3.csv")
@@ -695,6 +707,9 @@ for (i in Seeds){
     ModFentonPerkins_2_DO_Stoch_List[[i]] <- ModFentonPerkins_2_DO_Stoch
   }
 }
+
+saveRDS(ModFentonPerkins_2_DO_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Continuous.rds")
+
 write.csv(ModFentonPerkins_2_DO_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_1.csv")
 write.csv(ModFentonPerkins_2_DO_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_2.csv")
 write.csv(ModFentonPerkins_2_DO_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_3.csv")
@@ -758,6 +773,9 @@ for (i in Seeds){
     ModFentonPerkins_3_Stoch_List[[i]] <- ModFentonPerkins_3_Stoch
   }
 }
+
+saveRDS(ModFentonPerkins_3_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Continuous.rds")
+
 write.csv(ModFentonPerkins_3_Stoch_List[[1]], "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_1.csv")
 write.csv(ModFentonPerkins_3_Stoch_List[[2]], "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_2.csv")
 write.csv(ModFentonPerkins_3_Stoch_List[[3]], "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_3.csv")
@@ -7686,6 +7704,8 @@ for (i in 1:length(seeds)){
   }
 }
 
+saveRDS(ModFentonPerkins_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds")
+
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
@@ -8560,6 +8580,8 @@ for (i in 1:length(seeds)){
   }
 }
 
+saveRDS(ModFentonPerkins_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds")
+
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
@@ -8855,6 +8877,8 @@ for (i in 1:length(seeds)){
     ModFentonPerkins_Stoch_List[[i]] <- ModFentonPerkins_Stoch
   }
 }
+
+saveRDS(ModFentonPerkins_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds")
 
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
@@ -11163,7 +11187,77 @@ grid.arrange(arrangeGrob(AR.Plots, top = title, bottom = x.lab))
 
 ## Global Framework
 
+### All
+
 ```{r}
+Antia_Stoch_List <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Continuous.rds") # 1-5
+ModFentonPerkins_1_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Continuous.rds") # 6-10
+ModFentonPerkins_2_DO_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Continuous.rds") # 11-15
+ModFentonPerkins_2_SLC_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Continuous.rds") # 16-20
+ModFentonPerkins_2_DivOsc_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_Continuous.rds") # 21-25
+ModFentonPerkins_3_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Continuous.rds") # 26-30
+
+All_Stoch_List <- c(Antia_Stoch_List, ModFentonPerkins_1_Stoch_List, ModFentonPerkins_2_DO_Stoch_List, ModFentonPerkins_2_SLC_Stoch_List, ModFentonPerkins_2_DivOsc_Stoch_List, ModFentonPerkins_3_Stoch_List)
+
+StanData_List <- list()
+for (i in 1:length(All_Stoch_List)){
+  Stoch <- All_Stoch_List[[i]]
+  N <- length(Stoch$Time) - 1
+  ts <- 1:N
+  y_init <- c(Stoch$P[1], Stoch$I[1])
+  y <- as.matrix(Stoch[2:(N + 1), 2:3])
+  y <- cbind(y[ , 1], y[ , 2]); 
+  MisMatchedData_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
+  StanData_List[[i]] <- MisMatchedData_StanData
+}
+
+Antia_Model <- stan_model("1_Models/Antia.stan")
+MFP_I_Model <- stan_model("1_Models/FP_1_AllParms.stan")
+MFP_II_Model <- stan_model("1_Models/FP_2_AllParms.stan")
+MFP_III_Model <- stan_model("1_Models/FP_3_AllParms.stan")
+
+# Fit Antia model to all other data
+AntiaModel_StanData_List <- StanData_List[c(5:30)]
+MisMatchedFits_AntiaModel <- list()
+for(i in 1:length(AntiaModel_StanData_List)){
+  Fit <- sampling(Antia_Model, data = AntiaModel_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  MisMatchedFits_AntiaModel[[i]] <- Fit
+}
+
+# Fit MFP 1 model to all other data
+MFP1Model_StanData_List <- StanData_List[c(1:5, 16:30)] # Antia, MFP2 (SLC and DivOsc), MFP 3
+MisMatchedFits_MFP1Model <- list()
+for(i in 1:length(MFP1Model_StanData_List)){
+  Fit <- sampling(MFP_I_Model, data = MFP1Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  MisMatchedFits_MFP1Model[[i]] <- Fit
+}
+
+# Fit MFP 2 model to all other data
+MFP2Model_StanData_List <- StanData_List[c(1:10, 26:30)] # Antia, MFP1, MFP3
+MisMatchedFits_MFP2Model <- list()
+for(i in 1:length(MFP2Model_StanData_List)){
+  Fit <- sampling(MFP_II_Model, data = MFP2Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  MisMatchedFits_MFP2Model[[i]] <- Fit
+}
+
+# Fit MFP 3 model to all other data
+MFP3Model_StanData_List <- StanData_List[c(1:10, 16:25)] # Antia, MFP1, MFP2 (SLC, DivOsc)
+MisMatchedFits_MFP3Model <- list()
+for(i in 1:length(MFP3Model_StanData_List)){
+  Fit <- sampling(MFP_III_Model, data = MFP3Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  MisMatchedFits_MFP3Model[[i]] <- Fit
+}
+
+# Fit diagnostics... 
+```
+
+### Mod. Fenton and Perkins w/ Damping Oscillations
+
+```{r}
+ModFentonPerkins_1_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Continuous.rds")
+ModFentonPerkins_2_DO_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Continuous.rds")
+ModFentonPerkins_3_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Continuous.rds")
+
 ModFentonPerkins_Stoch_List <- c(ModFentonPerkins_1_Stoch_List, ModFentonPerkins_2_DO_Stoch_List, ModFentonPerkins_3_Stoch_List)
 MisMatchedData_StanData_List <- list()
 for (i in 1:length(ModFentonPerkins_Stoch_List)){
@@ -11181,30 +11275,1015 @@ MFP_I_Model <- stan_model("1_Models/FP_1_AllParms.stan")
 MFP_II_Model <- stan_model("1_Models/FP_2_AllParms.stan")
 MFP_III_Model <- stan_model("1_Models/FP_3_AllParms.stan")
 
-MisMatchedData_23_StanData_List <- MisMatchedData_StanData_List[6:15]
+MisMatchedData_23_StanData_List <- MisMatchedData_StanData_List[c(6:15)]
 MisMatchedFits_Type1Model <- list()
 for(i in 1:10){
   Fit <- sampling(MFP_I_Model, data = MisMatchedData_23_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
   MisMatchedFits_Type1Model[[i]] <- Fit
 }
 
-MisMatchedData_13_StanData_List <- list(MisMatchedData_StanData_List[1:5], MisMatchedData_StanData_List[11:15])
+MisMatchedData_13_StanData_List <- MisMatchedData_StanData_List[c(1:5, 11:15)]
 MisMatchedFits_Type2Model <- list()
 for(i in 1:10){
   Fit <- sampling(MFP_II_Model, data = MisMatchedData_13_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
   MisMatchedFits_Type2Model[[i]] <- Fit
 }
 
-MisMatchedData_12_StanData_List <- MisMatchedData_StanData_List[1:10]
+MisMatchedData_12_StanData_List <- MisMatchedData_StanData_List[c(1:10)]
 MisMatchedFits_Type3Model <- list()
 for(i in 1:10){
-  Fit <- sampling(MFP_III_Model, data = MisMatchedData_23_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  Fit <- sampling(MFP_III_Model, data = MisMatchedData_12_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
   MisMatchedFits_Type3Model[[i]] <- Fit
 }
+
+saveRDS(MisMatchedFits_Type1Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model.rds")
+saveRDS(MisMatchedFits_Type2Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model.rds")
+saveRDS(MisMatchedFits_Type3Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model.rds")
+
+MisMatchedFits_Type1Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model.rds")
+for (i in 1:length(MisMatchedFits_Type1Model)){
+  print(MisMatchedFits_Type1Model[[i]], pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+T2Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[1]]
+T2Data.T1Model_G.Fit2 <- MisMatchedFits_Type1Model[[2]]
+T2Data.T1Model_G.Fit3 <- MisMatchedFits_Type1Model[[3]]
+T2Data.T1Model_G.Fit4 <- MisMatchedFits_Type1Model[[4]]
+T2Data.T1Model_G.Fit5 <- MisMatchedFits_Type1Model[[5]]
+T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[6]]
+T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[7]]
+T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[8]]
+T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[9]]
+T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[10]]
+
+MisMatchedFits_Type2Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model.rds")
+for (i in 1:length(MisMatchedFits_Type2Model)){
+  print(MisMatchedFits_Type2Model[[i]], pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+T1Data.T2Model_G.Fit1 <- MisMatchedFits_Type2Model[[1]]
+T1Data.T2Model_G.Fit2 <- MisMatchedFits_Type2Model[[2]]
+T1Data.T2Model_G.Fit3 <- MisMatchedFits_Type2Model[[3]]
+T1Data.T2Model_G.Fit4 <- MisMatchedFits_Type2Model[[4]]
+T1Data.T2Model_G.Fit5 <- MisMatchedFits_Type2Model[[5]]
+T3Data.T2Model_G.Fit1 <- MisMatchedFits_Type2Model[[6]]
+T3Data.T2Model_G.Fit2 <- MisMatchedFits_Type2Model[[7]]
+T3Data.T2Model_G.Fit3 <- MisMatchedFits_Type2Model[[8]]
+T3Data.T2Model_G.Fit4 <- MisMatchedFits_Type2Model[[9]]
+T3Data.T2Model_G.Fit5 <- MisMatchedFits_Type2Model[[10]]
+
+MisMatchedFits_Type3Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model.rds")
+for (i in 1:length(MisMatchedFits_Type3Model)){
+  print(MisMatchedFits_Type3Model[[i]], pars = c("theta", "sigma", "z_init"),
+      probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+T1Data.T3Model_G.Fit1 <- MisMatchedFits_Type3Model[[1]]
+T1Data.T3Model_G.Fit2 <- MisMatchedFits_Type3Model[[2]]
+T1Data.T3Model_G.Fit3 <- MisMatchedFits_Type3Model[[3]]
+T1Data.T3Model_G.Fit4 <- MisMatchedFits_Type3Model[[4]]
+T1Data.T3Model_G.Fit5 <- MisMatchedFits_Type3Model[[5]]
+T2Data.T3Model_G.Fit1 <- MisMatchedFits_Type3Model[[6]]
+T2Data.T3Model_G.Fit2 <- MisMatchedFits_Type3Model[[7]]
+T2Data.T3Model_G.Fit3 <- MisMatchedFits_Type3Model[[8]]
+T2Data.T3Model_G.Fit4 <- MisMatchedFits_Type3Model[[9]]
+T2Data.T3Model_G.Fit5 <- MisMatchedFits_Type3Model[[10]]
 ```
 
 ## Autoregressive Framework
 
 ```{r}
+ModFentonPerkins_1_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds")
+ModFentonPerkins_2_DO_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds")
+ModFentonPerkins_3_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds")
+
+ModFentonPerkins_Stoch_List <- c(ModFentonPerkins_1_Stoch_List, ModFentonPerkins_2_DO_Stoch_List, ModFentonPerkins_3_Stoch_List)
+MisMatchedData_StanData_List <- list()
+
+for (i in 1:length(ModFentonPerkins_Stoch_List)){
+  ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch_List[[i]]
+  N <- length(ModFentonPerkins_Stoch$Time) - 1
+  ts <- 1:N
+  P_init <- c(ModFentonPerkins_Stoch$P[1])
+  I_init <- c(ModFentonPerkins_Stoch$I[1])
+  P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
+  I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
+  MisMatchedData_StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+  MisMatchedData_StanData_List[[i]] <- MisMatchedData_StanData
+}
+
+MFP_I_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_1.stan")
+MFP_II_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_2.stan")
+MFP_III_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_3.stan")
+
+MisMatchedData_23_StanData_List <- MisMatchedData_StanData_List[c(6:15)]
+MisMatchedFits_Type1Model_AR <- list()
+for(i in 1:10){
+  Fit <- sampling(MFP_I_Model, data = MisMatchedData_23_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
+  MisMatchedFits_Type1Model_AR[[i]] <- Fit
+}
+
+MisMatchedData_13_StanData_List <- MisMatchedData_StanData_List[c(1:5, 11:15)]
+MisMatchedFits_Type2Model_AR <- list()
+for(i in 1:10){
+  Fit <- sampling(MFP_II_Model, data = MisMatchedData_13_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
+  MisMatchedFits_Type2Model_AR[[i]] <- Fit
+}
+
+MisMatchedData_12_StanData_List <- MisMatchedData_StanData_List[c(1:10)]
+MisMatchedFits_Type3Model_AR <- list()
+for(i in 1:10){
+  Fit <- sampling(MFP_III_Model, data = MisMatchedData_12_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
+  MisMatchedFits_Type3Model_AR[[i]] <- Fit
+}
+
+saveRDS(MisMatchedFits_Type1Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR.rds")
+saveRDS(MisMatchedFits_Type2Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR.rds")
+saveRDS(MisMatchedFits_Type3Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR.rds")
+
+MisMatchedFits_Type1Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR.rds")
+for (i in 1:length(MisMatchedFits_Type1Model)){
+  print(MisMatchedFits_Type1Model[[i]], pars = c("r", "B", "b", "e", "delta"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+T2Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[1]]
+T2Data.T1Model_AR.Fit2 <- MisMatchedFits_Type1Model[[2]]
+T2Data.T1Model_AR.Fit3 <- MisMatchedFits_Type1Model[[3]]
+T2Data.T1Model_AR.Fit4 <- MisMatchedFits_Type1Model[[4]]
+T2Data.T1Model_AR.Fit5 <- MisMatchedFits_Type1Model[[5]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[6]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[7]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[8]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[9]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[10]]
+
+MisMatchedFits_Type2Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR.rds")
+for (i in 1:length(MisMatchedFits_Type2Model)){
+  print(MisMatchedFits_Type2Model[[i]], pars = c("r", "B", "b", "e", "delta"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+T1Data.T2Model_AR.Fit1 <- MisMatchedFits_Type2Model[[1]]
+T1Data.T2Model_AR.Fit2 <- MisMatchedFits_Type2Model[[2]]
+T1Data.T2Model_AR.Fit3 <- MisMatchedFits_Type2Model[[3]]
+T1Data.T2Model_AR.Fit4 <- MisMatchedFits_Type2Model[[4]]
+T1Data.T2Model_AR.Fit5 <- MisMatchedFits_Type2Model[[5]]
+T3Data.T2Model_AR.Fit1 <- MisMatchedFits_Type2Model[[6]]
+T3Data.T2Model_AR.Fit2 <- MisMatchedFits_Type2Model[[7]]
+T3Data.T2Model_AR.Fit3 <- MisMatchedFits_Type2Model[[8]]
+T3Data.T2Model_AR.Fit4 <- MisMatchedFits_Type2Model[[9]]
+T3Data.T2Model_AR.Fit5 <- MisMatchedFits_Type2Model[[10]]
+
+MisMatchedFits_Type3Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR.rds")
+for (i in 1:length(MisMatchedFits_Type3Model)){
+  print(MisMatchedFits_Type3Model[[i]], pars = c("r", "B", "b", "e", "delta"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+T1Data.T3Model_AR.Fit1 <- MisMatchedFits_Type3Model[[1]]
+T1Data.T3Model_AR.Fit2 <- MisMatchedFits_Type3Model[[2]]
+T1Data.T3Model_AR.Fit3 <- MisMatchedFits_Type3Model[[3]]
+T1Data.T3Model_AR.Fit4 <- MisMatchedFits_Type3Model[[4]]
+T1Data.T3Model_AR.Fit5 <- MisMatchedFits_Type3Model[[5]]
+T2Data.T3Model_AR.Fit1 <- MisMatchedFits_Type3Model[[6]]
+T2Data.T3Model_AR.Fit2 <- MisMatchedFits_Type3Model[[7]]
+T2Data.T3Model_AR.Fit3 <- MisMatchedFits_Type3Model[[8]]
+T2Data.T3Model_AR.Fit4 <- MisMatchedFits_Type3Model[[9]]
+T2Data.T3Model_AR.Fit5 <- MisMatchedFits_Type3Model[[10]]
+```
+
+# Stability Analysis
+
+## Global Model
+
+### Mod. Fenton and Perkins, Type II FR, Damping Oscillations
+- Differs from SLC in: $\beta$, h, e, $\delta$  
+- Differs from Div. Osc. in: $\beta$, h, e, $\delta$  
+
+```{r}
+n.sim <- 2000
+# Relevant Damp. Osc. posteriors:
+#B
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+beta.post.1 <- as.numeric(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[2]")[[1]])
+beta.post.1 <- beta.post.1[beta.post.1 > cutoffs[[1]] & beta.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+beta.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[2]")[[1]])
+beta.post.5 <- beta.post.5[beta.post.5 > cutoffs[[1]] & beta.post.5 < cutoffs[[2]]]
+
+beta_vec <- c(beta.post.1, beta.post.5)
+beta_samp <- sample(beta_vec, n.sim, replace = FALSE)
+
+# h
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[3]")[[1]], probs = c(0.25, 0.75))
+h.post.1 <- as.numeric(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[3]")[[1]])
+h.post.1 <- h.post.1[h.post.1 > cutoffs[[1]] & h.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[3]")[[1]], probs = c(0.25, 0.75))
+h.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[3]")[[1]])
+h.post.5 <- h.post.5[h.post.5 > cutoffs[[1]] & h.post.5 < cutoffs[[2]]]
+
+h_vec <- c(h.post.1, h.post.5)
+h_samp <- sample(h_vec, n.sim, replace = FALSE)
+
+# e
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[5]")[[1]], probs = c(0.25, 0.75))
+e.post.1 <- as.numeric(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[5]")[[1]])
+e.post.1 <- e.post.1[e.post.1 > cutoffs[[1]] & e.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[5]")[[1]], probs = c(0.25, 0.75))
+e.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[5]")[[1]])
+e.post.5 <- e.post.5[e.post.5 > cutoffs[[1]] & e.post.5 < cutoffs[[2]]]
+
+e_vec <- c(e.post.1, e.post.5)
+e_samp <- sample(e_vec, n.sim, replace = FALSE)
+
+# delta
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[6]")[[1]], probs = c(0.25, 0.75))
+delta.post.1 <- as.numeric(rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "theta[6]")[[1]])
+delta.post.1 <- delta.post.1[delta.post.1 > cutoffs[[1]] & delta.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[6]")[[1]], probs = c(0.25, 0.75))
+delta.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "theta[6]")[[1]])
+delta.post.5 <- delta.post.5[delta.post.5 > cutoffs[[1]] & delta.post.5 < cutoffs[[2]]]
+
+delta_vec <- c(delta.post.1, delta.post.5)
+delta_samp <- sample(delta_vec, n.sim, replace = FALSE)
+
+Mod_FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+
+DampOsc_SA_Outputs <- list(); DampOsc_TS_Length <- c()
+for (i in 1:n.sim){
+  r <- 2.5; B <- beta_samp[i]; h <- h_samp[i]; b <- 35; e <- e_samp[i]; delta <- delta_samp[i]
+  parms <- c(r, B, h, b, e, delta)
+  P0 <- 80; I0 <- 200
+  N0 <- c(P0, I0)
+  TT <- seq(0, 400, 0.1)
+  results <- as.data.frame(lsoda(N0, TT, Mod_FP_T2, parms)); colnames(results) <- c("Time", "P", "I")
+  results <- results[1:which(results$P < 0)[1] - 1, ]
+  DampOsc_SA_Outputs[[i]] <- results; DampOsc_TS_Length[i] <- nrow(results)/10
+}
+max(DampOsc_TS_Length)
 
 ```
+
+### Mod. Fenton and Perkins, Type II FR, Stable Limit Cycle
+- Differs from Damp. Osc. in: $\beta$, h, e, $\delta$  
+- Differs from Div. Osc. in: $\delta$  
+
+```{r}
+# #B
+# cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+# beta.post.1 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = "theta[2]")[[1]])
+# beta.post.1 <- beta.post.1[beta.post.1 > cutoffs[[1]] & beta.post.1 < cutoffs[[2]]]
+# 
+# cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+# beta.post.2 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = "theta[2]")[[1]])
+# beta.post.2 <- beta.post.2[beta.post.2 > cutoffs[[1]] & beta.post.2 < cutoffs[[2]]]
+# 
+# cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+# beta.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = "theta[2]")[[1]])
+# beta.post.5 <- beta.post.5[beta.post.5 > cutoffs[[1]] & beta.post.5 < cutoffs[[2]]]
+# 
+# beta_vec <- c(beta.post.1, beta.post.2, beta.post.5)
+# beta_samp <- sample(beta_vec, n.sim, replace = FALSE)
+
+# # h
+# cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+# h.post.1 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars = "theta[2]")[[1]])
+# h.post.1 <- h.post.1[h.post.1 > cutoffs[[1]] & h.post.1 < cutoffs[[2]]]
+# 
+# cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+# h.post.2 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars = "theta[2]")[[1]])
+# h.post.2 <- h.post.2[h.post.2 > cutoffs[[1]] & h.post.2 < cutoffs[[2]]]
+# 
+# cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+# h.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars = "theta[2]")[[1]])
+# h.post.5 <- h.post.5[h.post.5 > cutoffs[[1]] & h.post.5 < cutoffs[[2]]]
+# 
+# h_vec <- c(h.post.1, h.post.2, h.post.5)
+# h_samp <- sample(h_vec, n.sim, replace = FALSE)
+# 
+# # e
+# cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars = "theta[4]")[[1]], probs = c(0.25, 0.75))
+# e.post.1 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars = "theta[4]")[[1]])
+# e.post.1 <- e.post.1[e.post.1 > cutoffs[[1]] & e.post.1 < cutoffs[[2]]]
+# 
+# cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars = "theta[4]")[[1]], probs = c(0.25, 0.75))
+# e.post.2 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars = "theta[4]")[[1]])
+# e.post.2 <- e.post.2[e.post.2 > cutoffs[[1]] & e.post.2 < cutoffs[[2]]]
+# 
+# cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars = "theta[4]")[[1]], probs = c(0.25, 0.75))
+# e.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars = "theta[4]")[[1]])
+# e.post.5 <- e.post.5[e.post.5 > cutoffs[[1]] & e.post.5 < cutoffs[[2]]]
+# 
+# e_vec <- c(e.post.1, e.post.2, e.post.5)
+# e_samp <- sample(e_vec, n.sim, replace = FALSE)
+
+# delta
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars = "theta[5]")[[1]], probs = c(0.25, 0.75))
+delta.post.1 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_1, pars = "theta[5]")[[1]])
+delta.post.1 <- delta.post.1[delta.post.1 > cutoffs[[1]] & delta.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars = "theta[5]")[[1]], probs = c(0.25, 0.75))
+delta.post.2 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_2, pars = "theta[5]")[[1]])
+delta.post.2 <- delta.post.2[delta.post.2 > cutoffs[[1]] & delta.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars = "theta[5]")[[1]], probs = c(0.25, 0.75))
+delta.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_SLC_FitObj_FiveParms_5, pars = "theta[5]")[[1]])
+delta.post.5 <- delta.post.5[delta.post.5 > cutoffs[[1]] & delta.post.5 < cutoffs[[2]]]
+
+delta_vec <- c(delta.post.1, delta.post.2, delta.post.5)
+delta_samp <- sample(delta_vec, n.sim, replace = FALSE)
+
+Mod_FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+
+SLC_SA_Outputs <- list(); SLC_TS_Length <- c()
+for (i in 1:n.sim){
+  r <- 2.5; B <- 0.012; h <- 0.075; b <- 35; e <- 0.3; delta <- delta_samp[i]
+  parms <- c(r, B, h, b, e, delta)
+  P0 <- 80; I0 <- 200
+  N0 <- c(P0, I0)
+  TT <- seq(0, 400, 0.1)
+  results <- as.data.frame(lsoda(N0, TT, Mod_FP_T2, parms)); colnames(results) <- c("Time", "P", "I")
+  results <- results[1:which(results$P < 0)[1] - 1, ]
+  SLC_SA_Outputs[[i]] <- results; SLC_TS_Length[i] <- nrow(results)/10
+}
+max(SLC_TS_Length)
+
+```
+
+### Mod. Fenton and Perkins, Type II FR, Divergent Oscillations
+- Differs from Damp. Osc. in: $\beta$, h, e, $\delta$  
+- Differs from SLC in: $\delta$  
+
+```{r}
+#B
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+beta.post.2 <- as.numeric(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[2]")[[1]])
+beta.post.2 <- beta.post.2[beta.post.2 > cutoffs[[1]] & beta.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[2]")[[1]], probs = c(0.25, 0.75))
+beta.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[2]")[[1]])
+beta.post.5 <- beta.post.5[beta.post.5 > cutoffs[[1]] & beta.post.5 < cutoffs[[2]]]
+
+beta_vec <- c(beta.post.2, beta.post.5)
+beta_samp <- sample(beta_vec, n.sim, replace = FALSE)
+
+# h
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[3]")[[1]], probs = c(0.25, 0.75))
+h.post.2 <- as.numeric(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[3]")[[1]])
+h.post.2 <- h.post.2[h.post.2 > cutoffs[[1]] & h.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[3]")[[1]], probs = c(0.25, 0.75))
+h.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[3]")[[1]])
+h.post.5 <- h.post.5[h.post.5 > cutoffs[[1]] & h.post.5 < cutoffs[[2]]]
+
+h_vec <- c(h.post.2, h.post.5)
+h_samp <- sample(h_vec, n.sim, replace = FALSE)
+
+# e
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[5]")[[1]], probs = c(0.25, 0.75))
+e.post.2 <- as.numeric(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[5]")[[1]])
+e.post.2 <- e.post.2[e.post.2 > cutoffs[[1]] & e.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[5]")[[1]], probs = c(0.25, 0.75))
+e.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[5]")[[1]])
+e.post.5 <- e.post.5[e.post.5 > cutoffs[[1]] & e.post.5 < cutoffs[[2]]]
+
+e_vec <- c(e.post.2, e.post.5)
+e_samp <- sample(e_vec, n.sim, replace = FALSE)
+
+# delta
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[6]")[[1]], probs = c(0.25, 0.75))
+delta.post.2 <- as.numeric(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = "theta[6]")[[1]])
+delta.post.2 <- delta.post.2[delta.post.2 > cutoffs[[1]] & delta.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[6]")[[1]], probs = c(0.25, 0.75))
+delta.post.5 <- as.numeric(rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = "theta[6]")[[1]])
+delta.post.5 <- delta.post.5[delta.post.5 > cutoffs[[1]] & delta.post.5 < cutoffs[[2]]]
+
+delta_vec <- c(delta.post.2, delta.post.5)
+delta_samp <- sample(delta_vec, n.sim, replace = FALSE)
+
+Mod_FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+
+DivOsc_SA_Outputs <- list(); DivOsc_TS_Length <- c()
+for (i in 1:n.sim){
+  r <- 2.5; B <- beta_samp[i]; h <- h_samp[i]; b <- 35; e <- e_samp[i]; delta <- delta_samp[i]
+  parms <- c(r, B, h, b, e, delta)
+  P0 <- 80; I0 <- 200
+  N0 <- c(P0, I0)
+  TT <- seq(0, 400, 0.1)
+  results <- as.data.frame(lsoda(N0, TT, Mod_FP_T2, parms)); colnames(results) <- c("Time", "P", "I")
+  results <- results[1:which(results$P < 0)[1] - 1, ]
+  DivOsc_SA_Outputs[[i]] <- results; DivOsc_TS_Length[i] <- nrow(results)/10
+}
+max(DivOsc_TS_Length)
+
+```
+
+## Autoregressive Model
+
+### Mod. Fenton and Perkins, Type II FR, Damping Oscillations
+- Differs from SLC in: r  
+- Differs from Div. Osc. in: r, $\delta$  
+
+```{r}
+## MIDDLE 50% OF POSTERIOR DISTRIBUTION
+# r
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.1 <- as.numeric(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "r")[[1]])
+r.post.1 <- r.post.1[r.post.1 > cutoffs[[1]] & r.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.2 <- as.numeric(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "r")[[1]])
+r.post.2 <- r.post.2[r.post.2 > cutoffs[[1]] & r.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.3 <- as.numeric(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "r")[[1]])
+r.post.3 <- r.post.3[r.post.3 > cutoffs[[1]] & r.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.4 <- as.numeric(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "r")[[1]])
+r.post.4 <- r.post.4[r.post.4 > cutoffs[[1]] & r.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.5 <- as.numeric(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "r")[[1]])
+r.post.5 <- r.post.5[r.post.5 > cutoffs[[1]] & r.post.5 < cutoffs[[2]]]
+
+r_vec <- c(r.post.1, r.post.2, r.post.3, r.post.4, r.post.5)
+r_samp <- sample(r_vec, n.sim, replace = FALSE)
+
+# delta
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.1 <- as.numeric(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "delta")[[1]])
+delta.post.1 <- delta.post.1[delta.post.1 > cutoffs[[1]] & delta.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.2 <- as.numeric(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "delta")[[1]])
+delta.post.2 <- delta.post.2[delta.post.2 > cutoffs[[1]] & delta.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.3 <- as.numeric(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "delta")[[1]])
+delta.post.3 <- delta.post.3[delta.post.3 > cutoffs[[1]] & delta.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.4 <- as.numeric(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "delta")[[1]])
+delta.post.4 <- delta.post.4[delta.post.4 > cutoffs[[1]] & delta.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.5 <- as.numeric(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "delta")[[1]])
+delta.post.5 <- delta.post.5[delta.post.5 > cutoffs[[1]] & delta.post.5 < cutoffs[[2]]]
+
+delta_vec <- c(delta.post.1, delta.post.2, delta.post.3, delta.post.4, delta.post.5)
+delta_samp <- sample(delta_vec, n.sim, replace = FALSE)
+
+DampOsc.AR_SA_Outputs.50 <- list(); DampOsc.AR_TS_Length <- c()
+for (i in 1:n.sim){
+  r = r_samp[i]; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = delta_samp[i]
+  P <- c(); I <- c()
+  P[1] = 80; I[1] = 200
+  ts = 0.1; t_stop = 60/ts
+  for (t in 2:t_stop){
+    P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+    I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+    }
+  results <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(results) <- c("Time", "P", "I")
+  if (length(which(results$P < 0)) >= 1){
+    results <- results[1:which(results$P < 0)[1] - 1, ]
+  }
+  DampOsc.AR_SA_Outputs.50[[i]] <- results; DampOsc.AR_TS_Length[i] <- nrow(results)/10
+}
+max(DampOsc.AR_TS_Length)
+
+plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Damping Oscillations) | r and δ Drawn From Middle 50% of Posterior Distributions (AR-1 Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 60), ylim = c(0, 1500))
+for (i in 1:n.sim){
+  lines(x = DampOsc.AR_SA_Outputs.50[[i]]$Time, y = DampOsc.AR_SA_Outputs.50[[i]]$P, col = adjustcolor("forestgreen", alpha = 0.2))
+  lines(x = DampOsc.AR_SA_Outputs.50[[i]]$Time, y = DampOsc.AR_SA_Outputs.50[[i]]$I, col = adjustcolor("cornflowerblue", alpha = 0.2))
+}
+
+# Checking to see if all time series are same length
+TSLengths <- c()
+for (i in 1:n.sim){
+  TSLengths[i] <- nrow(DampOsc.AR_SA_Outputs.50[[i]])
+}; length(unique(TSLengths))
+
+# Classifying behaviour
+Is.DampOsc <- c()
+for (i in 1:n.sim){
+  TS <- DampOsc.AR_SA_Outputs.50[[i]][ , 2:3]
+  Max.First10Days <- rev(sort(TS[1:100, 1]))[1:10]; Min.First10Days <- sort(TS[1:100, 1])[1:10]
+  Max.Last10Days <- rev(sort(TS[500:600, 1]))[1:10]; Min.Last10Days <- sort(TS[500:600, 1])[1:10]
+  Diff.Start <- mean(Max.First10Days) - mean(Min.First10Days); Diff.End <- mean(Max.Last10Days) - mean(Min.Last10Days)
+  if (Diff.Start > Diff.End){
+    Is.DampOsc[i] <- "Y"
+    } else {
+      Is.DampOsc[i] <- "N"
+    }
+}
+length(which(Is.DampOsc == "Y"))/length(Is.DampOsc) # 73.85%
+
+## 95% CI
+# r
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.1 <- as.numeric(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "r")[[1]])
+r.post.1 <- r.post.1[r.post.1 > cutoffs[[1]] & r.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.2 <- as.numeric(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "r")[[1]])
+r.post.2 <- r.post.2[r.post.2 > cutoffs[[1]] & r.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.3 <- as.numeric(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "r")[[1]])
+r.post.3 <- r.post.3[r.post.3 > cutoffs[[1]] & r.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.4 <- as.numeric(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "r")[[1]])
+r.post.4 <- r.post.4[r.post.4 > cutoffs[[1]] & r.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.5 <- as.numeric(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "r")[[1]])
+r.post.5 <- r.post.5[r.post.5 > cutoffs[[1]] & r.post.5 < cutoffs[[2]]]
+
+r_vec <- c(r.post.1, r.post.2, r.post.3, r.post.4, r.post.5)
+r_samp <- sample(r_vec, n.sim, replace = FALSE)
+
+# delta
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.1 <- as.numeric(rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = "delta")[[1]])
+delta.post.1 <- delta.post.1[delta.post.1 > cutoffs[[1]] & delta.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.2 <- as.numeric(rstan::extract(MFP.II.DampOsc.2.AR.Fit, pars = "delta")[[1]])
+delta.post.2 <- delta.post.2[delta.post.2 > cutoffs[[1]] & delta.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.3 <- as.numeric(rstan::extract(MFP.II.DampOsc.3.AR.Fit, pars = "delta")[[1]])
+delta.post.3 <- delta.post.3[delta.post.3 > cutoffs[[1]] & delta.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.4 <- as.numeric(rstan::extract(MFP.II.DampOsc.4.AR.Fit, pars = "delta")[[1]])
+delta.post.4 <- delta.post.4[delta.post.4 > cutoffs[[1]] & delta.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.5 <- as.numeric(rstan::extract(MFP.II.DampOsc.5.AR.Fit, pars = "delta")[[1]])
+delta.post.5 <- delta.post.5[delta.post.5 > cutoffs[[1]] & delta.post.5 < cutoffs[[2]]]
+
+delta_vec <- c(delta.post.1, delta.post.2, delta.post.3, delta.post.4, delta.post.5)
+delta_samp <- sample(delta_vec, n.sim, replace = FALSE)
+
+DampOsc.AR_SA_Outputs.95 <- list(); DampOsc.AR_TS_Length <- c()
+for (i in 1:n.sim){
+  r = r_samp[i]; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = delta_samp[i]
+  P <- c(); I <- c()
+  P[1] = 80; I[1] = 200
+  ts = 0.1; t_stop = 60/ts
+  for (t in 2:t_stop){
+    P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+    I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+    }
+  results <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(results) <- c("Time", "P", "I")
+  if (length(which(results$P < 0)) >= 1){
+    results <- results[1:which(results$P < 0)[1] - 1, ]
+  }
+  DampOsc.AR_SA_Outputs.95[[i]] <- results; DampOsc.AR_TS_Length[i] <- nrow(results)/10
+}
+max(DampOsc.AR_TS_Length)
+
+plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Damping Oscillations) | r and δ Drawn From Middle 95% of Posterior Distributions (AR-1 Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 60), ylim = c(0, 1500))
+for (i in 1:n.sim){
+  lines(x = DampOsc.AR_SA_Outputs.95[[i]]$Time, y = DampOsc.AR_SA_Outputs.95[[i]]$P, col = adjustcolor("forestgreen", alpha = 0.2))
+  lines(x = DampOsc.AR_SA_Outputs.95[[i]]$Time, y = DampOsc.AR_SA_Outputs.95[[i]]$I, col = adjustcolor("cornflowerblue", alpha = 0.2))
+}
+
+# Checking to see if all time series are same length
+TSLengths <- c()
+for (i in 1:n.sim){
+  TSLengths[i] <- nrow(DampOsc.AR_SA_Outputs.95[[i]])
+}; length(unique(TSLengths))
+
+# Classifying behaviour
+Is.DampOsc <- c()
+for (i in 1:n.sim){
+  TS <- DampOsc.AR_SA_Outputs.95[[i]][ , 2:3]
+  Max.First10Days <- rev(sort(TS[1:100, 1]))[1:10]; Min.First10Days <- sort(TS[1:100, 1])[1:10]
+  Max.Last10Days <- rev(sort(TS[500:600, 1]))[1:10]; Min.Last10Days <- sort(TS[500:600, 1])[1:10]
+  Diff.Start <- mean(Max.First10Days) - mean(Min.First10Days); Diff.End <- mean(Max.Last10Days) - mean(Min.Last10Days)
+  if (Diff.Start > Diff.End){
+    Is.DampOsc[i] <- "Y"
+    } else {
+      Is.DampOsc[i] <- "N"
+    }
+}
+length(which(Is.DampOsc == "Y"))/length(Is.DampOsc) # 73.60%
+```
+
+### Mod. Fenton and Perkins, Type II FR, Stable Limit Cycle
+- Differs from Damp. Osc. in: r  
+- Differs from Div. Osc. in: $\delta$  
+
+```{r}
+## MIDDLE 50% OF POSTERIOR DISTRIBUTION
+# r
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.1 <- as.numeric(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "r")[[1]])
+r.post.1 <- r.post.1[r.post.1 > cutoffs[[1]] & r.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.2 <- as.numeric(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "r")[[1]])
+r.post.2 <- r.post.2[r.post.2 > cutoffs[[1]] & r.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.3 <- as.numeric(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "r")[[1]])
+r.post.3 <- r.post.3[r.post.3 > cutoffs[[1]] & r.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.4 <- as.numeric(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "r")[[1]])
+r.post.4 <- r.post.4[r.post.4 > cutoffs[[1]] & r.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.5 <- as.numeric(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "r")[[1]])
+r.post.5 <- r.post.5[r.post.5 > cutoffs[[1]] & r.post.5 < cutoffs[[2]]]
+
+r_vec <- c(r.post.1, r.post.2, r.post.3, r.post.4, r.post.5)
+r_samp <- sample(r_vec, n.sim, replace = FALSE)
+
+# delta
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.1 <- as.numeric(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "delta")[[1]])
+delta.post.1 <- delta.post.1[delta.post.1 > cutoffs[[1]] & delta.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.2 <- as.numeric(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "delta")[[1]])
+delta.post.2 <- delta.post.2[delta.post.2 > cutoffs[[1]] & delta.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.3 <- as.numeric(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "delta")[[1]])
+delta.post.3 <- delta.post.3[delta.post.3 > cutoffs[[1]] & delta.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.4 <- as.numeric(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "delta")[[1]])
+delta.post.4 <- delta.post.4[delta.post.4 > cutoffs[[1]] & delta.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.5 <- as.numeric(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "delta")[[1]])
+delta.post.5 <- delta.post.5[delta.post.5 > cutoffs[[1]] & delta.post.5 < cutoffs[[2]]]
+
+delta_vec <- c(delta.post.1, delta.post.2, delta.post.3, delta.post.4, delta.post.5)
+delta_samp <- sample(delta_vec, n.sim, replace = FALSE)
+
+SLC.AR_SA_Outputs.50 <- list(); SLC.AR_TS_Length <- c()
+for (i in 1:n.sim){
+  r = r_samp[i]; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = delta_samp[i]
+  P <- c(); I <- c()
+  P[1] = 80; I[1] = 200
+  ts = 0.1; t_stop = 60/ts
+  for (t in 2:t_stop){
+    P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+    I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+    }
+  results <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(results) <- c("Time", "P", "I")
+  if (length(which(results$P < 0)) >= 1){
+    results <- results[1:which(results$P < 0)[1] - 1, ]
+  }
+  SLC.AR_SA_Outputs.50[[i]] <- results; SLC.AR_TS_Length[i] <- nrow(results)/10
+}
+max(SLC.AR_TS_Length)
+
+plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Stable Limit Cycle) | r and δ Drawn From Middle 50% of Posterior Distributions (AR-1 Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 60), ylim = c(0, 2000))
+for (i in 1:n.sim){
+  lines(x = SLC.AR_SA_Outputs.50[[i]]$Time, y = SLC.AR_SA_Outputs.50[[i]]$P, col = adjustcolor("forestgreen", alpha = 0.2))
+  lines(x = SLC.AR_SA_Outputs.50[[i]]$Time, y = SLC.AR_SA_Outputs.50[[i]]$I, col = adjustcolor("cornflowerblue", alpha = 0.2))
+}
+
+# Checking to see if all time series are same length
+TSLengths <- c()
+for (i in 1:n.sim){
+  TSLengths[i] <- nrow(SLC.AR_SA_Outputs.50[[i]])
+}; length(unique(TSLengths))
+
+# Classifying behaviour
+Is.SLC <- c()
+for (i in 1:n.sim){
+  TS <- SLC.AR_SA_Outputs.50[[i]][ , 2:3]
+  Max.First10Days <- rev(sort(TS[1:100, 1]))[1:10]; Min.First10Days <- sort(TS[1:100, 1])[1:10]
+  Max.Last10Days <- rev(sort(TS[500:600, 1]))[1:10]; Min.Last10Days <- sort(TS[500:600, 1])[1:10]
+  Diff.Start <- mean(Max.First10Days) - mean(Min.First10Days); Diff.End <- mean(Max.Last10Days) - mean(Min.Last10Days)
+  if (Diff.Start - Diff.End < abs(1)){
+    Is.SLC[i] <- "Y"
+    } else {
+      Is.SLC[i] <- "N"
+    }
+}
+length(which(Is.SLC == "Y"))/length(Is.SLC) # 53.55%
+
+## 95% CI
+# r
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.1 <- as.numeric(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "r")[[1]])
+r.post.1 <- r.post.1[r.post.1 > cutoffs[[1]] & r.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.2 <- as.numeric(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "r")[[1]])
+r.post.2 <- r.post.2[r.post.2 > cutoffs[[1]] & r.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.3 <- as.numeric(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "r")[[1]])
+r.post.3 <- r.post.3[r.post.3 > cutoffs[[1]] & r.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.4 <- as.numeric(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "r")[[1]])
+r.post.4 <- r.post.4[r.post.4 > cutoffs[[1]] & r.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.5 <- as.numeric(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "r")[[1]])
+r.post.5 <- r.post.5[r.post.5 > cutoffs[[1]] & r.post.5 < cutoffs[[2]]]
+
+r_vec <- c(r.post.1, r.post.2, r.post.3, r.post.4, r.post.5)
+r_samp <- sample(r_vec, n.sim, replace = FALSE)
+
+# delta
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.1 <- as.numeric(rstan::extract(MFP.II.SLC.1.AR.Fit, pars = "delta")[[1]])
+delta.post.1 <- delta.post.1[delta.post.1 > cutoffs[[1]] & delta.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.2 <- as.numeric(rstan::extract(MFP.II.SLC.2.AR.Fit, pars = "delta")[[1]])
+delta.post.2 <- delta.post.2[delta.post.2 > cutoffs[[1]] & delta.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.3 <- as.numeric(rstan::extract(MFP.II.SLC.3.AR.Fit, pars = "delta")[[1]])
+delta.post.3 <- delta.post.3[delta.post.3 > cutoffs[[1]] & delta.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.4 <- as.numeric(rstan::extract(MFP.II.SLC.4.AR.Fit, pars = "delta")[[1]])
+delta.post.4 <- delta.post.4[delta.post.4 > cutoffs[[1]] & delta.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.5 <- as.numeric(rstan::extract(MFP.II.SLC.5.AR.Fit, pars = "delta")[[1]])
+delta.post.5 <- delta.post.5[delta.post.5 > cutoffs[[1]] & delta.post.5 < cutoffs[[2]]]
+
+delta_vec <- c(delta.post.1, delta.post.2, delta.post.3, delta.post.4, delta.post.5)
+delta_samp <- sample(delta_vec, n.sim, replace = FALSE)
+
+SLC.AR_SA_Outputs.95 <- list(); SLC.AR_TS_Length <- c()
+for (i in 1:n.sim){
+  r = r_samp[i]; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = delta_samp[i]
+  P <- c(); I <- c()
+  P[1] = 80; I[1] = 200
+  ts = 0.1; t_stop = 60/ts
+  for (t in 2:t_stop){
+    P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+    I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+    }
+  results <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(results) <- c("Time", "P", "I")
+  if (length(which(results$P < 0)) >= 1){
+    results <- results[1:which(results$P < 0)[1] - 1, ]
+  }
+  SLC.AR_SA_Outputs.95[[i]] <- results; SLC.AR_TS_Length[i] <- nrow(results)/10
+}
+max(SLC.AR_TS_Length)
+
+plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Stable Limit Cycle) | r and δ Drawn From Middle 95% of Posterior Distributions (AR-1 Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 60), ylim = c(0, 2000))
+for (i in 1:n.sim){
+  lines(x = SLC.AR_SA_Outputs.95[[i]]$Time, y = SLC.AR_SA_Outputs.95[[i]]$P, col = adjustcolor("forestgreen", alpha = 0.2))
+  lines(x = SLC.AR_SA_Outputs.95[[i]]$Time, y = SLC.AR_SA_Outputs.95[[i]]$I, col = adjustcolor("cornflowerblue", alpha = 0.2))
+}
+
+# Checking to see if all time series are same length
+TSLengths <- c()
+for (i in 1:n.sim){
+  TSLengths[i] <- nrow(SLC.AR_SA_Outputs.95[[i]])
+}; length(unique(TSLengths))
+
+# Classifying behaviour
+Is.SLC <- c()
+for (i in 1:n.sim){
+  TS <- SLC.AR_SA_Outputs.95[[i]][ , 2:3]
+  Max.First10Days <- rev(sort(TS[1:100, 1]))[1:10]; Min.First10Days <- sort(TS[1:100, 1])[1:10]
+  Max.Last10Days <- rev(sort(TS[500:600, 1]))[1:10]; Min.Last10Days <- sort(TS[500:600, 1])[1:10]
+  Diff.Start <- mean(Max.First10Days) - mean(Min.First10Days); Diff.End <- mean(Max.Last10Days) - mean(Min.Last10Days)
+  if (Diff.Start - Diff.End < abs(1)){
+    Is.SLC[i] <- "Y"
+    } else {
+      Is.SLC[i] <- "N"
+    }
+}
+length(which(Is.SLC == "Y"))/length(Is.SLC) # 46.55%
+```
+
+### Mod. Fenton and Perkins, Type II FR, Divergent Oscillations
+- Differs from Damp. Osc. in: r, $\delta$  
+- Differs from SLC in: $\delta$  
+
+```{r}
+# MIDDLE 50% OF POSTERIOR DISTRIBUTION
+# r
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.1 <- as.numeric(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "r")[[1]])
+r.post.1 <- r.post.1[r.post.1 > cutoffs[[1]] & r.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.2 <- as.numeric(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "r")[[1]])
+r.post.2 <- r.post.2[r.post.2 > cutoffs[[1]] & r.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.3 <- as.numeric(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "r")[[1]])
+r.post.3 <- r.post.3[r.post.3 > cutoffs[[1]] & r.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.4 <- as.numeric(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "r")[[1]])
+r.post.4 <- r.post.4[r.post.4 > cutoffs[[1]] & r.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "r")[[1]], probs = c(0.25, 0.75))
+r.post.5 <- as.numeric(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "r")[[1]])
+r.post.5 <- r.post.5[r.post.5 > cutoffs[[1]] & r.post.5 < cutoffs[[2]]]
+
+r_vec <- c(r.post.1, r.post.2, r.post.3, r.post.4, r.post.5)
+r_samp <- sample(r_vec, n.sim, replace = FALSE)
+
+# delta
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.1 <- as.numeric(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "delta")[[1]])
+delta.post.1 <- delta.post.1[delta.post.1 > cutoffs[[1]] & delta.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.2 <- as.numeric(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "delta")[[1]])
+delta.post.2 <- delta.post.2[delta.post.2 > cutoffs[[1]] & delta.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.3 <- as.numeric(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "delta")[[1]])
+delta.post.3 <- delta.post.3[delta.post.3 > cutoffs[[1]] & delta.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.4 <- as.numeric(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "delta")[[1]])
+delta.post.4 <- delta.post.4[delta.post.4 > cutoffs[[1]] & delta.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "delta")[[1]], probs = c(0.25, 0.75))
+delta.post.5 <- as.numeric(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "delta")[[1]])
+delta.post.5 <- delta.post.5[delta.post.5 > cutoffs[[1]] & delta.post.5 < cutoffs[[2]]]
+
+delta_vec <- c(delta.post.1, delta.post.2, delta.post.3, delta.post.4, delta.post.5)
+delta_samp <- sample(delta_vec, n.sim, replace = FALSE)
+
+DivOsc.AR_SA_Outputs.50 <- list(); DivOsc.AR_TS_Length <- c()
+for (i in 1:n.sim){
+  r = r_samp[i]; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = delta_samp[i]
+  P <- c(); I <- c()
+  P[1] = 80; I[1] = 200
+  ts = 0.1; t_stop = 60/ts
+  for (t in 2:t_stop){
+    P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+    I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+    }
+  results <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(results) <- c("Time", "P", "I")
+  if (length(which(results$P < 0)) >= 1){
+    results <- results[1:which(results$P < 0)[1] - 1, ]
+  }
+  DivOsc.AR_SA_Outputs.50[[i]] <- results; DivOsc.AR_TS_Length[i] <- nrow(results)/10
+}
+max(DivOsc.AR_TS_Length)
+
+plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Divergent Oscillations) | r and δ Drawn From Middle 50% of Posterior Distributions (AR-1 Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 60), ylim = c(0, 2000))
+for (i in 1:n.sim){
+  lines(x = DivOsc.AR_SA_Outputs.50[[i]]$Time, y = DivOsc.AR_SA_Outputs.50[[i]]$P, col = adjustcolor("forestgreen", alpha = 0.2))
+  lines(x = DivOsc.AR_SA_Outputs.50[[i]]$Time, y = DivOsc.AR_SA_Outputs.50[[i]]$I, col = adjustcolor("cornflowerblue", alpha = 0.2))
+}
+
+# Checking to see if all time series are same length
+TSLengths <- c()
+for (i in 1:n.sim){
+  TSLengths[i] <- nrow(DivOsc.AR_SA_Outputs.50[[i]])
+}; length(unique(TSLengths))
+
+# Classifying behaviour
+Is.DivOsc <- c()
+for (i in 1:n.sim){
+  TS <- DivOsc.AR_SA_Outputs.50[[i]][ , 2:3]
+  Max.First10Days <- rev(sort(TS[1:100, 1]))[1:10]; Min.First10Days <- sort(TS[1:100, 1])[1:10]
+  Max.Last10Days <- rev(sort(TS[500:600, 1]))[1:10]; Min.Last10Days <- sort(TS[500:600, 1])[1:10]
+  Diff.Start <- mean(Max.First10Days) - mean(Min.First10Days); Diff.End <- mean(Max.Last10Days) - mean(Min.Last10Days)
+  if (Diff.Start < Diff.End){
+    Is.DivOsc[i] <- "Y"
+    } else {
+      Is.DivOsc[i] <- "N"
+    }
+}
+length(which(Is.DivOsc == "Y"))/length(Is.DivOsc) # 80.90%
+
+## 95% CI
+# r
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.1 <- as.numeric(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "r")[[1]])
+r.post.1 <- r.post.1[r.post.1 > cutoffs[[1]] & r.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.2 <- as.numeric(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "r")[[1]])
+r.post.2 <- r.post.2[r.post.2 > cutoffs[[1]] & r.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.3 <- as.numeric(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "r")[[1]])
+r.post.3 <- r.post.3[r.post.3 > cutoffs[[1]] & r.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.4 <- as.numeric(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "r")[[1]])
+r.post.4 <- r.post.4[r.post.4 > cutoffs[[1]] & r.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "r")[[1]], probs = c(0.025, 0.975))
+r.post.5 <- as.numeric(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "r")[[1]])
+r.post.5 <- r.post.5[r.post.5 > cutoffs[[1]] & r.post.5 < cutoffs[[2]]]
+
+r_vec <- c(r.post.1, r.post.2, r.post.3, r.post.4, r.post.5)
+r_samp <- sample(r_vec, n.sim, replace = FALSE)
+
+# delta
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.1 <- as.numeric(rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = "delta")[[1]])
+delta.post.1 <- delta.post.1[delta.post.1 > cutoffs[[1]] & delta.post.1 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.2 <- as.numeric(rstan::extract(MFP.II.DivOsc.2.AR.Fit, pars = "delta")[[1]])
+delta.post.2 <- delta.post.2[delta.post.2 > cutoffs[[1]] & delta.post.2 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.3 <- as.numeric(rstan::extract(MFP.II.DivOsc.3.AR.Fit, pars = "delta")[[1]])
+delta.post.3 <- delta.post.3[delta.post.3 > cutoffs[[1]] & delta.post.3 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.4 <- as.numeric(rstan::extract(MFP.II.DivOsc.4.AR.Fit, pars = "delta")[[1]])
+delta.post.4 <- delta.post.4[delta.post.4 > cutoffs[[1]] & delta.post.4 < cutoffs[[2]]]
+
+cutoffs <- quantile(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "delta")[[1]], probs = c(0.025, 0.975))
+delta.post.5 <- as.numeric(rstan::extract(MFP.II.DivOsc.5.AR.Fit, pars = "delta")[[1]])
+delta.post.5 <- delta.post.5[delta.post.5 > cutoffs[[1]] & delta.post.5 < cutoffs[[2]]]
+
+delta_vec <- c(delta.post.1, delta.post.2, delta.post.3, delta.post.4, delta.post.5)
+delta_samp <- sample(delta_vec, n.sim, replace = FALSE)
+
+DivOsc.AR_SA_Outputs.95 <- list(); DivOsc.AR_TS_Length <- c()
+for (i in 1:n.sim){
+  r = r_samp[i]; B = 0.012; h = 0.075; b = 35; e = 0.3; delta = delta_samp[i]
+  P <- c(); I <- c()
+  P[1] = 80; I[1] = 200
+  ts = 0.1; t_stop = 60/ts
+  for (t in 2:t_stop){
+    P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+    I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+    }
+  results <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(results) <- c("Time", "P", "I")
+  if (length(which(results$P < 0)) >= 1){
+    results <- results[1:which(results$P < 0)[1] - 1, ]
+  }
+  DivOsc.AR_SA_Outputs.95[[i]] <- results; DivOsc.AR_TS_Length[i] <- nrow(results)/10
+}
+max(DivOsc.AR_TS_Length)
+
+plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Divergent Oscillations) | r and δ Drawn From Middle 95% of Posterior Distributions (AR-1 Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 60), ylim = c(0, 2000))
+for (i in 1:n.sim){
+  lines(x = DivOsc.AR_SA_Outputs.95[[i]]$Time, y = DivOsc.AR_SA_Outputs.95[[i]]$P, col = adjustcolor("forestgreen", alpha = 0.2))
+  lines(x = DivOsc.AR_SA_Outputs.95[[i]]$Time, y = DivOsc.AR_SA_Outputs.95[[i]]$I, col = adjustcolor("cornflowerblue", alpha = 0.2))
+}
+
+# Checking to see if all time series are same length
+TSLengths <- c()
+for (i in 1:n.sim){
+  TSLengths[i] <- nrow(DivOsc.AR_SA_Outputs.95[[i]])
+}; length(unique(TSLengths))
+
+# Classifying behaviour
+Is.DivOsc <- c()
+for (i in 1:n.sim){
+  TS <- DivOsc.AR_SA_Outputs.95[[i]][ , 2:3]
+  Max.First10Days <- rev(sort(TS[1:100, 1]))[1:10]; Min.First10Days <- sort(TS[1:100, 1])[1:10]
+  Max.Last10Days <- rev(sort(TS[500:600, 1]))[1:10]; Min.Last10Days <- sort(TS[500:600, 1])[1:10]
+  Diff.Start <- mean(Max.First10Days) - mean(Min.First10Days); Diff.End <- mean(Max.Last10Days) - mean(Min.Last10Days)
+  if (Diff.Start < Diff.End){
+    Is.DivOsc[i] <- "Y"
+    } else {
+      Is.DivOsc[i] <- "N"
+    }
+}
+length(which(Is.DivOsc == "Y"))/length(Is.DivOsc) # 73.85% 
+```
+
+
+
+
+
