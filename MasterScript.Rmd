@@ -7429,6 +7429,8 @@ for (i in 1:length(seeds)){
   }
 }
 
+saveRDS(Antia_Stoch_List, "0_Data/1_Stochastic/Antia_Stoch_Discrete.rds")
+
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
 plot(Antia_Det$Time, Antia_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
@@ -7988,6 +7990,8 @@ for (i in 1:length(seeds)){
   }
 }
 
+saveRDS(ModFentonPerkins_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_Discrete.rds")
+
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
 plot(ModFentonPerkins_Det$Time, ModFentonPerkins_Det$P, type = "l", col = "forestgreen", lty = 1, lwd = 3,
@@ -8283,6 +8287,8 @@ for (i in 1:length(seeds)){
     ModFentonPerkins_Stoch_List[[i]] <- ModFentonPerkins_Stoch
   }
 }
+
+saveRDS(ModFentonPerkins_Stoch_List, "0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Discrete.rds")
 
 ## Plot deterministic and stochastic data together
 par(mfrow = c(1, 1))
@@ -11350,6 +11356,73 @@ T2Data.T3Model_G.Fit5 <- MisMatchedFits_Type3Model[[10]]
 ```
 
 ## Autoregressive Framework
+
+### All
+
+```{r}
+Antia_Stoch_List <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds") # 1-5
+ModFentonPerkins_1_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds") # 6-10
+ModFentonPerkins_2_DO_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds") # 11-15
+ModFentonPerkins_2_SLC_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Discrete.rds") # 16-20
+ModFentonPerkins_2_DivOsc_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_Discrete.rds") # 21-25
+ModFentonPerkins_3_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds") # 26-30
+
+All_Stoch_List <- c(Antia_Stoch_List, ModFentonPerkins_1_Stoch_List, ModFentonPerkins_2_DO_Stoch_List, ModFentonPerkins_2_SLC_Stoch_List, ModFentonPerkins_2_DivOsc_Stoch_List, ModFentonPerkins_3_Stoch_List)
+
+StanData_List <- list()
+for (i in 1:length(All_Stoch_List)){
+  Stoch <- All_Stoch_List[[i]]
+  N <- length(Stoch$Time) - 1
+  ts <- 1:N
+  P_init <- c(Stoch$P[1])
+  I_init <- c(Stoch$I[1])
+  P <- as.vector(Stoch[2:(N + 1), 2:2])
+  I <- as.vector(Stoch[2:(N + 1), 3:3])
+  MisMatchedData_StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
+  StanData_List[[i]] <- MisMatchedData_StanData
+}
+
+Antia_Model <- stan_model("1_Models/Autoregressive_Antia.stan")
+MFP_I_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_1.stan")
+MFP_II_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_2.stan")
+MFP_III_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_3.stan")
+
+# Fit Antia model to all other data
+AntiaModel_StanData_List <- StanData_List[c(5:30)]
+MisMatchedFits_AntiaModel_AR <- list()
+for(i in 1:length(AntiaModel_StanData_List)){
+  Fit <- sampling(Antia_Model, data = AntiaModel_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  MisMatchedFits_AntiaModel_AR[[i]] <- Fit
+}
+
+# Fit MFP 1 model to all other data
+MFP1Model_StanData_List <- StanData_List[c(1:5, 16:30)] # Antia, MFP2 (SLC and DivOsc), MFP 3
+MisMatchedFits_MFP1Model_AR <- list()
+for(i in 1:length(MFP1Model_StanData_List)){
+  Fit <- sampling(MFP_I_Model, data = MFP1Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  MisMatchedFits_MFP1Model_AR[[i]] <- Fit
+}
+
+# Fit MFP 2 model to all other data
+MFP2Model_StanData_List <- StanData_List[c(1:10, 26:30)] # Antia, MFP1, MFP3
+MisMatchedFits_MFP2Model_AR <- list()
+for(i in 1:length(MFP2Model_StanData_List)){
+  Fit <- sampling(MFP_II_Model, data = MFP2Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  MisMatchedFits_MFP2Model_AR[[i]] <- Fit
+}
+
+# Fit MFP 3 model to all other data
+MFP3Model_StanData_List <- StanData_List[c(1:10, 16:25)] # Antia, MFP1, MFP2 (SLC, DivOsc)
+MisMatchedFits_MFP3Model_AR <- list()
+for(i in 1:length(MFP3Model_StanData_List)){
+  Fit <- sampling(MFP_III_Model, data = MFP3Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  MisMatchedFits_MFP3Model_AR[[i]] <- Fit
+}
+
+# Fit diagnostics... 
+```
+
+### Mod. Fenton and Perkins w/ Damping Oscillations
 
 ```{r}
 ModFentonPerkins_1_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds")
