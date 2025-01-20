@@ -11223,36 +11223,40 @@ MFP_II_Model <- stan_model("1_Models/FP_2_AllParms.stan")
 MFP_III_Model <- stan_model("1_Models/FP_3_AllParms.stan")
 
 # Fit Antia model to all other data
-AntiaModel_StanData_List <- StanData_List[c(5:30)]
+AntiaModel_StanData_List <- StanData_List[c(6:30)]
 MisMatchedFits_AntiaModel <- list()
 for(i in 1:length(AntiaModel_StanData_List)){
   Fit <- sampling(Antia_Model, data = AntiaModel_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
   MisMatchedFits_AntiaModel[[i]] <- Fit
 }
+saveRDS(MisMatchedFits_AntiaModel, "2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_FullCross.rds")
 
 # Fit MFP 1 model to all other data
-MFP1Model_StanData_List <- StanData_List[c(1:5, 16:30)] # Antia, MFP2 (SLC and DivOsc), MFP 3
+MFP1Model_StanData_List <- StanData_List[c(1:5, 16:25)] # Antia, MFP2 (SLC and DivOsc)
 MisMatchedFits_MFP1Model <- list()
 for(i in 1:length(MFP1Model_StanData_List)){
   Fit <- sampling(MFP_I_Model, data = MFP1Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
   MisMatchedFits_MFP1Model[[i]] <- Fit
 }
+saveRDS(MisMatchedFits_MFP1Model, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_FullCross.rds")
 
 # Fit MFP 2 model to all other data
-MFP2Model_StanData_List <- StanData_List[c(1:10, 26:30)] # Antia, MFP1, MFP3
+MFP2Model_StanData_List <- StanData_List[c(1:5)] # Antia
 MisMatchedFits_MFP2Model <- list()
 for(i in 1:length(MFP2Model_StanData_List)){
   Fit <- sampling(MFP_II_Model, data = MFP2Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
   MisMatchedFits_MFP2Model[[i]] <- Fit
 }
+saveRDS(MisMatchedFits_MFP2Model, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_FullCross.rds")
 
 # Fit MFP 3 model to all other data
-MFP3Model_StanData_List <- StanData_List[c(1:10, 16:25)] # Antia, MFP1, MFP2 (SLC, DivOsc)
+MFP3Model_StanData_List <- StanData_List[c(1:5, 16:25)] # Antia, MFP2 (SLC, DivOsc)
 MisMatchedFits_MFP3Model <- list()
 for(i in 1:length(MFP3Model_StanData_List)){
   Fit <- sampling(MFP_III_Model, data = MFP3Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
   MisMatchedFits_MFP3Model[[i]] <- Fit
 }
+saveRDS(MisMatchedFits_MFP3Model, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_FullCross.rds")
 
 # Fit diagnostics... 
 ```
@@ -11302,11 +11306,11 @@ for(i in 1:10){
   MisMatchedFits_Type3Model[[i]] <- Fit
 }
 
-saveRDS(MisMatchedFits_Type1Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model.rds")
-saveRDS(MisMatchedFits_Type2Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model.rds")
-saveRDS(MisMatchedFits_Type3Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model.rds")
+saveRDS(MisMatchedFits_Type1Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_DampOscOnly.rds")
+saveRDS(MisMatchedFits_Type2Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_DampOscOnly.rds")
+saveRDS(MisMatchedFits_Type3Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_DampOscOnly.rds")
 
-MisMatchedFits_Type1Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model.rds")
+MisMatchedFits_Type1Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_DampOscOnly.rds")
 for (i in 1:length(MisMatchedFits_Type1Model)){
   print(MisMatchedFits_Type1Model[[i]], pars = c("theta", "sigma", "z_init"),
       probs = c(0.1, 0.5, 0.9), digits = 3)
@@ -11317,12 +11321,12 @@ T2Data.T1Model_G.Fit3 <- MisMatchedFits_Type1Model[[3]]
 T2Data.T1Model_G.Fit4 <- MisMatchedFits_Type1Model[[4]]
 T2Data.T1Model_G.Fit5 <- MisMatchedFits_Type1Model[[5]]
 T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[6]]
-T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[7]]
-T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[8]]
-T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[9]]
-T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[10]]
+T3Data.T1Model_G.Fit2 <- MisMatchedFits_Type1Model[[7]]
+T3Data.T1Model_G.Fit3 <- MisMatchedFits_Type1Model[[8]]
+T3Data.T1Model_G.Fit4 <- MisMatchedFits_Type1Model[[9]]
+T3Data.T1Model_G.Fit5 <- MisMatchedFits_Type1Model[[10]]
 
-MisMatchedFits_Type2Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model.rds")
+MisMatchedFits_Type2Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_DampOscOnly.rds")
 for (i in 1:length(MisMatchedFits_Type2Model)){
   print(MisMatchedFits_Type2Model[[i]], pars = c("theta", "sigma", "z_init"),
       probs = c(0.1, 0.5, 0.9), digits = 3)
@@ -11338,7 +11342,7 @@ T3Data.T2Model_G.Fit3 <- MisMatchedFits_Type2Model[[8]]
 T3Data.T2Model_G.Fit4 <- MisMatchedFits_Type2Model[[9]]
 T3Data.T2Model_G.Fit5 <- MisMatchedFits_Type2Model[[10]]
 
-MisMatchedFits_Type3Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model.rds")
+MisMatchedFits_Type3Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_DampOscOnly.rds")
 for (i in 1:length(MisMatchedFits_Type3Model)){
   print(MisMatchedFits_Type3Model[[i]], pars = c("theta", "sigma", "z_init"),
       probs = c(0.1, 0.5, 0.9), digits = 3)
@@ -11388,38 +11392,65 @@ MFP_II_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_2.stan")
 MFP_III_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_3.stan")
 
 # Fit Antia model to all other data
-AntiaModel_StanData_List <- StanData_List[c(5:30)]
+AntiaModel_StanData_List <- StanData_List[c(6:30)]
 MisMatchedFits_AntiaModel_AR <- list()
 for(i in 1:length(AntiaModel_StanData_List)){
-  Fit <- sampling(Antia_Model, data = AntiaModel_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  Fit <- sampling(Antia_Model, data = AntiaModel_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
   MisMatchedFits_AntiaModel_AR[[i]] <- Fit
 }
+saveRDS(MisMatchedFits_AntiaModel_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_AR_FullCross.rds")
 
 # Fit MFP 1 model to all other data
-MFP1Model_StanData_List <- StanData_List[c(1:5, 16:30)] # Antia, MFP2 (SLC and DivOsc), MFP 3
+MFP1Model_StanData_List <- StanData_List[c(1:5, 16:25)] # Antia, MFP2 (SLC and DivOsc)
 MisMatchedFits_MFP1Model_AR <- list()
 for(i in 1:length(MFP1Model_StanData_List)){
-  Fit <- sampling(MFP_I_Model, data = MFP1Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  Fit <- sampling(MFP_I_Model, data = MFP1Model_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
   MisMatchedFits_MFP1Model_AR[[i]] <- Fit
 }
+saveRDS(MisMatchedFits_MFP1Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_AR_FullCross.rds")
 
 # Fit MFP 2 model to all other data
-MFP2Model_StanData_List <- StanData_List[c(1:10, 26:30)] # Antia, MFP1, MFP3
+MFP2Model_StanData_List <- StanData_List[c(1:5)] # Antia
 MisMatchedFits_MFP2Model_AR <- list()
 for(i in 1:length(MFP2Model_StanData_List)){
-  Fit <- sampling(MFP_II_Model, data = MFP2Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  Fit <- sampling(MFP_II_Model, data = MFP2Model_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
   MisMatchedFits_MFP2Model_AR[[i]] <- Fit
 }
+saveRDS(MisMatchedFits_MFP2Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_AR_FullCross.rds")
 
 # Fit MFP 3 model to all other data
-MFP3Model_StanData_List <- StanData_List[c(1:10, 16:25)] # Antia, MFP1, MFP2 (SLC, DivOsc)
+MFP3Model_StanData_List <- StanData_List[c(1:5, 16:25)] # Antia, MFP2 (SLC, DivOsc)
 MisMatchedFits_MFP3Model_AR <- list()
 for(i in 1:length(MFP3Model_StanData_List)){
-  Fit <- sampling(MFP_III_Model, data = MFP3Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
+  Fit <- sampling(MFP_III_Model, data = MFP3Model_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
   MisMatchedFits_MFP3Model_AR[[i]] <- Fit
 }
+saveRDS(MisMatchedFits_MFP3Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_AR_FullCross.rds")
 
-# Fit diagnostics... 
+# Fit diagnostics
+MisMatchedFits_AntiaModel_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_AR_FullCross.rds")
+for (i in 1:length(MisMatchedFits_AntiaModel_AR)){
+  print(MisMatchedFits_AntiaModel_AR[[i]], pars = c("r", "k", "p", "o"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+
+MisMatchedFits_MFP1Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_AR_FullCross.rds")
+for (i in 1:length(MisMatchedFits_MFP1Model_AR)){
+  print(MisMatchedFits_MFP1Model_AR[[i]], pars = c("r", "B", "b", "e", "delta"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+
+MisMatchedFits_MFP2Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_AR_FullCross.rds")
+for (i in 1:length(MisMatchedFits_MFP2Model_AR)){
+  print(MisMatchedFits_MFP2Model_AR[[i]], pars = c("r", "B", "h", "b", "e", "delta"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+
+MisMatchedFits_MFP3Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_AR_FullCross.rds")
+for (i in 1:length(MisMatchedFits_MFP3Model_AR)){
+  print(MisMatchedFits_MFP3Model_AR[[i]], pars = c("r", "B", "h", "b", "e", "delta"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
 ```
 
 ### Mod. Fenton and Perkins w/ Damping Oscillations
@@ -11469,60 +11500,60 @@ for(i in 1:10){
   MisMatchedFits_Type3Model_AR[[i]] <- Fit
 }
 
-saveRDS(MisMatchedFits_Type1Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR.rds")
-saveRDS(MisMatchedFits_Type2Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR.rds")
-saveRDS(MisMatchedFits_Type3Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR.rds")
+saveRDS(MisMatchedFits_Type1Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR_DampOscOnly.rds")
+saveRDS(MisMatchedFits_Type2Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR_DampOscOnly.rds")
+saveRDS(MisMatchedFits_Type3Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR_DampOscOnly.rds")
 
-MisMatchedFits_Type1Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR.rds")
-for (i in 1:length(MisMatchedFits_Type1Model)){
-  print(MisMatchedFits_Type1Model[[i]], pars = c("r", "B", "b", "e", "delta"),
+MisMatchedFits_Type1Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR_DampOscOnly.rds")
+for (i in 1:length(MisMatchedFits_Type1Model_AR)){
+  print(MisMatchedFits_Type1Model_AR[[i]], pars = c("r", "B", "b", "e", "delta"),
         probs = c(0.1, 0.5, 0.9), digits = 3)
 }
-T2Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[1]]
-T2Data.T1Model_AR.Fit2 <- MisMatchedFits_Type1Model[[2]]
-T2Data.T1Model_AR.Fit3 <- MisMatchedFits_Type1Model[[3]]
-T2Data.T1Model_AR.Fit4 <- MisMatchedFits_Type1Model[[4]]
-T2Data.T1Model_AR.Fit5 <- MisMatchedFits_Type1Model[[5]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[6]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[7]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[8]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[9]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model[[10]]
+T2Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[1]]
+T2Data.T1Model_AR.Fit2 <- MisMatchedFits_Type1Model_AR[[2]]
+T2Data.T1Model_AR.Fit3 <- MisMatchedFits_Type1Model_AR[[3]]
+T2Data.T1Model_AR.Fit4 <- MisMatchedFits_Type1Model_AR[[4]]
+T2Data.T1Model_AR.Fit5 <- MisMatchedFits_Type1Model_AR[[5]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[6]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[7]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[8]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[9]]
+T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[10]]
 
-MisMatchedFits_Type2Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR.rds")
-for (i in 1:length(MisMatchedFits_Type2Model)){
-  print(MisMatchedFits_Type2Model[[i]], pars = c("r", "B", "b", "e", "delta"),
+MisMatchedFits_Type2Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR_DampOscOnly.rds")
+for (i in 1:length(MisMatchedFits_Type2Model_AR)){
+  print(MisMatchedFits_Type2Model_AR[[i]], pars = c("r", "B", "b", "e", "delta"),
         probs = c(0.1, 0.5, 0.9), digits = 3)
 }
-T1Data.T2Model_AR.Fit1 <- MisMatchedFits_Type2Model[[1]]
-T1Data.T2Model_AR.Fit2 <- MisMatchedFits_Type2Model[[2]]
-T1Data.T2Model_AR.Fit3 <- MisMatchedFits_Type2Model[[3]]
-T1Data.T2Model_AR.Fit4 <- MisMatchedFits_Type2Model[[4]]
-T1Data.T2Model_AR.Fit5 <- MisMatchedFits_Type2Model[[5]]
-T3Data.T2Model_AR.Fit1 <- MisMatchedFits_Type2Model[[6]]
-T3Data.T2Model_AR.Fit2 <- MisMatchedFits_Type2Model[[7]]
-T3Data.T2Model_AR.Fit3 <- MisMatchedFits_Type2Model[[8]]
-T3Data.T2Model_AR.Fit4 <- MisMatchedFits_Type2Model[[9]]
-T3Data.T2Model_AR.Fit5 <- MisMatchedFits_Type2Model[[10]]
+T1Data.T2Model_AR.Fit1 <- MisMatchedFits_Type2Model_AR[[1]]
+T1Data.T2Model_AR.Fit2 <- MisMatchedFits_Type2Model_AR[[2]]
+T1Data.T2Model_AR.Fit3 <- MisMatchedFits_Type2Model_AR[[3]]
+T1Data.T2Model_AR.Fit4 <- MisMatchedFits_Type2Model_AR[[4]]
+T1Data.T2Model_AR.Fit5 <- MisMatchedFits_Type2Model_AR[[5]]
+T3Data.T2Model_AR.Fit1 <- MisMatchedFits_Type2Model_AR[[6]]
+T3Data.T2Model_AR.Fit2 <- MisMatchedFits_Type2Model_AR[[7]]
+T3Data.T2Model_AR.Fit3 <- MisMatchedFits_Type2Model_AR[[8]]
+T3Data.T2Model_AR.Fit4 <- MisMatchedFits_Type2Model_AR[[9]]
+T3Data.T2Model_AR.Fit5 <- MisMatchedFits_Type2Model_AR[[10]]
 
-MisMatchedFits_Type3Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR.rds")
-for (i in 1:length(MisMatchedFits_Type3Model)){
-  print(MisMatchedFits_Type3Model[[i]], pars = c("r", "B", "b", "e", "delta"),
+MisMatchedFits_Type3Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR_DampOscOnly.rds")
+for (i in 1:length(MisMatchedFits_Type3Model_AR)){
+  print(MisMatchedFits_Type3Model_AR[[i]], pars = c("r", "B", "b", "e", "delta"),
         probs = c(0.1, 0.5, 0.9), digits = 3)
 }
-T1Data.T3Model_AR.Fit1 <- MisMatchedFits_Type3Model[[1]]
-T1Data.T3Model_AR.Fit2 <- MisMatchedFits_Type3Model[[2]]
-T1Data.T3Model_AR.Fit3 <- MisMatchedFits_Type3Model[[3]]
-T1Data.T3Model_AR.Fit4 <- MisMatchedFits_Type3Model[[4]]
-T1Data.T3Model_AR.Fit5 <- MisMatchedFits_Type3Model[[5]]
-T2Data.T3Model_AR.Fit1 <- MisMatchedFits_Type3Model[[6]]
-T2Data.T3Model_AR.Fit2 <- MisMatchedFits_Type3Model[[7]]
-T2Data.T3Model_AR.Fit3 <- MisMatchedFits_Type3Model[[8]]
-T2Data.T3Model_AR.Fit4 <- MisMatchedFits_Type3Model[[9]]
-T2Data.T3Model_AR.Fit5 <- MisMatchedFits_Type3Model[[10]]
+T1Data.T3Model_AR.Fit1 <- MisMatchedFits_Type3Model_AR[[1]]
+T1Data.T3Model_AR.Fit2 <- MisMatchedFits_Type3Model_AR[[2]]
+T1Data.T3Model_AR.Fit3 <- MisMatchedFits_Type3Model_AR[[3]]
+T1Data.T3Model_AR.Fit4 <- MisMatchedFits_Type3Model_AR[[4]]
+T1Data.T3Model_AR.Fit5 <- MisMatchedFits_Type3Model_AR[[5]]
+T2Data.T3Model_AR.Fit1 <- MisMatchedFits_Type3Model_AR[[6]]
+T2Data.T3Model_AR.Fit2 <- MisMatchedFits_Type3Model_AR[[7]]
+T2Data.T3Model_AR.Fit3 <- MisMatchedFits_Type3Model_AR[[8]]
+T2Data.T3Model_AR.Fit4 <- MisMatchedFits_Type3Model_AR[[9]]
+T2Data.T3Model_AR.Fit5 <- MisMatchedFits_Type3Model_AR[[10]]
 ```
 
-# Stability Analysis
+# Sensitivity Analysis
 
 ## Global Model
 
