@@ -11553,6 +11553,155 @@ T2Data.T3Model_AR.Fit4 <- MisMatchedFits_Type3Model_AR[[9]]
 T2Data.T3Model_AR.Fit5 <- MisMatchedFits_Type3Model_AR[[10]]
 ```
 
+## Mis-Match Summary
+```{r}
+Names <- c("A.1", "A.2", "A.3", "A.4", "A.5", # 1-5
+           "T1.1", "T1.2", "T1.3", "T1.4", "T1.5", # 6-10
+           "T2.DO.1", "T2.DO.2", "T2.DO.3", "T2.DO.4", "T2.DO.5", # 11-15
+           "T2.SLC.1", "T2.SLC.2", "T2.SLC.3", "T2.SLC.4", "T2.SLC.5", # 16-20
+           "T2.DivOsc.1", "T2.DivOsc.2", "T2.DivOsc.3", "T2.DivOsc.4", "T2.DivOsc.5", # 21-25
+           "T3.1", "T3.2", "T3.3", "T3.4", "T3.5") # 26-30
+
+# Global
+AntiaModel_MisMatch_G <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_FullCross.rds") 
+# 1-5: T1,TS 1-5; 6-10: T2 DO, TS 1-5; 11-15: T2 SLC, TS 1-5; 16-20: T2 DivOsc, TS 1-5; 21-25: T3
+names(AntiaModel_MisMatch_G) <- Names[6:30]
+
+MFP1Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_FullCross.rds") # Antia, MFP2 (SLC and DivOsc)
+names(MFP1Model_FullCross) <- Names[c(1:5, 16:25)]
+MFP1Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_DampOscOnly.rds") # MFP2 DO, MFP3
+names(MFP1Model_DampOscOnly) <- Names[c(11:15, 26:30)]
+MFP1Model_MisMatch_G <- c(MFP1Model_FullCross[c(1:5)], MFP1Model_DampOscOnly[c(1:5)], MFP1Model_FullCross[c(6:15)], MFP1Model_DampOscOnly[c(6:10)])
+
+MFP2Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_FullCross.rds") # Antia
+names(MFP2Model_FullCross) <- Names[1:5]
+MFP2Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_DampOscOnly.rds") # MFP1, MFP3
+names(MFP2Model_DampOscOnly) <- Names[c(6:10, 26:30)]
+MFP2Model_MisMatch_G <- c(MFP2Model_FullCross[c(1:5)], MFP2Model_DampOscOnly[c(1:10)])
+
+MFP3Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_FullCross.rds") # Antia, MFP2 (SLC, DivOsc)
+names(MFP3Model_FullCross) <- Names[c(1:5, 16:25)]
+MFP3Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_DampOscOnly.rds") # MFP1, MFP2 DO
+names(MFP3Model_DampOscOnly) <- Names[6:15]
+MFP3Model_MisMatch_G <- c(MFP3Model_FullCross[c(1:5)], MFP3Model_DampOscOnly[c(1:10)], MFP3Model_FullCross[c(6:15)])
+
+# AR
+AntiaModel_MisMatch_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_AR_FullCross.rds") 
+names(AntiaModel_MisMatch_AR) <- Names[6:30]
+
+MFP1Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_AR_FullCross.rds") 
+names(MFP1Model_FullCross) <- Names[c(1:5, 16:25)]
+MFP1Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR_DampOscOnly.rds") 
+names(MFP1Model_DampOscOnly) <- Names[c(11:15, 26:30)]
+MFP1Model_MisMatch_AR <- c(MFP1Model_FullCross[c(1:5)], MFP1Model_DampOscOnly[c(1:5)], MFP1Model_FullCross[c(6:15)], MFP1Model_DampOscOnly[c(6:10)])
+
+MFP2Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_AR_FullCross.rds") 
+names(MFP2Model_FullCross) <- Names[1:5]
+MFP2Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR_DampOscOnly.rds") 
+names(MFP2Model_DampOscOnly) <- Names[c(6:10, 26:30)]
+MFP2Model_MisMatch_AR <- c(MFP2Model_FullCross[c(1:5)], MFP2Model_DampOscOnly[c(1:10)])
+
+MFP3Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_AR_FullCross.rds")
+names(MFP3Model_FullCross) <- Names[c(1:5, 16:25)]
+MFP3Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR_DampOscOnly.rds") 
+names(MFP3Model_DampOscOnly) <- Names[6:15]
+MFP3Model_MisMatch_AR <- c(MFP3Model_FullCross[c(1:5)], MFP3Model_DampOscOnly[c(1:10)], MFP3Model_FullCross[c(6:15)])
+
+# Convergence: Antia, Global
+for(i in 1:5){
+  print(AntiaModel_MisMatch_G[[i]], pars = c("r", "k", "p", "o"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T1: 2 (2, 3)
+
+for(i in 6:10){
+  print(AntiaModel_MisMatch_G[[i]], pars = c("r", "k", "p", "o"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T2 DO: 1 (1)
+
+for(i in 11:15){
+  print(AntiaModel_MisMatch_G[[i]], pars = c("r", "k", "p", "o"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T2 SLC: 4 (2, 3, 4, 5)
+
+for(i in 16:20){
+  print(AntiaModel_MisMatch_G[[i]], pars = c("r", "k", "p", "o"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T2 DivOsc: 3 (1, 3, 4)
+
+for(i in 21:25){
+  print(AntiaModel_MisMatch_G[[i]], pars = c("r", "k", "p", "o"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T3: 1 (5)
+
+# Convergence: MFP1, Global
+for(i in 1:5){
+  print(MFP1Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # A: 5 (ALL)
+
+for(i in 6:10){
+  print(MFP1Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T2 DO: 5 (ALL)
+
+for(i in 11:15){
+  print(MFP1Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T2 SLC: 4 (1, 2, 3, 5)
+
+for(i in 16:20){
+  print(MFP1Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T2 DivOsc: 4 (1, 2, 3, 5)
+
+for(i in 21:25){
+  print(MFP1Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T3: 5 (ALL)
+
+# Convergence: MFP2, Global
+for(i in 1:5){
+  print(MFP2Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # A: 4 (1, 3, 4, 5)
+
+for(i in 6:10){
+  print(MFP2Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T1: 3 (1, 3, 5)
+
+for(i in 11:15){
+  print(MFP2Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T3: 2 (3, 5)
+
+# Convergence: MFP3, Global
+for(i in 1:5){
+  print(MFP3Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # A: 3 (2, 4, 5)
+
+for(i in 6:10){
+  print(MFP3Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T1: 0
+
+for(i in 11:15){
+  print(MFP3Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T2 DO: 0
+
+for(i in 16:20){
+  print(MFP3Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T2 SLC: 0
+
+for(i in 21:25){
+  print(MFP3Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+} # T2 DivOsc: 1 (5)
+```
+
 # Sensitivity Analysis
 
 ## Global Model
