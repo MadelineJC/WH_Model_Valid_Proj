@@ -41,23 +41,23 @@ $\frac{dP}{dt} = rP - kPI$, if $P < D$, where $D = 10^9$. If $P < D$, $P \righta
 
 $\frac{dI}{dt} = \rho I(\frac{P}{P + \phi})$
 
-+---------+----------------------------------------------------------------------------------------+--------------+
-| Symbol  | Parameter                                                                              | Value        |
-+=========+========================================================================================+==============+
-| $P$     | Parasite abundance                                                                     | $1**$        |
-+---------+----------------------------------------------------------------------------------------+--------------+
-| $I$     | Host immune cell abundance                                                             | $1**$        |
-+---------+----------------------------------------------------------------------------------------+--------------+
-| $r$     | Replication rate of parasite                                                           | $0.1 - 10.0$ |
-+---------+----------------------------------------------------------------------------------------+--------------+
-| $k$     | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
-+---------+----------------------------------------------------------------------------------------+--------------+
-| $\rho$  | Maximum replication rate of host's immune system                                       | $1$          |
-+---------+----------------------------------------------------------------------------------------+--------------+
-| $\phi$  | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
-+---------+----------------------------------------------------------------------------------------+--------------+
-| $D$     | Lethal within-host parasite abundance                                                  | $10^9$       |
-+---------+----------------------------------------------------------------------------------------+--------------+
++----------+----------------------------------------------------------------------------------------+--------------+
+| Symbol   | Parameter                                                                              | Value        |
++==========+========================================================================================+==============+
+| $P$      | Parasite abundance                                                                     | $1**$        |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $I$      | Host immune cell abundance                                                             | $1**$        |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $r$      | Replication rate of parasite                                                           | $0.1 - 10.0$ |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $k$      | Rate at which parasites are destroyed by host's immune system                          | $10^{-3}$    |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $\rho$   | Maximum replication rate of host's immune system                                       | $1$          |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $\phi$   | Parasite density at which replication rate of host's immune system is half its maximum | $10^3$       |
++----------+----------------------------------------------------------------------------------------+--------------+
+| $D$      | Lethal within-host parasite abundance                                                  | $10^9$       |
++----------+----------------------------------------------------------------------------------------+--------------+
 
 ## Fenton and Perkins (2010)
 
@@ -73,23 +73,23 @@ With a TII functional response, $f(P)=\frac{\beta P}{1+h \beta P}$
 
 With a TIII functional response, $f(P)=\frac{\beta P^2}{1+h \beta P^2}$
 
-+----------+------------------------------------------------------------------------+--------------+
-| Symbol   | Parameter                                                              | Value        |
-+==========+========================================================================+==============+
-| $P$      | Parasite abundance                                                     | $1$          |
-+----------+------------------------------------------------------------------------+--------------+
-| $I$      | Host immune cell abundance                                             | $1$          |
-+----------+------------------------------------------------------------------------+--------------+
-| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-+----------+------------------------------------------------------------------------+--------------+
-| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-+----------+------------------------------------------------------------------------+--------------+
-| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
-+----------+------------------------------------------------------------------------+--------------+
-| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
-+----------+------------------------------------------------------------------------+--------------+
-| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
-+----------+------------------------------------------------------------------------+--------------+
++-----------+------------------------------------------------------------------------+--------------+
+| Symbol    | Parameter                                                              | Value        |
++===========+========================================================================+==============+
+| $P$       | Parasite abundance                                                     | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $I$       | Host immune cell abundance                                             | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++-----------+------------------------------------------------------------------------+--------------+
+| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++-----------+------------------------------------------------------------------------+--------------+
+| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
++-----------+------------------------------------------------------------------------+--------------+
+| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
 
 ## Modified Fenton and Perkins (2010)
 
@@ -97,25 +97,25 @@ $\frac{dP}{dt}=rP-If(P)$
 
 $\frac{dI}{dt}=b + ef(P)I - \delta I$
 
-+----------+------------------------------------------------------------------------+--------------+
-| Symbol   | Parameter                                                              | Value        |
-+==========+========================================================================+==============+
-| $P$      | Parasite abundance                                                     | $1$          |
-+----------+------------------------------------------------------------------------+--------------+
-| $I$      | Host immune cell abundance                                             | $1$          |
-+----------+------------------------------------------------------------------------+--------------+
-| $r$      | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
-+----------+------------------------------------------------------------------------+--------------+
-| $e$      | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
-+----------+------------------------------------------------------------------------+--------------+
-| $\delta$ | Decay rate of immune system                                            | $0 - 0.01$   |
-+----------+------------------------------------------------------------------------+--------------+
-| $\beta$  | Rate at which immune cells consume parasites                           | $0.05$       |
-+----------+------------------------------------------------------------------------+--------------+
-| $h$      | Handling time of parasite by host immune system                        | $0-10$       |
-+----------+------------------------------------------------------------------------+--------------+
-| $b$      | Immigration of immune cells in absence of infection                    | $35$         |
-+----------+------------------------------------------------------------------------+--------------+
++-----------+------------------------------------------------------------------------+--------------+
+| Symbol    | Parameter                                                              | Value        |
++===========+========================================================================+==============+
+| $P$       | Parasite abundance                                                     | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $I$       | Host immune cell abundance                                             | $1$          |
++-----------+------------------------------------------------------------------------+--------------+
+| $r$       | *Per capita* growth rate of parasite                                   | $0.05 - 0.1$ |
++-----------+------------------------------------------------------------------------+--------------+
+| $e$       | Immune cell proliferation as stimulated through contact with parasites | $0.1$        |
++-----------+------------------------------------------------------------------------+--------------+
+| $\delta$  | Decay rate of immune system                                            | $0 - 0.01$   |
++-----------+------------------------------------------------------------------------+--------------+
+| $\beta$   | Rate at which immune cells consume parasites                           | $0.05$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $h$       | Handling time of parasite by host immune system                        | $0-10$       |
++-----------+------------------------------------------------------------------------+--------------+
+| $b$       | Immigration of immune cells in absence of infection                    | $35$         |
++-----------+------------------------------------------------------------------------+--------------+
 
 # GLOBAL FRAMEWORK
 
@@ -11193,8 +11193,6 @@ grid.arrange(arrangeGrob(AR.Plots, top = title, bottom = x.lab))
 
 ## Global Framework
 
-### All
-
 ```{r}
 Antia_Stoch_List <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Continuous.rds") # 1-5
 ModFentonPerkins_1_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Continuous.rds") # 6-10
@@ -11224,144 +11222,44 @@ MFP_III_Model <- stan_model("1_Models/FP_3_AllParms.stan")
 
 # Fit Antia model to all other data
 AntiaModel_StanData_List <- StanData_List[c(6:30)]
-MisMatchedFits_AntiaModel <- list()
+AntiaModel_MisMatch_G <- list()
 for(i in 1:length(AntiaModel_StanData_List)){
   Fit <- sampling(Antia_Model, data = AntiaModel_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
-  MisMatchedFits_AntiaModel[[i]] <- Fit
+  AntiaModel_MisMatch_G[[i]] <- Fit
 }
-saveRDS(MisMatchedFits_AntiaModel, "2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_FullCross.rds")
+saveRDS(AntiaModel_MisMatch_G, "2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_G_FullCross.rds")
 
 # Fit MFP 1 model to all other data
-MFP1Model_StanData_List <- StanData_List[c(1:5, 16:25)] # Antia, MFP2 (SLC and DivOsc)
-MisMatchedFits_MFP1Model <- list()
+MFP1Model_StanData_List <- StanData_List[c(1:5, 11:30)] # Antia, MFP2 (DO, SLC, DivOsc), MFP3
+MFP1Model_MisMatch_G <- list()
 for(i in 1:length(MFP1Model_StanData_List)){
   Fit <- sampling(MFP_I_Model, data = MFP1Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
-  MisMatchedFits_MFP1Model[[i]] <- Fit
+  MFP1Model_MisMatch_G[[i]] <- Fit
 }
-saveRDS(MisMatchedFits_MFP1Model, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_FullCross.rds")
+saveRDS(MFP1Model_MisMatch_G, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_G_FullCross.rds")
 
 # Fit MFP 2 model to all other data
-MFP2Model_StanData_List <- StanData_List[c(1:5)] # Antia
-MisMatchedFits_MFP2Model <- list()
+MFP2Model_StanData_List <- StanData_List[c(1:10, 26:30)] # Antia, MFP1, MFP3
+MFP2Model_MisMatch_G <- list()
 for(i in 1:length(MFP2Model_StanData_List)){
   Fit <- sampling(MFP_II_Model, data = MFP2Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
-  MisMatchedFits_MFP2Model[[i]] <- Fit
+  MFP2Model_MisMatch_G[[i]] <- Fit
 }
-saveRDS(MisMatchedFits_MFP2Model, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_FullCross.rds")
+saveRDS(MFP2Model_MisMatch_G, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_G_FullCross.rds")
 
 # Fit MFP 3 model to all other data
-MFP3Model_StanData_List <- StanData_List[c(1:5, 16:25)] # Antia, MFP2 (SLC, DivOsc)
-MisMatchedFits_MFP3Model <- list()
+MFP3Model_StanData_List <- StanData_List[c(1:25)] # Antia, MFP1, MFP2 (DO, SLC, DivOsc)
+MFP3Model_MisMatch_G <- list()
 for(i in 1:length(MFP3Model_StanData_List)){
   Fit <- sampling(MFP_III_Model, data = MFP3Model_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
-  MisMatchedFits_MFP3Model[[i]] <- Fit
+  MFP3Model_MisMatch_G[[i]] <- Fit
 }
-saveRDS(MisMatchedFits_MFP3Model, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_FullCross.rds")
+saveRDS(MFP3Model_MisMatch_G, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_G_FullCross.rds")
 
-# Fit diagnostics... 
-```
-
-### Mod. Fenton and Perkins w/ Damping Oscillations
-
-```{r}
-ModFentonPerkins_1_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Continuous.rds")
-ModFentonPerkins_2_DO_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Continuous.rds")
-ModFentonPerkins_3_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Continuous.rds")
-
-ModFentonPerkins_Stoch_List <- c(ModFentonPerkins_1_Stoch_List, ModFentonPerkins_2_DO_Stoch_List, ModFentonPerkins_3_Stoch_List)
-MisMatchedData_StanData_List <- list()
-for (i in 1:length(ModFentonPerkins_Stoch_List)){
-  ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch_List[[i]]
-  N <- length(ModFentonPerkins_Stoch$Time) - 1
-  ts <- 1:N
-  y_init <- c(ModFentonPerkins_Stoch$P[1], ModFentonPerkins_Stoch$I[1])
-  y <- as.matrix(ModFentonPerkins_Stoch[2:(N + 1), 2:3])
-  y <- cbind(y[ , 1], y[ , 2]); 
-  MisMatchedData_StanData <- list(N = N, ts = ts, y_init = y_init, y = y)
-  MisMatchedData_StanData_List[[i]] <- MisMatchedData_StanData
-}
-
-MFP_I_Model <- stan_model("1_Models/FP_1_AllParms.stan")
-MFP_II_Model <- stan_model("1_Models/FP_2_AllParms.stan")
-MFP_III_Model <- stan_model("1_Models/FP_3_AllParms.stan")
-
-MisMatchedData_23_StanData_List <- MisMatchedData_StanData_List[c(6:15)]
-MisMatchedFits_Type1Model <- list()
-for(i in 1:10){
-  Fit <- sampling(MFP_I_Model, data = MisMatchedData_23_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
-  MisMatchedFits_Type1Model[[i]] <- Fit
-}
-
-MisMatchedData_13_StanData_List <- MisMatchedData_StanData_List[c(1:5, 11:15)]
-MisMatchedFits_Type2Model <- list()
-for(i in 1:10){
-  Fit <- sampling(MFP_II_Model, data = MisMatchedData_13_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
-  MisMatchedFits_Type2Model[[i]] <- Fit
-}
-
-MisMatchedData_12_StanData_List <- MisMatchedData_StanData_List[c(1:10)]
-MisMatchedFits_Type3Model <- list()
-for(i in 1:10){
-  Fit <- sampling(MFP_III_Model, data = MisMatchedData_12_StanData_List[[i]], chains = 4, iter = 2000, cores = 4, seed = 123)
-  MisMatchedFits_Type3Model[[i]] <- Fit
-}
-
-saveRDS(MisMatchedFits_Type1Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_DampOscOnly.rds")
-saveRDS(MisMatchedFits_Type2Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_DampOscOnly.rds")
-saveRDS(MisMatchedFits_Type3Model, "2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_DampOscOnly.rds")
-
-MisMatchedFits_Type1Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_DampOscOnly.rds")
-for (i in 1:length(MisMatchedFits_Type1Model)){
-  print(MisMatchedFits_Type1Model[[i]], pars = c("theta", "sigma", "z_init"),
-      probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-T2Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[1]]
-T2Data.T1Model_G.Fit2 <- MisMatchedFits_Type1Model[[2]]
-T2Data.T1Model_G.Fit3 <- MisMatchedFits_Type1Model[[3]]
-T2Data.T1Model_G.Fit4 <- MisMatchedFits_Type1Model[[4]]
-T2Data.T1Model_G.Fit5 <- MisMatchedFits_Type1Model[[5]]
-T3Data.T1Model_G.Fit1 <- MisMatchedFits_Type1Model[[6]]
-T3Data.T1Model_G.Fit2 <- MisMatchedFits_Type1Model[[7]]
-T3Data.T1Model_G.Fit3 <- MisMatchedFits_Type1Model[[8]]
-T3Data.T1Model_G.Fit4 <- MisMatchedFits_Type1Model[[9]]
-T3Data.T1Model_G.Fit5 <- MisMatchedFits_Type1Model[[10]]
-
-MisMatchedFits_Type2Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_DampOscOnly.rds")
-for (i in 1:length(MisMatchedFits_Type2Model)){
-  print(MisMatchedFits_Type2Model[[i]], pars = c("theta", "sigma", "z_init"),
-      probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-T1Data.T2Model_G.Fit1 <- MisMatchedFits_Type2Model[[1]]
-T1Data.T2Model_G.Fit2 <- MisMatchedFits_Type2Model[[2]]
-T1Data.T2Model_G.Fit3 <- MisMatchedFits_Type2Model[[3]]
-T1Data.T2Model_G.Fit4 <- MisMatchedFits_Type2Model[[4]]
-T1Data.T2Model_G.Fit5 <- MisMatchedFits_Type2Model[[5]]
-T3Data.T2Model_G.Fit1 <- MisMatchedFits_Type2Model[[6]]
-T3Data.T2Model_G.Fit2 <- MisMatchedFits_Type2Model[[7]]
-T3Data.T2Model_G.Fit3 <- MisMatchedFits_Type2Model[[8]]
-T3Data.T2Model_G.Fit4 <- MisMatchedFits_Type2Model[[9]]
-T3Data.T2Model_G.Fit5 <- MisMatchedFits_Type2Model[[10]]
-
-MisMatchedFits_Type3Model <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_DampOscOnly.rds")
-for (i in 1:length(MisMatchedFits_Type3Model)){
-  print(MisMatchedFits_Type3Model[[i]], pars = c("theta", "sigma", "z_init"),
-      probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-T1Data.T3Model_G.Fit1 <- MisMatchedFits_Type3Model[[1]]
-T1Data.T3Model_G.Fit2 <- MisMatchedFits_Type3Model[[2]]
-T1Data.T3Model_G.Fit3 <- MisMatchedFits_Type3Model[[3]]
-T1Data.T3Model_G.Fit4 <- MisMatchedFits_Type3Model[[4]]
-T1Data.T3Model_G.Fit5 <- MisMatchedFits_Type3Model[[5]]
-T2Data.T3Model_G.Fit1 <- MisMatchedFits_Type3Model[[6]]
-T2Data.T3Model_G.Fit2 <- MisMatchedFits_Type3Model[[7]]
-T2Data.T3Model_G.Fit3 <- MisMatchedFits_Type3Model[[8]]
-T2Data.T3Model_G.Fit4 <- MisMatchedFits_Type3Model[[9]]
-T2Data.T3Model_G.Fit5 <- MisMatchedFits_Type3Model[[10]]
+ 
 ```
 
 ## Autoregressive Framework
-
-### All
 
 ```{r}
 Antia_Stoch_List <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds") # 1-5
@@ -11393,220 +11291,44 @@ MFP_III_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_3.stan")
 
 # Fit Antia model to all other data
 AntiaModel_StanData_List <- StanData_List[c(6:30)]
-MisMatchedFits_AntiaModel_AR <- list()
+AntiaModel_MisMatch_AR <- list()
 for(i in 1:length(AntiaModel_StanData_List)){
   Fit <- sampling(Antia_Model, data = AntiaModel_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
-  MisMatchedFits_AntiaModel_AR[[i]] <- Fit
+  AntiaModel_MisMatch_AR[[i]] <- Fit
 }
-saveRDS(MisMatchedFits_AntiaModel_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_AR_FullCross.rds")
+saveRDS(AntiaModel_MisMatch_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_AR_FullCross.rds")
 
 # Fit MFP 1 model to all other data
-MFP1Model_StanData_List <- StanData_List[c(1:5, 16:25)] # Antia, MFP2 (SLC and DivOsc)
-MisMatchedFits_MFP1Model_AR <- list()
+MFP1Model_StanData_List <- StanData_List[c(1:5, 11:30)] 
+MFP1Model_MisMatch_AR <- list()
 for(i in 1:length(MFP1Model_StanData_List)){
   Fit <- sampling(MFP_I_Model, data = MFP1Model_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
-  MisMatchedFits_MFP1Model_AR[[i]] <- Fit
+  MFP1Model_MisMatch_AR[[i]] <- Fit
 }
-saveRDS(MisMatchedFits_MFP1Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_AR_FullCross.rds")
+saveRDS(MFP1Model_MisMatch_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_AR_FullCross.rds")
 
 # Fit MFP 2 model to all other data
-MFP2Model_StanData_List <- StanData_List[c(1:5)] # Antia
-MisMatchedFits_MFP2Model_AR <- list()
+MFP2Model_StanData_List <- StanData_List[c(1:10, 26:30)] 
+MFP2Model_MisMatch_AR <- list()
 for(i in 1:length(MFP2Model_StanData_List)){
   Fit <- sampling(MFP_II_Model, data = MFP2Model_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
-  MisMatchedFits_MFP2Model_AR[[i]] <- Fit
+  MFP2Model_MisMatch_AR[[i]] <- Fit
 }
-saveRDS(MisMatchedFits_MFP2Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_AR_FullCross.rds")
+saveRDS(MFP2Model_MisMatch_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_AR_FullCross.rds")
 
 # Fit MFP 3 model to all other data
-MFP3Model_StanData_List <- StanData_List[c(1:5, 16:25)] # Antia, MFP2 (SLC, DivOsc)
-MisMatchedFits_MFP3Model_AR <- list()
+MFP3Model_StanData_List <- StanData_List[c(1:25)] 
+MFP3Model_MisMatch_AR <- list()
 for(i in 1:length(MFP3Model_StanData_List)){
   Fit <- sampling(MFP_III_Model, data = MFP3Model_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
-  MisMatchedFits_MFP3Model_AR[[i]] <- Fit
+  MFP3Model_MisMatch_AR[[i]] <- Fit
 }
-saveRDS(MisMatchedFits_MFP3Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_AR_FullCross.rds")
-
-# Fit diagnostics
-MisMatchedFits_AntiaModel_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_AR_FullCross.rds")
-for (i in 1:length(MisMatchedFits_AntiaModel_AR)){
-  print(MisMatchedFits_AntiaModel_AR[[i]], pars = c("r", "k", "p", "o"),
-        probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-
-MisMatchedFits_MFP1Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_AR_FullCross.rds")
-for (i in 1:length(MisMatchedFits_MFP1Model_AR)){
-  print(MisMatchedFits_MFP1Model_AR[[i]], pars = c("r", "B", "b", "e", "delta"),
-        probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-
-MisMatchedFits_MFP2Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_AR_FullCross.rds")
-for (i in 1:length(MisMatchedFits_MFP2Model_AR)){
-  print(MisMatchedFits_MFP2Model_AR[[i]], pars = c("r", "B", "h", "b", "e", "delta"),
-        probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-
-MisMatchedFits_MFP3Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_AR_FullCross.rds")
-for (i in 1:length(MisMatchedFits_MFP3Model_AR)){
-  print(MisMatchedFits_MFP3Model_AR[[i]], pars = c("r", "B", "h", "b", "e", "delta"),
-        probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-```
-
-### Mod. Fenton and Perkins w/ Damping Oscillations
-
-```{r}
-ModFentonPerkins_1_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds")
-ModFentonPerkins_2_DO_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds")
-ModFentonPerkins_3_Stoch_List <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds")
-
-ModFentonPerkins_Stoch_List <- c(ModFentonPerkins_1_Stoch_List, ModFentonPerkins_2_DO_Stoch_List, ModFentonPerkins_3_Stoch_List)
-MisMatchedData_StanData_List <- list()
-
-for (i in 1:length(ModFentonPerkins_Stoch_List)){
-  ModFentonPerkins_Stoch <- ModFentonPerkins_Stoch_List[[i]]
-  N <- length(ModFentonPerkins_Stoch$Time) - 1
-  ts <- 1:N
-  P_init <- c(ModFentonPerkins_Stoch$P[1])
-  I_init <- c(ModFentonPerkins_Stoch$I[1])
-  P <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 2:2])
-  I <- as.vector(ModFentonPerkins_Stoch[2:(N + 1), 3:3])
-  MisMatchedData_StanData <- list(N = N, ts = ts, P_init = P_init, I_init = I_init, P = P, I = I)
-  MisMatchedData_StanData_List[[i]] <- MisMatchedData_StanData
-}
-
-MFP_I_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_1.stan")
-MFP_II_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_2.stan")
-MFP_III_Model <- stan_model("1_Models/Autoregressive_ModFentonPerkins_3.stan")
-
-MisMatchedData_23_StanData_List <- MisMatchedData_StanData_List[c(6:15)]
-MisMatchedFits_Type1Model_AR <- list()
-for(i in 1:10){
-  Fit <- sampling(MFP_I_Model, data = MisMatchedData_23_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
-  MisMatchedFits_Type1Model_AR[[i]] <- Fit
-}
-
-MisMatchedData_13_StanData_List <- MisMatchedData_StanData_List[c(1:5, 11:15)]
-MisMatchedFits_Type2Model_AR <- list()
-for(i in 1:10){
-  Fit <- sampling(MFP_II_Model, data = MisMatchedData_13_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
-  MisMatchedFits_Type2Model_AR[[i]] <- Fit
-}
-
-MisMatchedData_12_StanData_List <- MisMatchedData_StanData_List[c(1:10)]
-MisMatchedFits_Type3Model_AR <- list()
-for(i in 1:10){
-  Fit <- sampling(MFP_III_Model, data = MisMatchedData_12_StanData_List[[i]], chains = 4, iter = 10000, cores = 4, seed = 123)
-  MisMatchedFits_Type3Model_AR[[i]] <- Fit
-}
-
-saveRDS(MisMatchedFits_Type1Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR_DampOscOnly.rds")
-saveRDS(MisMatchedFits_Type2Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR_DampOscOnly.rds")
-saveRDS(MisMatchedFits_Type3Model_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR_DampOscOnly.rds")
-
-MisMatchedFits_Type1Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR_DampOscOnly.rds")
-for (i in 1:length(MisMatchedFits_Type1Model_AR)){
-  print(MisMatchedFits_Type1Model_AR[[i]], pars = c("r", "B", "b", "e", "delta"),
-        probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-T2Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[1]]
-T2Data.T1Model_AR.Fit2 <- MisMatchedFits_Type1Model_AR[[2]]
-T2Data.T1Model_AR.Fit3 <- MisMatchedFits_Type1Model_AR[[3]]
-T2Data.T1Model_AR.Fit4 <- MisMatchedFits_Type1Model_AR[[4]]
-T2Data.T1Model_AR.Fit5 <- MisMatchedFits_Type1Model_AR[[5]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[6]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[7]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[8]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[9]]
-T3Data.T1Model_AR.Fit1 <- MisMatchedFits_Type1Model_AR[[10]]
-
-MisMatchedFits_Type2Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR_DampOscOnly.rds")
-for (i in 1:length(MisMatchedFits_Type2Model_AR)){
-  print(MisMatchedFits_Type2Model_AR[[i]], pars = c("r", "B", "b", "e", "delta"),
-        probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-T1Data.T2Model_AR.Fit1 <- MisMatchedFits_Type2Model_AR[[1]]
-T1Data.T2Model_AR.Fit2 <- MisMatchedFits_Type2Model_AR[[2]]
-T1Data.T2Model_AR.Fit3 <- MisMatchedFits_Type2Model_AR[[3]]
-T1Data.T2Model_AR.Fit4 <- MisMatchedFits_Type2Model_AR[[4]]
-T1Data.T2Model_AR.Fit5 <- MisMatchedFits_Type2Model_AR[[5]]
-T3Data.T2Model_AR.Fit1 <- MisMatchedFits_Type2Model_AR[[6]]
-T3Data.T2Model_AR.Fit2 <- MisMatchedFits_Type2Model_AR[[7]]
-T3Data.T2Model_AR.Fit3 <- MisMatchedFits_Type2Model_AR[[8]]
-T3Data.T2Model_AR.Fit4 <- MisMatchedFits_Type2Model_AR[[9]]
-T3Data.T2Model_AR.Fit5 <- MisMatchedFits_Type2Model_AR[[10]]
-
-MisMatchedFits_Type3Model_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR_DampOscOnly.rds")
-for (i in 1:length(MisMatchedFits_Type3Model_AR)){
-  print(MisMatchedFits_Type3Model_AR[[i]], pars = c("r", "B", "b", "e", "delta"),
-        probs = c(0.1, 0.5, 0.9), digits = 3)
-}
-T1Data.T3Model_AR.Fit1 <- MisMatchedFits_Type3Model_AR[[1]]
-T1Data.T3Model_AR.Fit2 <- MisMatchedFits_Type3Model_AR[[2]]
-T1Data.T3Model_AR.Fit3 <- MisMatchedFits_Type3Model_AR[[3]]
-T1Data.T3Model_AR.Fit4 <- MisMatchedFits_Type3Model_AR[[4]]
-T1Data.T3Model_AR.Fit5 <- MisMatchedFits_Type3Model_AR[[5]]
-T2Data.T3Model_AR.Fit1 <- MisMatchedFits_Type3Model_AR[[6]]
-T2Data.T3Model_AR.Fit2 <- MisMatchedFits_Type3Model_AR[[7]]
-T2Data.T3Model_AR.Fit3 <- MisMatchedFits_Type3Model_AR[[8]]
-T2Data.T3Model_AR.Fit4 <- MisMatchedFits_Type3Model_AR[[9]]
-T2Data.T3Model_AR.Fit5 <- MisMatchedFits_Type3Model_AR[[10]]
+saveRDS(MFP3Model_MisMatch_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_AR_FullCross.rds")
 ```
 
 ## Mis-Match Summary
+
 ```{r}
-Names <- c("A.1", "A.2", "A.3", "A.4", "A.5", # 1-5
-           "T1.1", "T1.2", "T1.3", "T1.4", "T1.5", # 6-10
-           "T2.DO.1", "T2.DO.2", "T2.DO.3", "T2.DO.4", "T2.DO.5", # 11-15
-           "T2.SLC.1", "T2.SLC.2", "T2.SLC.3", "T2.SLC.4", "T2.SLC.5", # 16-20
-           "T2.DivOsc.1", "T2.DivOsc.2", "T2.DivOsc.3", "T2.DivOsc.4", "T2.DivOsc.5", # 21-25
-           "T3.1", "T3.2", "T3.3", "T3.4", "T3.5") # 26-30
-
-# Global
-AntiaModel_MisMatch_G <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_FullCross.rds") 
-# 1-5: T1,TS 1-5; 6-10: T2 DO, TS 1-5; 11-15: T2 SLC, TS 1-5; 16-20: T2 DivOsc, TS 1-5; 21-25: T3
-names(AntiaModel_MisMatch_G) <- Names[6:30]
-
-MFP1Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_FullCross.rds") # Antia, MFP2 (SLC and DivOsc)
-names(MFP1Model_FullCross) <- Names[c(1:5, 16:25)]
-MFP1Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_DampOscOnly.rds") # MFP2 DO, MFP3
-names(MFP1Model_DampOscOnly) <- Names[c(11:15, 26:30)]
-MFP1Model_MisMatch_G <- c(MFP1Model_FullCross[c(1:5)], MFP1Model_DampOscOnly[c(1:5)], MFP1Model_FullCross[c(6:15)], MFP1Model_DampOscOnly[c(6:10)])
-
-MFP2Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_FullCross.rds") # Antia
-names(MFP2Model_FullCross) <- Names[1:5]
-MFP2Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_DampOscOnly.rds") # MFP1, MFP3
-names(MFP2Model_DampOscOnly) <- Names[c(6:10, 26:30)]
-MFP2Model_MisMatch_G <- c(MFP2Model_FullCross[c(1:5)], MFP2Model_DampOscOnly[c(1:10)])
-
-MFP3Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_FullCross.rds") # Antia, MFP2 (SLC, DivOsc)
-names(MFP3Model_FullCross) <- Names[c(1:5, 16:25)]
-MFP3Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_DampOscOnly.rds") # MFP1, MFP2 DO
-names(MFP3Model_DampOscOnly) <- Names[6:15]
-MFP3Model_MisMatch_G <- c(MFP3Model_FullCross[c(1:5)], MFP3Model_DampOscOnly[c(1:10)], MFP3Model_FullCross[c(6:15)])
-
-# AR
-AntiaModel_MisMatch_AR <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_AntiaModel_AR_FullCross.rds") 
-names(AntiaModel_MisMatch_AR) <- Names[6:30]
-
-MFP1Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP1Model_AR_FullCross.rds") 
-names(MFP1Model_FullCross) <- Names[c(1:5, 16:25)]
-MFP1Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type1Model_AR_DampOscOnly.rds") 
-names(MFP1Model_DampOscOnly) <- Names[c(11:15, 26:30)]
-MFP1Model_MisMatch_AR <- c(MFP1Model_FullCross[c(1:5)], MFP1Model_DampOscOnly[c(1:5)], MFP1Model_FullCross[c(6:15)], MFP1Model_DampOscOnly[c(6:10)])
-
-MFP2Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP2Model_AR_FullCross.rds") 
-names(MFP2Model_FullCross) <- Names[1:5]
-MFP2Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type2Model_AR_DampOscOnly.rds") 
-names(MFP2Model_DampOscOnly) <- Names[c(6:10, 26:30)]
-MFP2Model_MisMatch_AR <- c(MFP2Model_FullCross[c(1:5)], MFP2Model_DampOscOnly[c(1:10)])
-
-MFP3Model_FullCross <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_AR_FullCross.rds")
-names(MFP3Model_FullCross) <- Names[c(1:5, 16:25)]
-MFP3Model_DampOscOnly <- readRDS("2_FitObjects/MismatchedFits/MisMatchedFits_Type3Model_AR_DampOscOnly.rds") 
-names(MFP3Model_DampOscOnly) <- Names[6:15]
-MFP3Model_MisMatch_AR <- c(MFP3Model_FullCross[c(1:5)], MFP3Model_DampOscOnly[c(1:10)], MFP3Model_FullCross[c(6:15)])
-
 # Convergence: Antia, Global
 for(i in 1:5){
   print(AntiaModel_MisMatch_G[[i]], pars = c("r", "k", "p", "o"),
@@ -11700,6 +11422,216 @@ for(i in 21:25){
   print(MFP3Model_MisMatch_G[[i]], pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]"),
         probs = c(0.1, 0.5, 0.9), digits = 3)
 } # T2 DivOsc: 1 (5)
+
+# Convergence: Antia, AR
+for (i in 1:length(AntiaModel_MisMatch_AR)){
+  print(AntiaModel_MisMatch_AR[[i]], pars = c("r", "k", "p", "o"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+
+# Convergence: MFP1, AR
+for (i in 1:length(MFP1Model_MisMatch_AR)){
+  print(MFP1Model_MisMatch_AR[[i]], pars = c("r", "B", "b", "e", "delta"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+
+# Convergence: MFP2, AR
+for (i in 1:length(MFP2Model_MisMatch_AR)){
+  print(MFP2Model_MisMatch_AR[[i]], pars = c("r", "B", "h", "b", "e", "delta"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+
+# Convergence: MFP3, AR
+for (i in 1:length(MFP3Model_MisMatch_AR)){
+  print(MFP3Model_MisMatch_AR[[i]], pars = c("r", "B", "h", "b", "e", "delta"),
+        probs = c(0.1, 0.5, 0.9), digits = 3)
+}
+```
+
+Global Fitting, Full Cross
+
++---------------+----------------+-------------+-----------------------+-------------------+----------------------+--------------+
+|               | Antia Data     | MFP I Data  | MFP II (DampOsc) Data | MFP II (SLC) Data | MFP II (DivOsc) Data | MFP III Data |
++---------------+----------------+-------------+-----------------------+-------------------+----------------------+--------------+
+| Antia Model   | **5**          | 2 (2, 3)    | 1 (1)                 | 4 (2, 3, 4, 5)    | 3 (1, 3, 4)          | 1 (5)        |
++---------------+----------------+-------------+-----------------------+-------------------+----------------------+--------------+
+| MFP I Model   | 5 (1-5)        | **4**       | 5 (1-5)               | 4 (1, 2, 3, 5)    | 4 (1, 2, 3, 5)       | 5 (1-5)      |
++---------------+----------------+-------------+-----------------------+-------------------+----------------------+--------------+
+| MFP II Model  | 4 (1, 3, 4, 5) | 3 (1, 3, 5) | **2**                 | **3**             | **2**                | 2 (3, 5)     |
++---------------+----------------+-------------+-----------------------+-------------------+----------------------+--------------+
+| MFP III Model | 3 (2, 4, 5)    | 0           | 0                     | 0                 | 0                    | **4**        |
++---------------+----------------+-------------+-----------------------+-------------------+----------------------+--------------+
+
+AR Fitting, Full Cross
+
++---------------+-------------+------------+-----------------------+-------------------+----------------------+--------------+
+|               | Antia Data  | MFP I Data | MFP II (DampOsc) Data | MFP II (SLC) Data | MFP II (DivOsc) Data | MFP III Data |
++---------------+-------------+------------+-----------------------+-------------------+----------------------+--------------+
+| Antia Model   | **5**       | 5 (1-5)    | 1 (4)                 | 1 (1)             | 0                    | 3 (2, 3, 5)  |
++---------------+-------------+------------+-----------------------+-------------------+----------------------+--------------+
+| MFP I Model   | 3 (2, 3, 4) | **5**      | 0                     | 0                 | 0                    | 0            |
++---------------+-------------+------------+-----------------------+-------------------+----------------------+--------------+
+| MFP II Model  | 5 (1-5)     | 0          | **5**                 | **5**             | **5**                | 5 (1-5)      |
++---------------+-------------+------------+-----------------------+-------------------+----------------------+--------------+
+| MFP III Model | 5 (1-5)     | 0          | 5 (1-5)               | 5 (1-5)           | 5 (1-5)              | **5**        |
++---------------+-------------+------------+-----------------------+-------------------+----------------------+--------------+
+
+## Mis-Match Model Sims
+
+### Antia Model, Global Fit
+
+```{r}
+## Pulling Posterior
+Output.MFP1.TS2 <- rstan::extract(AntiaModel_MisMatch_G[["T1.2"]], permuted = TRUE, include = TRUE)
+Output.MFP1.TS3 <- rstan::extract(AntiaModel_MisMatch_G[["T1.2"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DO.TS1 <- rstan::extract(AntiaModel_MisMatch_G[["T2.DO.1"]], permuted = TRUE, include = TRUE)
+Output.MFP2.SLC.TS2 <- rstan::extract(AntiaModel_MisMatch_G[["T2.SLC.2"]], permuted = TRUE, include = TRUE)
+Output.MFP2.SLC.TS3 <- rstan::extract(AntiaModel_MisMatch_G[["T2.SLC.3"]], permuted = TRUE, include = TRUE)
+Output.MFP2.SLC.TS4 <- rstan::extract(AntiaModel_MisMatch_G[["T2.SLC.4"]], permuted = TRUE, include = TRUE)
+Output.MFP2.SLC.TS5 <- rstan::extract(AntiaModel_MisMatch_G[["T2.SLC.5"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DivOsc.TS1 <- rstan::extract(AntiaModel_MisMatch_G[["T2.DivOsc.1"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DivOsc.TS3 <- rstan::extract(AntiaModel_MisMatch_G[["T2.DivOsc.3"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DivOsc.TS4 <- rstan::extract(AntiaModel_MisMatch_G[["T2.DivOsc.4"]], permuted = TRUE, include = TRUE)
+Output.MFP3.TS5 <- rstan::extract(AntiaModel_MisMatch_G[["T3.5"]], permuted = TRUE, include = TRUE)
+
+## Wrangling 2
+Est.MFP1.TS2 <- data.frame(Output.MFP1.TS2$y_rep); Est.Means.MFP1.TS2 <- Est.MFP1.TS2 %>% summarise(across(.cols = everything(),
+                                                                                                           .fns = mean))
+Est.MFP1.TS3 <- data.frame(Output.MFP1.TS3$y_rep); Est.Means.MFP1.TS3 <- Est.MFP1.TS3 %>% summarise(across(.cols = everything(),
+                                                                                                           .fns = mean))
+Est.MFP2.DO.TS1 <- data.frame(Output.MFP2.DO.TS1$y_rep); Est.Means.MFP2.DO.TS1 <- Est.MFP2.DO.TS1 %>% summarise(across(.cols = everything(),
+                                                                                                                       .fns = mean))
+Est.MFP2.SLC.TS2 <- data.frame(Output.MFP2.SLC.TS2$y_rep); Est.Means.MFP2.SLC.TS2 <- Est.MFP2.SLC.TS2 %>% summarise(across(.cols = everything(),
+                                                                                                                           .fns = mean))
+Est.MFP2.SLC.TS3 <- data.frame(Output.MFP2.SLC.TS3$y_rep); Est.Means.MFP2.SLC.TS3 <- Est.MFP2.SLC.TS3 %>% summarise(across(.cols = everything(),
+                                                                                                                           .fns = mean))
+Est.MFP2.SLC.TS4 <- data.frame(Output.MFP2.SLC.TS4$y_rep); Est.Means.MFP2.SLC.TS4 <- Est.MFP2.SLC.TS4 %>% summarise(across(.cols = everything(),
+                                                                                                                           .fns = mean))
+Est.MFP2.SLC.TS5 <- data.frame(Output.MFP2.SLC.TS5$y_rep); Est.Means.MFP2.SLC.TS5 <- Est.MFP2.SLC.TS5 %>% summarise(across(.cols = everything(),
+                                                                                                                           .fns = mean))
+Est.MFP2.DivOsc.TS1 <- data.frame(Output.MFP2.DivOsc.TS1$y_rep); Est.Means.MFP2.DivOsc.TS1 <- Est.MFP2.DivOsc.TS1 %>% summarise(across(.cols = everything(),
+                                                                                                                                       .fns = mean))
+Est.MFP2.DivOsc.TS3 <- data.frame(Output.MFP2.DivOsc.TS3$y_rep); Est.Means.MFP2.DivOsc.TS3 <- Est.MFP2.DivOsc.TS3 %>% summarise(across(.cols = everything(),
+                                                                                                                                       .fns = mean))
+Est.MFP2.DivOsc.TS4 <- data.frame(Output.MFP2.DivOsc.TS4$y_rep); Est.Means.MFP2.DivOsc.TS4 <- Est.MFP2.DivOsc.TS4 %>% summarise(across(.cols = everything(),
+                                                                                                                                       .fns = mean))
+Est.MFP3.TS5 <- data.frame(Output.MFP3.TS5$y_rep); Est.Means.MFP3.TS5 <- Est.MFP3.TS5 %>% summarise(across(.cols = everything(),
+                                                                                                           .fns = mean))
+## Wrangling 2
+x <- ncol(Est.Means.MFP1.TS2)/2
+Est.Means.MFP1.TS2.P <- Est.Means.MFP1.TS2[-c(x + 1:ncol(Est.Means.MFP1.TS2))]; Est.Means.MFP1.TS2.I <- Est.Means.MFP1.TS2[-c(1:x)]
+Est.Means.MFP1.TS2.P <- t(Est.Means.MFP1.TS2.P); Est.Means.MFP1.TS2.I <- t(Est.Means.MFP1.TS2.I)
+
+x <- ncol(Est.Means.MFP1.TS3)/2
+Est.Means.MFP1.TS3.P <- Est.Means.MFP1.TS3[-c(x + 1:ncol(Est.Means.MFP1.TS3))]; Est.Means.MFP1.TS3.I <- Est.Means.MFP1.TS3[-c(1:x)]
+Est.Means.MFP1.TS3.P <- t(Est.Means.MFP1.TS3.P); Est.Means.MFP1.TS3.I <- t(Est.Means.MFP1.TS3.I)
+
+x <- ncol(Est.Means.MFP2.DO.TS1)/2
+Est.Means.MFP2.DO.TS1.P <- Est.Means.MFP2.DO.TS1[-c(x + 1:ncol(Est.Means.MFP2.DO.TS1))]; Est.Means.MFP2.DO.TS1.I <- Est.Means.MFP2.DO.TS1[-c(1:x)]
+Est.Means.MFP2.DO.TS1.P <- t(Est.Means.MFP2.DO.TS1.P); Est.Means.MFP2.DO.TS1.I <- t(Est.Means.MFP2.DO.TS1.I)
+
+x <- ncol(Est.Means.MFP2.SLC.TS2)/2
+Est.Means.MFP2.SLC.TS2.P <- Est.Means.MFP2.SLC.TS2[-c(x + 1:ncol(Est.Means.MFP2.SLC.TS2))]; Est.Means.MFP2.SLC.TS2.I <- Est.Means.MFP2.SLC.TS2[-c(1:x)]
+Est.Means.MFP2.SLC.TS2.P <- t(Est.Means.MFP2.SLC.TS2.P); Est.Means.MFP2.SLC.TS2.I <- t(Est.Means.MFP2.SLC.TS2.I)
+
+x <- ncol(Est.Means.MFP2.SLC.TS3)/2
+Est.Means.MFP2.SLC.TS3.P <- Est.Means.MFP2.SLC.TS3[-c(x + 1:ncol(Est.Means.MFP2.SLC.TS3))]; Est.Means.MFP2.SLC.TS3.I <- Est.Means.MFP2.SLC.TS3[-c(1:x)]
+Est.Means.MFP2.SLC.TS3.P <- t(Est.Means.MFP2.SLC.TS3.P); Est.Means.MFP2.SLC.TS3.I <- t(Est.Means.MFP2.SLC.TS3.I)
+
+x <- ncol(Est.Means.MFP2.SLC.TS4)/2
+Est.Means.MFP2.SLC.TS4.P <- Est.Means.MFP2.SLC.TS4[-c(x + 1:ncol(Est.Means.MFP2.SLC.TS4))]; Est.Means.MFP2.SLC.TS4.I <- Est.Means.MFP2.SLC.TS4[-c(1:x)]
+Est.Means.MFP2.SLC.TS4.P <- t(Est.Means.MFP2.SLC.TS4.P); Est.Means.MFP2.SLC.TS4.I <- t(Est.Means.MFP2.SLC.TS4.I)
+
+x <- ncol(Est.Means.MFP2.SLC.TS5)/2
+Est.Means.MFP2.SLC.TS5.P <- Est.Means.MFP2.SLC.TS5[-c(x + 1:ncol(Est.Means.MFP2.SLC.TS5))]; Est.Means.MFP2.SLC.TS5.I <- Est.Means.MFP2.SLC.TS5[-c(1:x)]
+Est.Means.MFP2.SLC.TS5.P <- t(Est.Means.MFP2.SLC.TS5.P); Est.Means.MFP2.SLC.TS5.I <- t(Est.Means.MFP2.SLC.TS5.I)
+
+x <- ncol(Est.Means.MFP2.DivOsc.TS1)/2
+Est.Means.MFP2.DivOsc.TS1.P <- Est.Means.MFP2.DivOsc.TS1[-c(x + 1:ncol(Est.Means.MFP2.DivOsc.TS1))]; Est.Means.MFP2.DivOsc.TS1.I <- Est.Means.MFP2.DivOsc.TS1[-c(1:x)]
+Est.Means.MFP2.DivOsc.TS1.P <- t(Est.Means.MFP2.DivOsc.TS1.P); Est.Means.MFP2.DivOsc.TS1.I <- t(Est.Means.MFP2.DivOsc.TS1.I)
+
+x <- ncol(Est.Means.MFP2.DivOsc.TS3)/2
+Est.Means.MFP2.DivOsc.TS3.P <- Est.Means.MFP2.DivOsc.TS3[-c(x + 1:ncol(Est.Means.MFP2.DivOsc.TS3))]; Est.Means.MFP2.DivOsc.TS3.I <- Est.Means.MFP2.DivOsc.TS3[-c(1:x)]
+Est.Means.MFP2.DivOsc.TS3.P <- t(Est.Means.MFP2.DivOsc.TS3.P); Est.Means.MFP2.DivOsc.TS3.I <- t(Est.Means.MFP2.DivOsc.TS3.I)
+
+x <- ncol(Est.Means.MFP2.DivOsc.TS4)/2
+Est.Means.MFP2.DivOsc.TS4.P <- Est.Means.MFP2.DivOsc.TS4[-c(x + 1:ncol(Est.Means.MFP2.DivOsc.TS4))]; Est.Means.MFP2.DivOsc.TS4.I <- Est.Means.MFP2.DivOsc.TS4[-c(1:x)]
+Est.Means.MFP2.DivOsc.TS4.P <- t(Est.Means.MFP2.DivOsc.TS4.P); Est.Means.MFP2.DivOsc.TS4.I <- t(Est.Means.MFP2.DivOsc.TS4.I)
+
+x <- ncol(Est.Means.MFP3.TS5)/2
+Est.Means.MFP3.TS5.P <- Est.Means.MFP3.TS5[-c(x + 1:ncol(Est.Means.MFP3.TS5))]; Est.Means.MFP3.TS5.I <- Est.Means.MFP3.TS5[-c(1:x)]
+Est.Means.MFP3.TS5.P <- t(Est.Means.MFP3.TS5.P); Est.Means.MFP3.TS5.I <- t(Est.Means.MFP3.TS5.I)
+
+## Plotting
+MFP1.2.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_2.csv")
+plot(x = 1:nrow(MFP1.2.Dat), y = MFP1.2.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 40000))
+lines(x = 1:nrow(MFP1.2.Dat), y = MFP1.2.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP1.TS2.P), y = Est.Means.MFP1.TS2.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP1.TS2.I), y = Est.Means.MFP1.TS2.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP1.3.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_3.csv")
+plot(x = 1:nrow(MFP1.3.Dat), y = MFP1.3.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 40000))
+lines(x = 1:nrow(MFP1.3.Dat), y = MFP1.3.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP1.TS3.P), y = Est.Means.MFP1.TS3.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP1.TS3.I), y = Est.Means.MFP1.TS3.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.DO.1.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_1.csv")
+plot(x = 1:nrow(MFP2.DO.1.Dat), y = MFP2.DO.1.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 500))
+lines(x = 1:nrow(MFP2.DO.1.Dat), y = MFP2.DO.1.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.DO.TS1.P), y = Est.Means.MFP2.DO.TS1.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.DO.TS1.I), y = Est.Means.MFP2.DO.TS1.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.SLC.2.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_2.csv")
+plot(x = 1:nrow(MFP2.SLC.2.Dat), y = MFP2.SLC.2.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 350))
+lines(x = 1:nrow(MFP2.SLC.2.Dat), y = MFP2.SLC.2.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS2.P), y = Est.Means.MFP2.SLC.TS2.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS2.I), y = Est.Means.MFP2.SLC.TS2.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.SLC.3.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_3.csv")
+plot(x = 1:nrow(MFP2.SLC.3.Dat), y = MFP2.SLC.3.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.SLC.3.Dat), y = MFP2.SLC.3.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS3.P), y = Est.Means.MFP2.SLC.TS3.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS3.I), y = Est.Means.MFP2.SLC.TS3.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.SLC.4.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_4.csv")
+plot(x = 1:nrow(MFP2.SLC.4.Dat), y = MFP2.SLC.4.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.SLC.4.Dat), y = MFP2.SLC.4.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS4.P), y = Est.Means.MFP2.SLC.TS4.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS4.I), y = Est.Means.MFP2.SLC.TS4.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.SLC.5.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_5.csv")
+plot(x = 1:nrow(MFP2.SLC.5.Dat), y = MFP2.SLC.5.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.SLC.5.Dat), y = MFP2.SLC.5.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS5.P), y = Est.Means.MFP2.SLC.TS5.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS5.I), y = Est.Means.MFP2.SLC.TS5.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.DivOsc.1.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_1.csv")
+plot(x = 1:nrow(MFP2.DivOsc.1.Dat), y = MFP2.DivOsc.1.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 350))
+lines(x = 1:nrow(MFP2.DivOsc.1.Dat), y = MFP2.DivOsc.1.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS1.P), y = Est.Means.MFP2.DivOsc.TS1.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS1.I), y = Est.Means.MFP2.DivOsc.TS1.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.DivOsc.3.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_3.csv")
+plot(x = 1:nrow(MFP2.DivOsc.3.Dat), y = MFP2.DivOsc.3.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.DivOsc.3.Dat), y = MFP2.DivOsc.3.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS3.P), y = Est.Means.MFP2.DivOsc.TS3.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS3.I), y = Est.Means.MFP2.DivOsc.TS3.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.DivOsc.4.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_4.csv")
+plot(x = 1:nrow(MFP2.DivOsc.4.Dat), y = MFP2.DivOsc.4.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.DivOsc.4.Dat), y = MFP2.DivOsc.4.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS4.P), y = Est.Means.MFP2.DivOsc.TS4.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS4.I), y = Est.Means.MFP2.DivOsc.TS4.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
 ```
 
 # Sensitivity Analysis
@@ -11707,8 +11639,6 @@ for(i in 21:25){
 ## Global Model
 
 ### Mod. Fenton and Perkins, Type II FR, Damping Oscillations
-- Differs from SLC in: $\beta$, h, e, $\delta$  
-- Differs from Div. Osc. in: $\beta$, h, e, $\delta$  
 
 ```{r}
 # post.1 <- rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
@@ -11805,8 +11735,6 @@ length(which(Is.DampOsc == "Y"))/length(Is.DampOsc)
 ```
 
 ### Mod. Fenton and Perkins, Type II FR, Stable Limit Cycle
-- Differs from Damp. Osc. in: $\beta$, h, e, $\delta$  
-- Differs from Div. Osc. in: $\delta$  
 
 ```{r}
 # Posterior time series
@@ -11840,8 +11768,6 @@ for (i in 1:ncol(TS5.P)){
 ```
 
 ### Mod. Fenton and Perkins, Type II FR, Divergent Oscillations
-- Differs from Damp. Osc. in: $\beta$, h, e, $\delta$  
-- Differs from SLC in: $\delta$  
 
 ```{r}
 # Posterior time series
@@ -11870,8 +11796,6 @@ for (i in 1:ncol(TS5.P)){
 ## Autoregressive Model
 
 ### Mod. Fenton and Perkins, Type II FR, Damping Oscillations
-- Differs from SLC in: r  
-- Differs from Div. Osc. in: r, $\delta$  
 
 ```{r}
 post.1 <- rstan::extract(MFP.II.DampOsc.1.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"))
@@ -11940,8 +11864,6 @@ length(which(Is.DampOsc == "Y"))/length(Is.DampOsc) # 84.27%
 ```
 
 ### Mod. Fenton and Perkins, Type II FR, Stable Limit Cycle
-- Differs from Damp. Osc. in: r  
-- Differs from Div. Osc. in: $\delta$  
 
 ```{r}
 post.1 <- rstan::extract(MFP.II.SLC.1.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"))
@@ -12010,8 +11932,6 @@ length(which(Is.SLC == "Y"))/length(Is.SLC) # 24.19%
 ```
 
 ### Mod. Fenton and Perkins, Type II FR, Divergent Oscillations
-- Differs from Damp. Osc. in: r, $\delta$  
-- Differs from SLC in: $\delta$  
 
 ```{r}
 post.1 <- rstan::extract(MFP.II.DivOsc.1.AR.Fit, pars = c("r", "B", "h", "b", "e", "delta"))
@@ -12078,8 +11998,3 @@ for (i in 1:n.sim){
 }
 length(which(Is.DivOsc == "Y"))/length(Is.DivOsc) # 72.32% 
 ```
-
-
-
-
-
