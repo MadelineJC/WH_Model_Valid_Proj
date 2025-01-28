@@ -9110,9 +9110,7 @@ lines(ModFentonPerkins_Est$Time, ModFentonPerkins_Est$I, col = "cornflowerblue",
 # legend("topleft", legend = c("Data", "Estimate"), lty = c(1, 3))
 ```
 
-# PLOTTING
-
-# Posterior Distributions of Parameter Estimates
+# PLOTTING POSTERIOR DISTRIBUTIONS
 
 ## Antia et al. (1994)
 
@@ -11189,7 +11187,7 @@ x.lab <- textGrob("Generating Model and Corresponding Time Series")
 grid.arrange(arrangeGrob(AR.Plots, top = title, bottom = x.lab))
 ```
 
-# Fitting Models to Mis-Matched Data
+# FITTING MODELS TO MIS-MATCHED DATA
 
 ## Global Framework
 
@@ -11326,7 +11324,7 @@ for(i in 1:length(MFP3Model_StanData_List)){
 saveRDS(MFP3Model_MisMatch_AR, "2_FitObjects/MismatchedFits/MisMatchedFits_MFP3Model_AR_FullCross.rds")
 ```
 
-## Mis-Match Summary
+## Convergence Assessment
 
 ```{r}
 # Convergence: Antia, Global
@@ -11476,7 +11474,7 @@ AR Fitting, Full Cross
 | MFP III Model | 5 (1-5)     | 0          | 5 (1-5)               | 5 (1-5)           | 5 (1-5)              | **5**        |
 +---------------+-------------+------------+-----------------------+-------------------+----------------------+--------------+
 
-## Mis-Match Model Sims
+## Behavioural Simulations
 
 ### Antia Model, Global Fit
 
@@ -11634,7 +11632,175 @@ lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS4.P), y = Est.Means.MFP2.DivOsc.TS4.P[ 
 lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS4.I), y = Est.Means.MFP2.DivOsc.TS4.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
 ```
 
-# Sensitivity Analysis
+### MFP1 Model, Global Fit
+
+```{r}
+## Pulling Posterior
+Output.A.TS1 <- rstan::extract(MFP1Model_MisMatch_G[["A.1"]], permuted = TRUE, include = TRUE)
+Output.A.TS2 <- rstan::extract(MFP1Model_MisMatch_G[["A.2"]], permuted = TRUE, include = TRUE)
+Output.A.TS3 <- rstan::extract(MFP1Model_MisMatch_G[["A.3"]], permuted = TRUE, include = TRUE)
+Output.A.TS4 <- rstan::extract(MFP1Model_MisMatch_G[["A.4"]], permuted = TRUE, include = TRUE)
+Output.A.TS5 <- rstan::extract(MFP1Model_MisMatch_G[["A.5"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DO.TS1 <- rstan::extract(MFP1Model_MisMatch_G[["T2.DO.1"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DO.TS2 <- rstan::extract(MFP1Model_MisMatch_G[["T2.DO.2"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DO.TS3 <- rstan::extract(MFP1Model_MisMatch_G[["T2.DO.3"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DO.TS4 <- rstan::extract(MFP1Model_MisMatch_G[["T2.DO.4"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DO.TS5 <- rstan::extract(MFP1Model_MisMatch_G[["T2.DO.5"]], permuted = TRUE, include = TRUE)
+Output.MFP2.SLC.TS1 <- rstan::extract(MFP1Model_MisMatch_G[["T2.SLC.1"]], permuted = TRUE, include = TRUE)
+Output.MFP2.SLC.TS2 <- rstan::extract(MFP1Model_MisMatch_G[["T2.SLC.2"]], permuted = TRUE, include = TRUE)
+Output.MFP2.SLC.TS3 <- rstan::extract(MFP1Model_MisMatch_G[["T2.SLC.3"]], permuted = TRUE, include = TRUE)
+Output.MFP2.SLC.TS5 <- rstan::extract(MFP1Model_MisMatch_G[["T2.SLC.5"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DivOsc.TS1 <- rstan::extract(MFP1Model_MisMatch_G[["T2.DivOsc.1"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DivOsc.TS2 <- rstan::extract(MFP1Model_MisMatch_G[["T2.DivOsc.2"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DivOsc.TS3 <- rstan::extract(MFP1Model_MisMatch_G[["T2.DivOsc.3"]], permuted = TRUE, include = TRUE)
+Output.MFP2.DivOsc.TS5 <- rstan::extract(MFP1Model_MisMatch_G[["T2.DivOsc.5"]], permuted = TRUE, include = TRUE)
+Output.MFP3.TS1 <- rstan::extract(MFP1Model_MisMatch_G[["T3.1"]], permuted = TRUE, include = TRUE)
+Output.MFP3.TS2 <- rstan::extract(MFP1Model_MisMatch_G[["T3.2"]], permuted = TRUE, include = TRUE)
+Output.MFP3.TS3 <- rstan::extract(MFP1Model_MisMatch_G[["T3.3"]], permuted = TRUE, include = TRUE)
+Output.MFP3.TS4 <- rstan::extract(MFP1Model_MisMatch_G[["T3.4"]], permuted = TRUE, include = TRUE)
+Output.MFP3.TS5 <- rstan::extract(MFP1Model_MisMatch_G[["T3.5"]], permuted = TRUE, include = TRUE)
+
+## Wrangling 2
+Est.MFP1.TS2 <- data.frame(Output.MFP1.TS2$y_rep); Est.Means.MFP1.TS2 <- Est.MFP1.TS2 %>% summarise(across(.cols = everything(),
+                                                                                                           .fns = mean))
+Est.MFP1.TS3 <- data.frame(Output.MFP1.TS3$y_rep); Est.Means.MFP1.TS3 <- Est.MFP1.TS3 %>% summarise(across(.cols = everything(),
+                                                                                                           .fns = mean))
+Est.MFP2.DO.TS1 <- data.frame(Output.MFP2.DO.TS1$y_rep); Est.Means.MFP2.DO.TS1 <- Est.MFP2.DO.TS1 %>% summarise(across(.cols = everything(),
+                                                                                                                       .fns = mean))
+Est.MFP2.SLC.TS2 <- data.frame(Output.MFP2.SLC.TS2$y_rep); Est.Means.MFP2.SLC.TS2 <- Est.MFP2.SLC.TS2 %>% summarise(across(.cols = everything(),
+                                                                                                                           .fns = mean))
+Est.MFP2.SLC.TS3 <- data.frame(Output.MFP2.SLC.TS3$y_rep); Est.Means.MFP2.SLC.TS3 <- Est.MFP2.SLC.TS3 %>% summarise(across(.cols = everything(),
+                                                                                                                           .fns = mean))
+Est.MFP2.SLC.TS4 <- data.frame(Output.MFP2.SLC.TS4$y_rep); Est.Means.MFP2.SLC.TS4 <- Est.MFP2.SLC.TS4 %>% summarise(across(.cols = everything(),
+                                                                                                                           .fns = mean))
+Est.MFP2.SLC.TS5 <- data.frame(Output.MFP2.SLC.TS5$y_rep); Est.Means.MFP2.SLC.TS5 <- Est.MFP2.SLC.TS5 %>% summarise(across(.cols = everything(),
+                                                                                                                           .fns = mean))
+Est.MFP2.DivOsc.TS1 <- data.frame(Output.MFP2.DivOsc.TS1$y_rep); Est.Means.MFP2.DivOsc.TS1 <- Est.MFP2.DivOsc.TS1 %>% summarise(across(.cols = everything(),
+                                                                                                                                       .fns = mean))
+Est.MFP2.DivOsc.TS3 <- data.frame(Output.MFP2.DivOsc.TS3$y_rep); Est.Means.MFP2.DivOsc.TS3 <- Est.MFP2.DivOsc.TS3 %>% summarise(across(.cols = everything(),
+                                                                                                                                       .fns = mean))
+Est.MFP2.DivOsc.TS4 <- data.frame(Output.MFP2.DivOsc.TS4$y_rep); Est.Means.MFP2.DivOsc.TS4 <- Est.MFP2.DivOsc.TS4 %>% summarise(across(.cols = everything(),
+                                                                                                                                       .fns = mean))
+Est.MFP3.TS5 <- data.frame(Output.MFP3.TS5$y_rep); Est.Means.MFP3.TS5 <- Est.MFP3.TS5 %>% summarise(across(.cols = everything(),
+                                                                                                           .fns = mean))
+## Wrangling 2
+x <- ncol(Est.Means.MFP1.TS2)/2
+Est.Means.MFP1.TS2.P <- Est.Means.MFP1.TS2[-c(x + 1:ncol(Est.Means.MFP1.TS2))]; Est.Means.MFP1.TS2.I <- Est.Means.MFP1.TS2[-c(1:x)]
+Est.Means.MFP1.TS2.P <- t(Est.Means.MFP1.TS2.P); Est.Means.MFP1.TS2.I <- t(Est.Means.MFP1.TS2.I)
+
+x <- ncol(Est.Means.MFP1.TS3)/2
+Est.Means.MFP1.TS3.P <- Est.Means.MFP1.TS3[-c(x + 1:ncol(Est.Means.MFP1.TS3))]; Est.Means.MFP1.TS3.I <- Est.Means.MFP1.TS3[-c(1:x)]
+Est.Means.MFP1.TS3.P <- t(Est.Means.MFP1.TS3.P); Est.Means.MFP1.TS3.I <- t(Est.Means.MFP1.TS3.I)
+
+x <- ncol(Est.Means.MFP2.DO.TS1)/2
+Est.Means.MFP2.DO.TS1.P <- Est.Means.MFP2.DO.TS1[-c(x + 1:ncol(Est.Means.MFP2.DO.TS1))]; Est.Means.MFP2.DO.TS1.I <- Est.Means.MFP2.DO.TS1[-c(1:x)]
+Est.Means.MFP2.DO.TS1.P <- t(Est.Means.MFP2.DO.TS1.P); Est.Means.MFP2.DO.TS1.I <- t(Est.Means.MFP2.DO.TS1.I)
+
+x <- ncol(Est.Means.MFP2.SLC.TS2)/2
+Est.Means.MFP2.SLC.TS2.P <- Est.Means.MFP2.SLC.TS2[-c(x + 1:ncol(Est.Means.MFP2.SLC.TS2))]; Est.Means.MFP2.SLC.TS2.I <- Est.Means.MFP2.SLC.TS2[-c(1:x)]
+Est.Means.MFP2.SLC.TS2.P <- t(Est.Means.MFP2.SLC.TS2.P); Est.Means.MFP2.SLC.TS2.I <- t(Est.Means.MFP2.SLC.TS2.I)
+
+x <- ncol(Est.Means.MFP2.SLC.TS3)/2
+Est.Means.MFP2.SLC.TS3.P <- Est.Means.MFP2.SLC.TS3[-c(x + 1:ncol(Est.Means.MFP2.SLC.TS3))]; Est.Means.MFP2.SLC.TS3.I <- Est.Means.MFP2.SLC.TS3[-c(1:x)]
+Est.Means.MFP2.SLC.TS3.P <- t(Est.Means.MFP2.SLC.TS3.P); Est.Means.MFP2.SLC.TS3.I <- t(Est.Means.MFP2.SLC.TS3.I)
+
+x <- ncol(Est.Means.MFP2.SLC.TS4)/2
+Est.Means.MFP2.SLC.TS4.P <- Est.Means.MFP2.SLC.TS4[-c(x + 1:ncol(Est.Means.MFP2.SLC.TS4))]; Est.Means.MFP2.SLC.TS4.I <- Est.Means.MFP2.SLC.TS4[-c(1:x)]
+Est.Means.MFP2.SLC.TS4.P <- t(Est.Means.MFP2.SLC.TS4.P); Est.Means.MFP2.SLC.TS4.I <- t(Est.Means.MFP2.SLC.TS4.I)
+
+x <- ncol(Est.Means.MFP2.SLC.TS5)/2
+Est.Means.MFP2.SLC.TS5.P <- Est.Means.MFP2.SLC.TS5[-c(x + 1:ncol(Est.Means.MFP2.SLC.TS5))]; Est.Means.MFP2.SLC.TS5.I <- Est.Means.MFP2.SLC.TS5[-c(1:x)]
+Est.Means.MFP2.SLC.TS5.P <- t(Est.Means.MFP2.SLC.TS5.P); Est.Means.MFP2.SLC.TS5.I <- t(Est.Means.MFP2.SLC.TS5.I)
+
+x <- ncol(Est.Means.MFP2.DivOsc.TS1)/2
+Est.Means.MFP2.DivOsc.TS1.P <- Est.Means.MFP2.DivOsc.TS1[-c(x + 1:ncol(Est.Means.MFP2.DivOsc.TS1))]; Est.Means.MFP2.DivOsc.TS1.I <- Est.Means.MFP2.DivOsc.TS1[-c(1:x)]
+Est.Means.MFP2.DivOsc.TS1.P <- t(Est.Means.MFP2.DivOsc.TS1.P); Est.Means.MFP2.DivOsc.TS1.I <- t(Est.Means.MFP2.DivOsc.TS1.I)
+
+x <- ncol(Est.Means.MFP2.DivOsc.TS3)/2
+Est.Means.MFP2.DivOsc.TS3.P <- Est.Means.MFP2.DivOsc.TS3[-c(x + 1:ncol(Est.Means.MFP2.DivOsc.TS3))]; Est.Means.MFP2.DivOsc.TS3.I <- Est.Means.MFP2.DivOsc.TS3[-c(1:x)]
+Est.Means.MFP2.DivOsc.TS3.P <- t(Est.Means.MFP2.DivOsc.TS3.P); Est.Means.MFP2.DivOsc.TS3.I <- t(Est.Means.MFP2.DivOsc.TS3.I)
+
+x <- ncol(Est.Means.MFP2.DivOsc.TS4)/2
+Est.Means.MFP2.DivOsc.TS4.P <- Est.Means.MFP2.DivOsc.TS4[-c(x + 1:ncol(Est.Means.MFP2.DivOsc.TS4))]; Est.Means.MFP2.DivOsc.TS4.I <- Est.Means.MFP2.DivOsc.TS4[-c(1:x)]
+Est.Means.MFP2.DivOsc.TS4.P <- t(Est.Means.MFP2.DivOsc.TS4.P); Est.Means.MFP2.DivOsc.TS4.I <- t(Est.Means.MFP2.DivOsc.TS4.I)
+
+x <- ncol(Est.Means.MFP3.TS5)/2
+Est.Means.MFP3.TS5.P <- Est.Means.MFP3.TS5[-c(x + 1:ncol(Est.Means.MFP3.TS5))]; Est.Means.MFP3.TS5.I <- Est.Means.MFP3.TS5[-c(1:x)]
+Est.Means.MFP3.TS5.P <- t(Est.Means.MFP3.TS5.P); Est.Means.MFP3.TS5.I <- t(Est.Means.MFP3.TS5.I)
+
+## Plotting
+MFP1.2.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_2.csv")
+plot(x = 1:nrow(MFP1.2.Dat), y = MFP1.2.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 40000))
+lines(x = 1:nrow(MFP1.2.Dat), y = MFP1.2.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP1.TS2.P), y = Est.Means.MFP1.TS2.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP1.TS2.I), y = Est.Means.MFP1.TS2.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP1.3.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_3.csv")
+plot(x = 1:nrow(MFP1.3.Dat), y = MFP1.3.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 40000))
+lines(x = 1:nrow(MFP1.3.Dat), y = MFP1.3.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP1.TS3.P), y = Est.Means.MFP1.TS3.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP1.TS3.I), y = Est.Means.MFP1.TS3.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.DO.1.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_1.csv")
+plot(x = 1:nrow(MFP2.DO.1.Dat), y = MFP2.DO.1.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 500))
+lines(x = 1:nrow(MFP2.DO.1.Dat), y = MFP2.DO.1.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.DO.TS1.P), y = Est.Means.MFP2.DO.TS1.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.DO.TS1.I), y = Est.Means.MFP2.DO.TS1.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.SLC.2.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_2.csv")
+plot(x = 1:nrow(MFP2.SLC.2.Dat), y = MFP2.SLC.2.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 350))
+lines(x = 1:nrow(MFP2.SLC.2.Dat), y = MFP2.SLC.2.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS2.P), y = Est.Means.MFP2.SLC.TS2.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS2.I), y = Est.Means.MFP2.SLC.TS2.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.SLC.3.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_3.csv")
+plot(x = 1:nrow(MFP2.SLC.3.Dat), y = MFP2.SLC.3.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.SLC.3.Dat), y = MFP2.SLC.3.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS3.P), y = Est.Means.MFP2.SLC.TS3.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS3.I), y = Est.Means.MFP2.SLC.TS3.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.SLC.4.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_4.csv")
+plot(x = 1:nrow(MFP2.SLC.4.Dat), y = MFP2.SLC.4.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.SLC.4.Dat), y = MFP2.SLC.4.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS4.P), y = Est.Means.MFP2.SLC.TS4.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS4.I), y = Est.Means.MFP2.SLC.TS4.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.SLC.5.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_5.csv")
+plot(x = 1:nrow(MFP2.SLC.5.Dat), y = MFP2.SLC.5.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.SLC.5.Dat), y = MFP2.SLC.5.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS5.P), y = Est.Means.MFP2.SLC.TS5.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.SLC.TS5.I), y = Est.Means.MFP2.SLC.TS5.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.DivOsc.1.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_1.csv")
+plot(x = 1:nrow(MFP2.DivOsc.1.Dat), y = MFP2.DivOsc.1.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 350))
+lines(x = 1:nrow(MFP2.DivOsc.1.Dat), y = MFP2.DivOsc.1.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS1.P), y = Est.Means.MFP2.DivOsc.TS1.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS1.I), y = Est.Means.MFP2.DivOsc.TS1.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.DivOsc.3.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_3.csv")
+plot(x = 1:nrow(MFP2.DivOsc.3.Dat), y = MFP2.DivOsc.3.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.DivOsc.3.Dat), y = MFP2.DivOsc.3.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS3.P), y = Est.Means.MFP2.DivOsc.TS3.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS3.I), y = Est.Means.MFP2.DivOsc.TS3.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+
+MFP2.DivOsc.4.Dat <- read_csv("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_4.csv")
+plot(x = 1:nrow(MFP2.DivOsc.4.Dat), y = MFP2.DivOsc.4.Dat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 300))
+lines(x = 1:nrow(MFP2.DivOsc.4.Dat), y = MFP2.DivOsc.4.Dat$I, col = "cornflowerblue", lwd = 2)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS4.P), y = Est.Means.MFP2.DivOsc.TS4.P[ , 1], col = "forestgreen", lwd = 2, lty = 3)
+lines(x = 1:nrow(Est.Means.MFP2.DivOsc.TS4.I), y = Est.Means.MFP2.DivOsc.TS4.I[ , 1], col = "cornflowerblue", lwd = 2, lty = 3)
+```
+
+# SENSITIVITY ANALYSIS
 
 ## Global Model
 
