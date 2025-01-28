@@ -12114,25 +12114,748 @@ lines(x = 1:nrow(Est.Means.A.TS5.I), y = Est.Means.A.TS5.I[ , 1], col = "cornflo
 #### Antia et al.
 
 ```{r}
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T1.1"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds"); StochDat <- StochDat[[1]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
 
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T1.2"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds"); StochDat <- StochDat[[2]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T1.3"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds"); StochDat <- StochDat[[3]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T1.4"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds"); StochDat <- StochDat[[4]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T1.5"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_1_Stoch_Discrete.rds"); StochDat <- StochDat[[5]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T2.DO.4"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds"); StochDat <- StochDat[[4]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T2.SLC.1"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Discrete.rds"); StochDat <- StochDat[[1]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T3.2"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds"); StochDat <- StochDat[[2]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T3.3"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds"); StochDat <- StochDat[[3]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(AntiaModel_MisMatch_AR[["T3.5"]], pars = c("r", "k", "p", "o"))
+r = mean(Post[[1]]); k = mean(Post[[2]]); p = mean(Post[[3]]); o = mean(Post[[4]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 55/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-k*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + p*(P[t - 1]/(P[t - 1] + o))*ts)*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds"); StochDat <- StochDat[[5]]
+Antia_Det <- data.frame(seq(0.1, 55, 0.1), P, I); colnames(Antia_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 2000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = Antia_Det$Time, y = Antia_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = Antia_Det$Time, y = Antia_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
 ```
 
 #### MFP1
 
 ```{r}
+Post <- rstan::extract(MFP1Model_MisMatch_AR[["A.2"]], pars = c("r", "B", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 10; I[1] = 10
+ts = 0.1; t_stop = 80/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-B*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1])*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[2]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 80, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
 
+Post <- rstan::extract(MFP1Model_MisMatch_AR[["A.3"]], pars = c("r", "B", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 10; I[1] = 10
+ts = 0.1; t_stop = 80/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-B*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1])*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[3]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 80, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP1Model_MisMatch_AR[["A.4"]], pars = c("r", "B", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 10; I[1] = 10
+ts = 0.1; t_stop = 80/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp(-B*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1])*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[4]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 80, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
 ```
 
 #### MFP2
 
 ```{r}
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["A.1"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[1]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
 
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["A.2"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[2]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["A.3"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[3]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["A.4"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[4]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["A.5"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[5]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["T3.1"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds"); StochDat <- StochDat[[1]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["T3.2"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds"); StochDat <- StochDat[[2]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["T3.3"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds"); StochDat <- StochDat[[3]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["T3.4"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds"); StochDat <- StochDat[[4]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP2Model_MisMatch_AR[["T3.5"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 80; I[1] = 200
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B/(1 + B*h*P[t - 1]))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]/(1 + B*P[t - 1]*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_3_Stoch_Discrete.rds"); StochDat <- StochDat[[5]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
 ```
 
 #### MFP3
 
 ```{r}
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["A.1"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[1]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
 
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["A.2"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[2]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["A.3"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[3]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["A.4"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[4]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["A.5"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/Antia_Stoch_Discrete.rds"); StochDat <- StochDat[[5]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DO.1"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds"); StochDat <- StochDat[[1]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DO.2"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds"); StochDat <- StochDat[[2]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DO.3"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds"); StochDat <- StochDat[[3]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DO.4"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds"); StochDat <- StochDat[[4]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DO.5"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DO_Stoch_Discrete.rds"); StochDat <- StochDat[[5]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.SLC.1"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Discrete.rds"); StochDat <- StochDat[[1]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.SLC.2"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Discrete.rds"); StochDat <- StochDat[[2]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.SLC.3"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Discrete.rds"); StochDat <- StochDat[[3]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.SLC.4"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Discrete.rds"); StochDat <- StochDat[[4]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.SLC.5"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_SLC_Stoch_Discrete.rds"); StochDat <- StochDat[[5]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DivOsc.1"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_Discrete.rds"); StochDat <- StochDat[[1]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DivOsc.2"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_Discrete.rds"); StochDat <- StochDat[[2]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DivOsc.3"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_Discrete.rds"); StochDat <- StochDat[[3]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DivOsc.4"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_Discrete.rds"); StochDat <- StochDat[[4]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
+
+Post <- rstan::extract(MFP3Model_MisMatch_AR[["T2.DivOsc.5"]], pars = c("r", "B", "h", "b", "e", "delta"))
+r = mean(Post[[1]]); B = mean(Post[[2]]); b = mean(Post[[3]]); e = mean(Post[[4]]); delta = mean(Post[[5]])
+P <- c(); I <- c()
+P[1] = 1; I[1] = 1
+ts = 0.1; t_stop = 60/ts
+for (t in 2:t_stop){
+  P[t] = (1 + r*ts - (1-exp((-B*P[t - 1]/(1 + B*h*P[t - 1]^2))*I[t - 1]*ts)))*P[t - 1]
+  I[t] = (1 + b*ts*(1/I[t - 1]) + e*(B*P[t - 1]^2/(1 + B*P[t - 1]^2*h))*ts - (1-exp(-delta*ts)))*I[t - 1]
+}
+StochDat <- readRDS("0_Data/1_Stochastic/ModFentonPerkins_2_DivOsc_Stoch_Discrete.rds"); StochDat <- StochDat[[5]]
+ModFentonPerkins_Det <- data.frame(seq(0.1, 60, 0.1), P, I); colnames(ModFentonPerkins_Det) <- c("Time", "P", "I")
+plot(x = StochDat$Time, y = StochDat$P, col = "forestgreen", lwd = 2, 
+     xlab = "Time", ylab = "Population Abundance", type = "l", ylim = c(0, 1000))
+lines(x = StochDat$Time, y = StochDat$I, col = "cornflowerblue", lwd = 2)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$P, col = "forestgreen", lwd = 2, lty = 3)
+lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflowerblue", lwd = 2, lty = 3)
 ```
 
 # SENSITIVITY ANALYSIS
