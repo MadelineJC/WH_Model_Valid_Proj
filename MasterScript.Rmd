@@ -314,7 +314,7 @@ lines(Mod_FP_1_Det$Time, Mod_FP_1_Det$I, col = "cornflowerblue", lwd = 2)
 
 ```{r}
 Mod_FP_T2 <- function(t, y, p){
-  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]; b <- p[6]
   P <- y[1]; I <- y[2]
   dP = r*P - I*(B*P/(1 + h*B*P))
   dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
@@ -337,7 +337,7 @@ lines(Mod_FP_2_DivOsc_Det$Times, Mod_FP_2_DivOsc_Det$I, col = "cornflowerblue", 
 
 ```{r}
 Mod_FP_T2 <- function(t, y, p){
-  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]; b <- p[6]
   P <- y[1]; I <- y[2]
   dP = r*P - I*(B*P/(1 + h*B*P))
   dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
@@ -360,7 +360,7 @@ lines(Mod_FP_2_SLC_Det$Times, Mod_FP_2_SLC_Det$I, col = "cornflowerblue", lwd = 
 
 ```{r}
 Mod_FP_T2 <- function(t, y, p){
-  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]; b <- p[6]
   P <- y[1]; I <- y[2]
   dP = r*P - I*(B*P/(1 + h*B*P))
   dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
@@ -383,7 +383,7 @@ lines(Mod_FP_2_DO_Det$Times, Mod_FP_2_DO_Det$I, col = "cornflowerblue", lwd = 2)
 
 ```{r}
 Mod_FP_T3 <- function(t, y, p){
-  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
+  r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]; b <- p[6]
   P <- y[1]; I <- y[2]
   dP = r*P - I*(B*P^2/(1 + h*B*P^2))
   dI = b + e*(B*P^2/(1 + h*B*P^2))*I-delta*I
@@ -12865,88 +12865,60 @@ lines(x = ModFentonPerkins_Det$Time, y = ModFentonPerkins_Det$I, col = "cornflow
 ### Mod. Fenton and Perkins, Type II FR, Damping Oscillations
 
 ```{r}
-# post.1 <- rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
-# post.2 <- rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
-# post.3 <- rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
-# post.4 <- rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
-# post.5 <- rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
-# post <- mapply(c, post.1, post.2, post.3, post.4, post.5, SIMPLIFY = FALSE)
-# n.sim <- 2000
-# set.seed(123); samps <- sample(length(post[[1]]), n.sim, replace = FALSE)
-# samp.post <- vector(mode = "list", length = length(post))
-# for (i in 1:n.sim){
-#   samp.post[[1]][i] <- post[[1]][samps[i]]
-#   samp.post[[2]][i] <- post[[2]][samps[i]]
-#   samp.post[[3]][i] <- post[[3]][samps[i]]
-#   samp.post[[4]][i] <- post[[4]][samps[i]]
-#   samp.post[[5]][i] <- post[[5]][samps[i]]
-#   samp.post[[6]][i] <- post[[6]][samps[i]]
-# }
-# inits.1 <- rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = "y_init_rep")
-# inits.1 <- list(inits.1[[1]][ , 1], inits.1[[1]][ , 2])
-# inits.2 <- rstan::extract(ModFentonPerkins_2_DO_FitObj2, pars = "y_init_rep")
-# inits.2 <- list(inits.2[[1]][ , 1], inits.2[[1]][ , 2])
-# inits.3 <- rstan::extract(ModFentonPerkins_2_DO_FitObj3, pars = "y_init_rep")
-# inits.3 <- list(inits.3[[1]][ , 1], inits.3[[1]][ , 2])
-# inits.4 <- rstan::extract(ModFentonPerkins_2_DO_FitObj4, pars = "y_init_rep")
-# inits.4 <- list(inits.4[[1]][ , 1], inits.4[[1]][ , 2])
-# inits.5 <- rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = "y_init_rep")
-# inits.5 <- list(inits.5[[1]][ , 1], inits.5[[1]][ , 2])
-# inits <- mapply(c, inits.1, inits.2, inits.3, inits.4, inits.5, SIMPLIFY = FALSE)
-# samp.inits <- vector(mode = "list", length = length(inits))
-# for (i in 1:n.sim){
-#   samp.inits[[1]][i] <- inits[[1]][samps[i]]
-#   samp.inits[[2]][i] <- inits[[2]][samps[i]]
-# }
-# 
-# Mod_FP_T2 <- function(t, y, p){
-#   r <- p[1]; B <- p[2]; h <- p[3]; e <- p[4]; delta <- p[5]
-#   P <- y[1]; I <- y[2]
-#   dP = r*P - I*(B*P/(1 + h*B*P))
-#   dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
-#   list(c(dP, dI))
-# }
-# 
-# DampOsc_SA_Outputs <- list(); DampOsc_TS_Length <- c()
-# for (i in 1:n.sim){
-#   r <- samp.post[[1]][i]; B <- samp.post[[2]][i]; h <- samp.post[[3]][i] 
-#   b <- samp.post[[4]][i]; e <- samp.post[[5]][i]; delta <- samp.post[[6]][i]
-#   parms <- c(r, B, h, b, e, delta)
-#   P0 <- samp.inits[[1]][i]; I0 <- samp.inits[[2]][i]
-#   N0 <- c(P0, I0)
-#   TT <- seq(0, 400, 0.1)
-#   results <- as.data.frame(lsoda(N0, TT, Mod_FP_T2, parms)); colnames(results) <- c("Time", "P", "I")
-#   results <- results[1:which(results$P < 0)[1] - 1, ]
-#   DampOsc_SA_Outputs[[i]] <- results; DampOsc_TS_Length[i] <- nrow(results)/10
-# }
-# max(DampOsc_TS_Length)
-
-# Posterior time series
-TS1 <- rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = c("y_rep"))[[1]]
-TS1.P <- as.matrix(TS1[ , , 1]); TS1.I <- as.matrix(TS1[ , , 2])
-TS5 <- rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = c("y_rep"))[[1]]
-TS5.P <- as.matrix(TS5[ , , 1]); TS5.I <- as.matrix(TS5[ , , 2])
+post.1 <- rstan::extract(ModFentonPerkins_2_DO_FitObj1, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
+post.5 <- rstan::extract(ModFentonPerkins_2_DO_FitObj5, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
+post <- mapply(c, post.1, post.5, SIMPLIFY = FALSE)
 n.sim <- 2000
-set.seed(123); samps <- sample(nrow(TS1.P), n.sim/2, replace = FALSE)
-TS1.P <- TS1.P[samps, ]; TS1.I <- TS1.I[samps, ]
-TS5.P <- TS5.P[samps, ]; TS5.I <- TS5.I[samps, ]
-
-# Plotting time series
-plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Damping Oscillations) | Time Series Drawn from Posterior Distributions (Global Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 96), ylim = c(0, 800))
-for (i in 1:ncol(TS1.P)){
-  lines(x = seq(1:ncol(TS1.P)), y = TS1.P[i, ], col = adjustcolor("forestgreen", alpha = 0.2))
-  lines(x = seq(1:ncol(TS1.I)), y = TS1.I[i, ], col = adjustcolor("cornflowerblue", alpha = 0.2))
-}
-for (i in 1:ncol(TS5.P)){
-  lines(x = seq(1:ncol(TS5.P)), y = TS5.P[i, ], col = adjustcolor("forestgreen", alpha = 0.2))
-  lines(x = seq(1:ncol(TS5.I)), y = TS5.I[i, ], col = adjustcolor("cornflowerblue", alpha = 0.2))
+set.seed(123); samps <- sample(length(post[[1]]), n.sim, replace = FALSE)
+samp.post <- vector(mode = "list", length = length(post))
+for (i in 1:n.sim){
+  samp.post[[1]][i] <- post[[1]][samps[i]]
+  samp.post[[2]][i] <- post[[2]][samps[i]]
+  samp.post[[3]][i] <- post[[3]][samps[i]]
+  samp.post[[4]][i] <- post[[4]][samps[i]]
+  samp.post[[5]][i] <- post[[5]][samps[i]]
+  samp.post[[6]][i] <- post[[6]][samps[i]]
 }
 
+Mod_FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; b <- p[4]; e <- p[5]; delta <- p[6]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+
+DampOsc_SA_Outputs <- list(); DampOsc_TS_Length <- c()
+for (i in 1:n.sim){
+  r <- samp.post[[1]][i]; B <- samp.post[[2]][i]; h <- samp.post[[3]][i]
+  b <- samp.post[[4]][i]; e <- samp.post[[5]][i]; delta <- samp.post[[6]][i]
+  parms <- c(r, B, h, b, e, delta)
+  P0 <- 61; I0 <- 321
+  N0 <- c(P0, I0)
+  TT <- seq(0, 200, 0.1)
+  results <- as.data.frame(lsoda(N0, TT, Mod_FP_T2, parms)); colnames(results) <- c("Time", "P", "I")
+  # results <- results[1:which(results$P < 0)[1] - 1, ]
+  DampOsc_SA_Outputs[[i]] <- results; DampOsc_TS_Length[i] <- nrow(results)/10
+}
+
+plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Damping Oscillations) | Parameter Values Drawn from Posterior Distributions (Global Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 200), ylim = c(0, 500))
+for (i in 1:n.sim){
+  lines(x = DampOsc_SA_Outputs[[i]]$Time, y = DampOsc_SA_Outputs[[i]]$P, col = adjustcolor("forestgreen", alpha = 0.2))
+  lines(x = DampOsc_SA_Outputs[[i]]$Time, y = DampOsc_SA_Outputs[[i]]$I, col = adjustcolor("cornflowerblue", alpha = 0.2))
+}
+
+# Checking to see if all time series are same length
+TSLengths <- c()
+for (i in 1:n.sim){
+  TSLengths[i] <- nrow(DampOsc_SA_Outputs[[i]])
+}; length(unique(TSLengths))
+
+# Classifying behaviour
 Is.DampOsc <- c()
 for (i in 1:n.sim){
-  TS <- DampOsc.AR_SA_Outputs[[i]][ , 2:3]
+  TS <- DampOsc_SA_Outputs[[i]][ , 2:3]
   Max.First10Days <- rev(sort(TS[1:100, 1]))[1:10]; Min.First10Days <- sort(TS[1:100, 1])[1:10]
-  Max.Last10Days <- rev(sort(TS[500:600, 1]))[1:10]; Min.Last10Days <- sort(TS[500:600, 1])[1:10]
+  Max.Last10Days <- rev(sort(TS[(nrow(TS)-100):nrow(TS), 1]))[1:10]; Min.Last10Days <- sort(TS[(nrow(TS)-100):nrow(TS), 1])[1:10]
   Diff.Start <- mean(Max.First10Days) - mean(Min.First10Days); Diff.End <- mean(Max.Last10Days) - mean(Min.Last10Days)
   if (Diff.Start > Diff.End){
     Is.DampOsc[i] <- "Y"
@@ -12954,67 +12926,160 @@ for (i in 1:n.sim){
       Is.DampOsc[i] <- "N"
     }
 }
-length(which(Is.DampOsc == "Y"))/length(Is.DampOsc)
-
+length(which(Is.DampOsc == "Y"))/length(Is.DampOsc) # 99.80%
 ```
 
 ### Mod. Fenton and Perkins, Type II FR, Stable Limit Cycle
 
 ```{r}
-# Posterior time series
-TS1 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = c("y_rep"))[[1]]
-TS1.P <- as.matrix(TS1[ , , 1]); TS1.I <- as.matrix(TS1[ , , 2])
-TS2 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = c("y_rep"))[[1]]
-TS2.P <- as.matrix(TS2[ , , 1]); TS2.I <- as.matrix(TS2[ , , 2])
-TS5 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = c("y_rep"))[[1]]
-TS5.P <- as.matrix(TS5[ , , 1]); TS5.I <- as.matrix(TS5[ , , 2])
+post.1 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj1, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
+post.2 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj2, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
+post.5 <- rstan::extract(ModFentonPerkins_2_SLC_FitObj5, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
+post <- mapply(c, post.1, post.2, post.5, SIMPLIFY = FALSE)
 n.sim <- 2000
-set.seed(123); samps <- sample(nrow(TS1.P), round(n.sim/3), replace = FALSE)
-TS1.P <- TS1.P[samps, ]; TS1.I <- TS1.I[samps, ]
-TS2.P <- TS2.P[samps, ]; TS2.I <- TS2.I[samps, ]
-TS5.P <- TS5.P[samps, ]; TS5.I <- TS5.I[samps, ]
-
-# Plotting time series
-plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Stable Limit Cycle) | Time Series Drawn from Posterior Distributions (Global Model)", xlab = "Time", ylab = "Abundance", xlim = c(1, 25), ylim = c(0, 600))
-for (i in 1:ncol(TS1.P)){
-  lines(x = seq(1:ncol(TS1.P)), y = TS1.P[i, ], col = adjustcolor("forestgreen", alpha = 0.2))
-  lines(x = seq(1:ncol(TS1.I)), y = TS1.I[i, ], col = adjustcolor("cornflowerblue", alpha = 0.2))
-}
-for (i in 1:ncol(TS2.P)){
-  lines(x = seq(1:ncol(TS2.P)), y = TS2.P[i, ], col = adjustcolor("forestgreen", alpha = 0.2))
-  lines(x = seq(1:ncol(TS2.I)), y = TS2.I[i, ], col = adjustcolor("cornflowerblue", alpha = 0.2))
-}
-for (i in 1:ncol(TS5.P)){
-  lines(x = seq(1:ncol(TS5.P)), y = TS5.P[i, ], col = adjustcolor("forestgreen", alpha = 0.2))
-  lines(x = seq(1:ncol(TS5.I)), y = TS5.I[i, ], col = adjustcolor("cornflowerblue", alpha = 0.2))
+set.seed(123); samps <- sample(length(post[[1]]), n.sim, replace = FALSE)
+samp.post <- vector(mode = "list", length = length(post))
+for (i in 1:n.sim){
+  samp.post[[1]][i] <- post[[1]][samps[i]]
+  samp.post[[2]][i] <- post[[2]][samps[i]]
+  samp.post[[3]][i] <- post[[3]][samps[i]]
+  samp.post[[4]][i] <- post[[4]][samps[i]]
+  samp.post[[5]][i] <- post[[5]][samps[i]]
+  samp.post[[6]][i] <- post[[6]][samps[i]]
 }
 
+Mod_FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; b <- p[4]; e <- p[5]; delta <- p[6]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+
+SLC_SA_Outputs <- list(); SLC_TS_Length <- c()
+for (i in 1:n.sim){
+  r <- samp.post[[1]][i]; B <- samp.post[[2]][i]; h <- samp.post[[3]][i]
+  b <- samp.post[[4]][i]; e <- samp.post[[5]][i]; delta <- samp.post[[6]][i]
+  parms <- c(r, B, h, b, e, delta)
+  P0 <- 80; I0 <- 225
+  N0 <- c(P0, I0)
+  TT <- seq(0, 200, 0.1)
+  results <- as.data.frame(lsoda(N0, TT, Mod_FP_T2, parms)); colnames(results) <- c("Time", "P", "I")
+  # results <- results[1:which(results$P < 0)[1] - 1, ]
+  SLC_SA_Outputs[[i]] <- results; SLC_TS_Length[i] <- nrow(results)/10
+}
+
+for (i in 1:n.sim){
+  SLC_SA_Outputs[[i]] <- na.omit(SLC_SA_Outputs[[i]])
+}
+
+for (i in 1:n.sim){
+  SLC_SA_Outputs[[i]] <- subset(SLC_SA_Outputs[[i]], P >= 0)
+  SLC_SA_Outputs[[i]] <- subset(SLC_SA_Outputs[[i]], I >= 0)
+}
+
+plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Stable Limit Cycle) | Parameter Values Drawn from Posterior Distributions (Global Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 120), ylim = c(0, 1500))
+for (i in 1:n.sim){
+  lines(x = SLC_SA_Outputs[[i]]$Time, y = SLC_SA_Outputs[[i]]$P, col = adjustcolor("forestgreen", alpha = 0.2))
+  lines(x = SLC_SA_Outputs[[i]]$Time, y = SLC_SA_Outputs[[i]]$I, col = adjustcolor("cornflowerblue", alpha = 0.2))
+}
+
+# Checking to see if all time series are same length
+TSLengths <- c()
+for (i in 1:n.sim){
+  TSLengths[i] <- nrow(SLC_SA_Outputs[[i]])
+}; unique(TSLengths); length(unique(TSLengths))
+
+# Classifying behaviour
+Is.SLC <- c()
+for (i in 1:n.sim){
+  TS <- SLC_SA_Outputs[[i]][ , 2:3]
+  Max.First10Days <- rev(sort(TS[1:100, 1]))[1:10]; Min.First10Days <- sort(TS[1:100, 1])[1:10]
+  Max.Last10Days <- rev(sort(TS[(nrow(TS)-100):nrow(TS), 1]))[1:10]; Min.Last10Days <- sort(TS[(nrow(TS)-100):nrow(TS), 1])[1:10]
+  Diff.Start <- mean(Max.First10Days) - mean(Min.First10Days); Diff.End <- mean(Max.Last10Days) - mean(Min.Last10Days)
+  if (Diff.Start - Diff.End < abs(1)){
+    Is.SLC[i] <- "Y"
+    } else {
+      Is.SLC[i] <- "N"
+    }
+}
+length(which(Is.SLC == "Y"))/length(Is.SLC) # 40.15%
 ```
 
 ### Mod. Fenton and Perkins, Type II FR, Divergent Oscillations
 
 ```{r}
-# Posterior time series
-TS2 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = c("y_rep"))[[1]]
-TS2.P <- as.matrix(TS2[ , , 1]); TS2.I <- as.matrix(TS2[ , , 2])
-TS5 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = c("y_rep"))[[1]]
-TS5.P <- as.matrix(TS5[ , , 1]); TS5.I <- as.matrix(TS5[ , , 2])
+post.2 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj2, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
+post.5 <- rstan::extract(ModFentonPerkins_2_DivOsc_FitObj5, pars = c("theta[1]", "theta[2]", "theta[3]", "theta[4]", "theta[5]", "theta[6]"))
+post <- mapply(c, post.2, post.5, SIMPLIFY = FALSE)
 n.sim <- 2000
-set.seed(123); samps <- sample(nrow(TS1.P), n.sim/2, replace = FALSE)
-TS2.P <- TS2.P[samps, ]; TS2.I <- TS2.I[samps, ]
-TS5.P <- TS5.P[samps, ]; TS5.I <- TS5.I[samps, ]
-
-# Plotting time series
-plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Divergent Oscillations) | Time Series Drawn from Posterior Distributions (Global Model)", xlab = "Time", ylab = "Abundance", xlim = c(1, 50), ylim = c(0, 1000))
-for (i in 1:ncol(TS2.P)){
-  lines(x = seq(1:ncol(TS2.P)), y = TS2.P[i, ], col = adjustcolor("forestgreen", alpha = 0.2))
-  lines(x = seq(1:ncol(TS2.I)), y = TS2.I[i, ], col = adjustcolor("cornflowerblue", alpha = 0.2))
-}
-for (i in 1:ncol(TS5.P)){
-  lines(x = seq(1:ncol(TS5.P)), y = TS5.P[i, ], col = adjustcolor("forestgreen", alpha = 0.2))
-  lines(x = seq(1:ncol(TS5.I)), y = TS5.I[i, ], col = adjustcolor("cornflowerblue", alpha = 0.2))
+set.seed(123); samps <- sample(length(post[[1]]), n.sim, replace = FALSE)
+samp.post <- vector(mode = "list", length = length(post))
+for (i in 1:n.sim){
+  samp.post[[1]][i] <- post[[1]][samps[i]]
+  samp.post[[2]][i] <- post[[2]][samps[i]]
+  samp.post[[3]][i] <- post[[3]][samps[i]]
+  samp.post[[4]][i] <- post[[4]][samps[i]]
+  samp.post[[5]][i] <- post[[5]][samps[i]]
+  samp.post[[6]][i] <- post[[6]][samps[i]]
 }
 
+Mod_FP_T2 <- function(t, y, p){
+  r <- p[1]; B <- p[2]; h <- p[3]; b <- p[4]; e <- p[5]; delta <- p[6]
+  P <- y[1]; I <- y[2]
+  dP = r*P - I*(B*P/(1 + h*B*P))
+  dI = b + e*(B*P/(1 + h*B*P))*I-delta*I
+  list(c(dP, dI))
+}
+
+DivOsc_SA_Outputs <- list(); DivOsc_TS_Length <- c()
+for (i in 1:n.sim){
+  r <- samp.post[[1]][i]; B <- samp.post[[2]][i]; h <- samp.post[[3]][i]
+  b <- samp.post[[4]][i]; e <- samp.post[[5]][i]; delta <- samp.post[[6]][i]
+  parms <- c(r, B, h, b, e, delta)
+  P0 <- 80; I0 <- 225
+  N0 <- c(P0, I0)
+  TT <- seq(0, 200, 0.1)
+  results <- as.data.frame(lsoda(N0, TT, Mod_FP_T2, parms)); colnames(results) <- c("Time", "P", "I")
+  # results <- results[1:which(results$P < 0)[1] - 1, ]
+  DivOsc_SA_Outputs[[i]] <- results; DivOsc_TS_Length[i] <- nrow(results)/10
+}
+
+for (i in 1:n.sim){
+  DivOsc_SA_Outputs[[i]] <- na.omit(DivOsc_SA_Outputs[[i]])
+}
+
+for (i in 1:n.sim){
+  DivOsc_SA_Outputs[[i]] <- subset(DivOsc_SA_Outputs[[i]], P >= 0)
+  DivOsc_SA_Outputs[[i]] <- subset(DivOsc_SA_Outputs[[i]], I >= 0)
+}
+
+plot(1, type = "n", main = "Mod. Fenton and Perkins (2010), Type II FR (Divergent Oscillations) | Parameter Values Drawn from Posterior Distributions (Global Model)", xlab = "Time", ylab = "Abundance", xlim = c(0, 120), ylim = c(0, 4000))
+for (i in 1:n.sim){
+  lines(x = DivOsc_SA_Outputs[[i]]$Time, y = DivOsc_SA_Outputs[[i]]$P, col = adjustcolor("forestgreen", alpha = 0.2))
+  lines(x = DivOsc_SA_Outputs[[i]]$Time, y = DivOsc_SA_Outputs[[i]]$I, col = adjustcolor("cornflowerblue", alpha = 0.2))
+}
+
+# Checking to see if all time series are same length
+TSLengths <- c()
+for (i in 1:n.sim){
+  TSLengths[i] <- nrow(DivOsc_SA_Outputs[[i]])
+}; unique(TSLengths); length(unique(TSLengths))
+
+# Classifying behaviour
+Is.DivOsc <- c()
+for (i in 1:n.sim){
+  TS <- DivOsc_SA_Outputs[[i]][ , 2:3]
+  Max.First10Days <- rev(sort(TS[1:100, 1]))[1:10]; Min.First10Days <- sort(TS[1:100, 1])[1:10]
+  Max.Last10Days <- rev(sort(TS[(nrow(TS)-100):nrow(TS), 1]))[1:10]; Min.Last10Days <- sort(TS[(nrow(TS)-100):nrow(TS), 1])[1:10]
+  Diff.Start <- mean(Max.First10Days) - mean(Min.First10Days); Diff.End <- mean(Max.Last10Days) - mean(Min.Last10Days)
+  if (Diff.Start < Diff.End){
+    Is.DivOsc[i] <- "Y"
+    } else {
+      Is.DivOsc[i] <- "N"
+    }
+}
+length(which(Is.DivOsc == "Y"))/length(Is.DivOsc) # 90.20%
 ```
 
 ## Autoregressive Model
